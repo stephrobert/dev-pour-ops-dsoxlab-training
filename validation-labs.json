@@ -1,4 +1,192 @@
 {
+ "appeler-une-api": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_le_jeton_part_dans_l_en_tete",
+    "test_le_ticket_est_cherche_dans_toutes_les_pages",
+    "test_les_pannes_passageres_sont_reprises",
+    "test_un_delai_maximal_borne_chaque_requete",
+    "test_une_seule_creation_en_deux_executions"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 153,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-appeler-une-api.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_le_jeton_part_dans_l_en_tete",
+    "test_le_ticket_est_cherche_dans_toutes_les_pages",
+    "test_les_pannes_passageres_sont_reprises",
+    "test_un_delai_maximal_borne_chaque_requete",
+    "test_une_seule_creation_en_deux_executions"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "deboguer": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_aucune_regression",
+    "test_la_suite_passe_sur_la_version_corrigee",
+    "test_le_bogue_est_corrige",
+    "test_le_journal_de_debogage_raconte_la_demarche",
+    "test_un_test_reproduit_le_bogue"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 10,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-deboguer.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_aucune_regression",
+    "test_la_suite_passe_sur_la_version_corrigee",
+    "test_le_bogue_est_corrige",
+    "test_le_journal_de_debogage_raconte_la_demarche",
+    "test_un_test_reproduit_le_bogue"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "dependances-reproductibles": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_l_interpreteur_est_fixe",
+    "test_le_projet_s_installe_a_l_identique_ailleurs",
+    "test_le_verrou_existe_et_suit_pyproject",
+    "test_les_dependances_sont_declarees_dans_pyproject",
+    "test_une_seule_source_de_verite"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 4,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-dependances-reproductibles.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_l_interpreteur_est_fixe",
+    "test_le_projet_s_installe_a_l_identique_ailleurs",
+    "test_le_verrou_existe_et_suit_pyproject",
+    "test_les_dependances_sont_declarees_dans_pyproject",
+    "test_une_seule_source_de_verite"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "level-exams-outil": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_la_publication_est_sure_idempotente_et_bornee",
+    "test_la_revue_de_la_pr_57_trouve_les_defauts",
+    "test_la_suite_de_l_apprenant_attrape_l_erreur_avalee",
+    "test_la_version_se_livre_depuis_son_etiquette",
+    "test_le_contrat_tient_sur_des_tirages_au_hasard"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 38,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-level-exams-outil.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_la_publication_est_sure_idempotente_et_bornee",
+    "test_la_revue_de_la_pr_57_trouve_les_defauts",
+    "test_la_suite_de_l_apprenant_attrape_l_erreur_avalee",
+    "test_la_version_se_livre_depuis_son_etiquette",
+    "test_le_contrat_tient_sur_des_tirages_au_hasard"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
  "lire-du-code": {
   "apres": {
    "echecs": [],
@@ -19,10 +207,10 @@
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 2,
+  "duree_s": 3,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -38,6 +226,100 @@
     "test_les_commandes_externes_sont_toutes_nommees",
     "test_les_defauts_reels_sont_nommes",
     "test_les_effets_de_bord_sont_identifies"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "livrer-un-outil": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_dist_contient_la_roue_et_le_sdist",
+    "test_l_etiquette_annotee_designe_la_livraison",
+    "test_l_etiquette_s_installe_dans_un_environnement_vierge",
+    "test_la_version_a_une_seule_source",
+    "test_le_changelog_porte_la_version"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 4,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-livrer-un-outil.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_dist_contient_la_roue_et_le_sdist",
+    "test_l_etiquette_annotee_designe_la_livraison",
+    "test_l_etiquette_s_installe_dans_un_environnement_vierge",
+    "test_la_version_a_une_seule_source",
+    "test_le_changelog_porte_la_version"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "relire-une-automatisation": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_l_erreur_avalee_et_l_effet_de_bord_non_borne_sont_signales",
+    "test_la_dependance_non_epinglee_et_le_test_absent_sont_signales",
+    "test_le_pre_commit_detecte_secrets_et_defauts_avant_la_revue",
+    "test_le_secret_expose_et_le_tls_desactive_sont_signales",
+    "test_les_commentaires_sont_actionnables"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 3,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-relire-une-automatisation.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_l_erreur_avalee_et_l_effet_de_bord_non_borne_sont_signales",
+    "test_la_dependance_non_epinglee_et_le_test_absent_sont_signales",
+    "test_le_pre_commit_detecte_secrets_et_defauts_avant_la_revue",
+    "test_le_secret_expose_et_le_tls_desactive_sont_signales",
+    "test_les_commentaires_sont_actionnables"
    ],
    "passed": 0,
    "score": 0,
@@ -66,10 +348,10 @@
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 5,
+  "duree_s": 6,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -85,6 +367,53 @@
     "test_la_sortie_json_est_exploitable",
     "test_le_mode_simulation_n_envoie_rien",
     "test_les_codes_de_sortie_suivent_le_contrat"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "tester-une-automatisation": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_la_suite_attrape_un_code_zero_sur_alerte",
+    "test_la_suite_attrape_un_seuil_exclusif",
+    "test_la_suite_attrape_une_erreur_avalee",
+    "test_la_suite_attrape_une_simulation_qui_envoie",
+    "test_la_suite_passe_sur_l_outil_juste_et_compte_assez_de_tests"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 16,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-tester-une-automatisation.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_la_suite_attrape_un_code_zero_sur_alerte",
+    "test_la_suite_attrape_un_seuil_exclusif",
+    "test_la_suite_attrape_une_erreur_avalee",
+    "test_la_suite_attrape_une_simulation_qui_envoie",
+    "test_la_suite_passe_sur_l_outil_juste_et_compte_assez_de_tests"
    ],
    "passed": 0,
    "score": 0,
