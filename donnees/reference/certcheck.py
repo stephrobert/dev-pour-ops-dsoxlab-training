@@ -31,7 +31,7 @@ from pathlib import Path
 VERSION = "0.4.0"
 SEUIL_PAR_DEFAUT = 30
 TITRE_TICKET = "certcheck : certificats à renouveler"
-DELAI_RESEAU = 10  # secondes, pour chaque requête
+DELAI_RESEAU = 5  # secondes, pour chaque requête
 ESSAIS = 3
 TAILLE_PAGE = 50
 

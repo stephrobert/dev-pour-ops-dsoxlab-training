@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Point d'entrée de l'outil, imposé par le contrat (CONTRAT.md) : c'est lui
+# que cron, un pipeline et les contrôles du lab appellent.
+#
+# Il lance aujourd'hui le script hérité, qui ne respecte pas le contrat.
+# Remplacez cette ligne par le lancement de VOTRE outil, par exemple :
+#   exec python3 "$(dirname "$0")/../certcheck.py" "$@"     # Python
+#   exec "$(dirname "$0")/../certcheck-go" "$@"             # binaire Go construit
+exec bash "$(dirname "$0")/../certcheck.sh" "$@"

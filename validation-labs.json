@@ -45,5 +45,52 @@
   },
   "uv": "0.12.21",
   "verdict": "VALIDE"
+ },
+ "script-en-outil": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_l_interface_est_previsible",
+    "test_la_configuration_vient_de_l_environnement",
+    "test_la_sortie_json_est_exploitable",
+    "test_le_mode_simulation_n_envoie_rien",
+    "test_les_codes_de_sortie_suivent_le_contrat"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 5,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-script-en-outil.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_l_interface_est_previsible",
+    "test_la_configuration_vient_de_l_environnement",
+    "test_la_sortie_json_est_exploitable",
+    "test_le_mode_simulation_n_envoie_rien",
+    "test_les_codes_de_sortie_suivent_le_contrat"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
  }
 }

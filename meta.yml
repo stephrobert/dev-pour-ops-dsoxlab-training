@@ -38,3 +38,4 @@ sections:
     description: "Read an inherited script, turn it into a tool with a contract, test it, debug it, review a change, lock its dependencies and ship a version."
     labs:
       - lire-du-code
+      - script-en-outil

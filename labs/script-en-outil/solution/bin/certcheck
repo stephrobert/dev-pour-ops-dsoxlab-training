@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+# Point d'entrée de l'outil, imposé par le contrat (CONTRAT.md).
+exec python3 "$(dirname "$0")/../certcheck.py" "$@"

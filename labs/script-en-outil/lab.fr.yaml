@@ -1,0 +1,8 @@
+id: script-en-outil
+title: "Du script à l'outil : certcheck respecte son contrat"
+description: |
+  Le script hérité sort toujours en 0, masque ses erreurs et n'a pas d'aide.
+  Réécrivez-le en outil, en Python, en Go ou en Bash, qui respecte un contrat
+  écrit : aide et arguments, codes de sortie exploitables, sortie JSON,
+  configuration par l'environnement, erreurs sur la sortie d'erreur et mode
+  simulation. Noté en boîte noire, par bin/certcheck.
