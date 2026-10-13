@@ -301,7 +301,7 @@
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 2,
+  "duree_s": 3,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -395,7 +395,7 @@
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 4,
+  "duree_s": 5,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
