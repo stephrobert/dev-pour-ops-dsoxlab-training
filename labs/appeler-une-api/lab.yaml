@@ -1,0 +1,43 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: appeler-une-api
+title: "Call an API without fragility: certcheck publishes its ticket"
+description: |
+  certcheck works, but its publication to the forge was written in a hurry:
+  the token travels in the URL, nothing bounds the wait, the first 503 is
+  fatal and every run opens a new ticket. Fix it so that it honours the
+  contract: Authorization header, a single ticket found across every page,
+  retries on 429 and 5xx, and a timeout on each request. Graded on the
+  requests received by a fake forge.
+section: fil-rouge
+level: o1
+difficulty: intermediate
+lab_type: lab
+estimated_time: 45m
+skills:
+  - rest-api
+  - authentication
+  - pagination
+  - idempotence
+  - retries
+  - timeouts
+  - python
+distros:
+  - any
+doc_url: https://blog.stephane-robert.info/docs/developper/api-rest/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - CONTRAT.md
+    - certcheck.py
+    - bin/certcheck
+    - inventaire.txt
+    - certs/web-01.pem
+    - certs/web-02.pem
+    - certs/api-01.pem
+    - certs/db-01.pem
+    - certs/mail-01.pem
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

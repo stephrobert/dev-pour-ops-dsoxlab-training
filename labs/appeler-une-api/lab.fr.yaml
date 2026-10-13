@@ -1,0 +1,9 @@
+id: appeler-une-api
+title: "Appeler une API sans fragilité : certcheck publie son ticket"
+description: |
+  certcheck fonctionne, mais sa publication sur la forge a été écrite à la
+  hâte : le jeton voyage dans l'URL, rien ne borne l'attente, la première 503
+  est fatale et chaque exécution ouvre un nouveau ticket. Corrigez-la pour
+  qu'elle respecte le contrat : en-tête Authorization, un seul ticket cherché
+  dans toutes les pages, reprise sur 429 et 5xx, délai maximal sur chaque
+  requête. Noté sur les requêtes reçues par une forge factice.
