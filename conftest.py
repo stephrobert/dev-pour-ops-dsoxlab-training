@@ -4,11 +4,11 @@ forge factice.
 
 ## Pourquoi une boîte noire
 
-La formation est neutre du langage : l'outil se livre en Bash, en Python ou
-en Go. Les contrôles ne l'importent donc jamais. Ils lancent l'exécutable
-`bin/certcheck` du répertoire de travail, comme le ferait cron ou un
-pipeline, et ne jugent que ce qu'un appelant observe : sorties, code de
-sortie, requêtes reçues par la forge.
+L'outil est un projet Python, mais les contrôles ne l'importent jamais : un
+test qui importe une fonction juge une implémentation, pas un contrat. Ils
+lancent l'exécutable `bin/certcheck` du répertoire de travail, comme le
+ferait cron ou un pipeline, et ne jugent que ce qu'un appelant observe :
+sorties, code de sortie, requêtes reçues par la forge.
 
 ## Pourquoi des dates fixes et une horloge injectée
 
@@ -87,8 +87,9 @@ def exiger_executable(workdir: Path) -> Path:
     if not outil.is_file():
         pytest.fail(
             "bin/certcheck est absent du répertoire de travail. C'est le point "
-            "d'entrée que le contrat impose, quel que soit le langage : un script "
-            "Bash, un lanceur qui appelle Python, ou le binaire Go.",
+            "d'entrée que le contrat impose : un lanceur qui exécute le paquet "
+            "Python du projet, par exemple `exec uv run --quiet --project "
+            "\"$(dirname \"$0\")/..\" certcheck \"$@\"`.",
             pytrace=False,
         )
     if not os.access(outil, os.X_OK):
@@ -466,3 +467,32 @@ def serveur_muet() -> Iterator[str]:
         for connexion in ouvertes:
             connexion.close()
         ecoute.close()
+
+
+# --- La suite de tests d'un projet en paquet ----------------------------------------
+#
+# Le fil rouge est un paquet Python en src layout (`src/certcheck/`). Les labs
+# tester-une-automatisation et deboguer jouent la suite de l'apprenant en
+# remplaçant UN module du paquet, `certificats.py`, par une autre version (la
+# référence, un mutant, la version boguée d'origine). Même principe que
+# `jouer_suite_pytest` : une copie, jamais le travail de l'apprenant.
+
+REFERENCE_PAQUET = DONNEES / "reference" / "paquet" / "certcheck"
+
+
+def jouer_suite_paquet(projet: Path, certificats: Path | None = None) -> Passage:
+    """La suite pytest de `projet`, jouée par uv dans une copie ; `certificats` remplace ce module."""
+    uv = exiger_outil("uv")
+    with copie_temporaire(projet) as copie:
+        if certificats is not None:
+            shutil.copy2(certificats, copie / "src" / "certcheck" / "certificats.py")
+        res = executer([uv, "run", "--quiet", "--directory", str(copie),
+                        "pytest", "-q", "-p", "no:cacheprovider"], timeout=300)
+    sortie = res.stdout + res.stderr
+
+    def nombre(mot: str) -> int:
+        trouves = re.findall(rf"(\d+) {mot}\b", sortie)
+        return int(trouves[-1]) if trouves else 0
+
+    return Passage(res.returncode, sortie, nombre("passed"),
+                   nombre("failed") + nombre("errors?"))

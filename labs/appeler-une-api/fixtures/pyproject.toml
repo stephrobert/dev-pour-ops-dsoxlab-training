@@ -1,0 +1,15 @@
+[project]
+name = "certcheck"
+version = "0.4.0"
+description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
+requires-python = ">=3.12"
+# Les bibliothèques dont l'outil a besoin. Règle de l'équipe : chacune à une
+# version exacte (==), pour que la nuit prochaine tourne avec le même code.
+dependencies = []
+
+[project.scripts]
+certcheck = "certcheck.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13"]
+build-backend = "uv_build"

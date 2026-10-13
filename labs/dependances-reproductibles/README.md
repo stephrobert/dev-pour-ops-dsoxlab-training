@@ -1,30 +1,31 @@
-# Reproducible dependencies
+# Dependencies: certcheck installs elsewhere too
 
 A lab of the **Development for Ops** common thread, paired with the lesson
 "Dépendances reproductibles". certcheck became a Python package that imports
-`requests` and `cryptography`, but nothing guarantees it installs elsewhere
-the way it does on its author's machine. You declare its dependencies, lock
-them, pin the interpreter, and prove it on a clean copy.
+`requests` and `cryptography`, but its author installed them by hand:
+nothing guarantees it installs elsewhere. You declare its dependencies, pin
+their versions, note the Python version, and prove it in a fresh
+environment.
 
 | | |
 |---|---|
 | Target | your machine: uv and Python (`mise install` at the catalogue root) |
-| Duration | about 40 minutes |
-| Network | **required**: uv downloads the packages from PyPI, and the pinned interpreter if missing |
+| Duration | about 25 minutes |
+| Network | **required**: packages are downloaded from PyPI |
 | Paired lesson | [Dépendances reproductibles](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) (in French) |
-| Next | `livrer-un-outil` starts from this lab's solution |
+| Next | `livrer-un-outil` |
 
 ```bash
 dsoxlab run   dependances-reproductibles
 cd labs/dependances-reproductibles/challenge/work
-cat requirements.txt pyproject.toml
+cat README.md pyproject.toml
 bin/certcheck --version; echo "code: $?"      # fails: nothing is declared
-# declare, lock, pin, then check as a colleague would
+# follow the scenario steps
 dsoxlab check dependances-reproductibles
 ```
 
-The check copies your project **without** its `.venv`, installs it with
-`uv sync --frozen` and runs certcheck on a random inventory: the situation
+The check copies your project **without** its `.venv`, installs it in a
+fresh environment from its files alone, and runs certcheck: the situation
 of a colleague or a pipeline that fetches the repository.
 
 Validated by `scripts/valider-labs.py`: 0 before the work, 100 after the

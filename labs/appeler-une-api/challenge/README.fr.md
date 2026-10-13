@@ -1,35 +1,34 @@
-# Challenge : certcheck publie son ticket sans fragilité
+# Challenge : certcheck ouvre son ticket avec requests
 
-5 tâches, 100 points, 45 minutes.
+5 tâches, 100 points, 30 minutes. Accès réseau requis une fois (PyPI).
 
 Chaque contrôle lance `bin/certcheck --publish` contre une forge factice et
-compte les requêtes qu'elle reçoit. Le contrat est dans `CONTRAT.md`, section
-« Publication sur la forge ».
+regarde les requêtes qu'elle reçoit.
 
-### Tâche 1 : le jeton reste dans l'en-tête (20 pts)
+### Tâche 1 : requests déclaré, jeton dans l'en-tête (20 pts)
 
+`pyproject.toml` déclare `requests` à une version exacte (`==`), et c'est
+lui qui appelle la forge (User-Agent `python-requests/<cette version>`).
 Chaque requête porte `Authorization: token <jeton>` ; le jeton n'apparaît
-dans aucune URL, ni sur la sortie standard, ni sur la sortie d'erreur, même
-avec `--verbose` et même quand la forge est en panne.
+ni dans une URL, ni sur une sortie, même avec `--verbose`.
 
-### Tâche 2 : un seul ticket en deux exécutions (20 pts)
-
-Deux exécutions de suite ouvrent un seul ticket, au titre exact
-`certcheck : certificats à renouveler`, dont le corps cite chaque hôte à
-renouveler. Un ticket qui cite seulement ce titre ne compte pas.
-
-### Tâche 3 : la recherche parcourt toutes les pages (20 pts)
-
-Avec plus de cent tickets ouverts et celui de certcheck au-delà de la
-première page, l'outil le retrouve et n'ouvre rien.
-
-### Tâche 4 : les pannes passagères sont reprises (20 pts)
-
-Deux réponses 503 puis une forge rétablie : l'outil réussit, un ticket, le
-code du contrôle. Une forge durablement en panne : code 3, un message sur la
-sortie d'erreur, et une poignée de requêtes, pas un déluge.
-
-### Tâche 5 : un délai maximal sur chaque requête (20 pts)
+### Tâche 2 : un délai maximal (20 pts)
 
 Une forge qui accepte la connexion et ne répond jamais : l'outil rend la main
-de lui-même en moins de 60 secondes, avec le code 3 et un message.
+de lui-même, avec le code 3 et un message sur la sortie d'erreur.
+
+### Tâche 3 : une erreur HTTP donne le code 3 (20 pts)
+
+Un jeton refusé (401) ou une forge en panne (503) : code 3, et un message
+sur la sortie d'erreur qui cite le code HTTP, sans le jeton.
+
+### Tâche 4 : le ticket est créé avec le bon titre (20 pts)
+
+Des certificats sont à renouveler : un seul ticket est créé, au titre exact
+`certcheck : certificats à renouveler`, dont le corps cite chaque hôte, et
+le code de sortie reste celui du contrôle.
+
+### Tâche 5 : pas de doublon (20 pts)
+
+Un ticket ouvert porte déjà ce titre, sur la première page de la liste :
+l'outil lit la liste, ne crée rien, et garde le code du contrôle.

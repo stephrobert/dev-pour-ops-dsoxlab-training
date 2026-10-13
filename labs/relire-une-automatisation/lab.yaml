@@ -1,24 +1,22 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: relire-une-automatisation
-title: "Review an automation change: certcheck pull request #42"
+title: "Review a pull request: four defects in certcheck #42"
 description: |
   A colleague proposes pull request #42 on certcheck: purging old reports
-  and notifying a webhook. Its tests are green. Read the diff as it would be
-  merged, comment each real defect at the right line with a concrete fix,
-  decide, then add a pre-commit configuration that refuses the mechanical
-  defects before any review, every hook pinned on a commit hash.
+  and notifying the chat. Its tests are green. Read the diff as it would be
+  merged, find at least three of its four defects (swallowed error, printed
+  secret, dangerous path, missing test), comment each with a concrete fix,
+  decide, then version a ruff configuration and make ruff check pass.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 40m
+estimated_time: 25m
 skills:
   - code-review
   - python
   - secrets
-  - tls
-  - dependency-pinning
-  - pre-commit
+  - ruff
 distros:
   - any
 doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/
@@ -26,8 +24,14 @@ runtime:
   type: shell
   workdir: challenge/work
   fixtures:
-    - certcheck.py
     - pyproject.toml
+    - uv.lock
+    - src/certcheck/__init__.py
+    - src/certcheck/erreurs.py
+    - src/certcheck/certificats.py
+    - src/certcheck/inventaire.py
+    - src/certcheck/forge.py
+    - src/certcheck/cli.py
     - tests/test_certcheck.py
     - pr/DESCRIPTION.md
     - pr/0042.diff

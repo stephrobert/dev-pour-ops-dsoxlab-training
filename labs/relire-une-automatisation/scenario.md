@@ -2,33 +2,64 @@
 
 ## Situation
 
-certcheck runs every night from the cron of the operations server. Malik
-proposes **pull request #42**: purge the old reports, which filled the disk,
-and post the alerts to the team chat webhook. He added tests, they pass, and
-he asks you for a review before merging.
+certcheck runs every night from the operations server's cron. Malik proposes
+**pull request #42**: purging old reports, which filled the disk, and
+posting alerts to the team chat's webhook. He added a test, the suite
+passes, and he asks you for a review before merging.
 
-The working directory holds the project as it is on `main`
-(`certcheck.py`, `pyproject.toml`, `tests/`), the pull request description
+The working directory holds the project as it is on `main` (the
+`src/certcheck/` package, `pyproject.toml`, `tests/`), the PR description
 (`pr/DESCRIPTION.md`) and its diff (`pr/0042.diff`).
 
-## Goal
+## Why review
 
-Write a review Malik can apply without asking you anything again, in
-`revue.yaml`: each real defect reported in the right file, at the right
-line, in the right category, with a concrete fix, then a verdict. Finally,
-add to the project a `.pre-commit-config.yaml` that will refuse at commit
-time the defects a machine can see, so the next review focuses on what
-matters.
+Green tests only prove what they test. A review looks for what no test
+sees: a leaking secret, a deletion that may hit the wrong folder, an error
+that is silenced. It is only useful if the author can act: a file, a line,
+the problem, a fix.
 
-## Hints
+## Steps
 
-- Read the description first, then check each claim in the code: "it is
-  worked around", "it is handled" and "tests added" are proven or refuted
-  line by line.
-- `git apply pr/0042.diff` in a copy of the project gives the files as they
-  would be merged; the review line numbers are those, not the diff's.
-- For each environment variable read, ask yourself what the code does when
-  it is missing.
-- `git ls-remote <repository> 'refs/tags/<tag>*'` gives the commit hash of a
-  tag without cloning anything. `pre-commit autoupdate --freeze` does the
-  same for a whole configuration.
+### 1. Read the description, then the code
+
+Read `pr/DESCRIPTION.md`, then apply the diff in a copy to see the files as
+they would be merged:
+
+```bash
+cp -r . /tmp/pr42 && cd /tmp/pr42 && git apply pr/0042.diff
+grep -n "" src/certcheck/maintenance.py | less
+```
+
+Check every claim of the description in the code: "it is handled" is proved
+or disproved line by line.
+
+### 2. Look for the four defects
+
+The PR carries four, one per category of the list written in `revue.yaml`:
+a swallowed error, a printed secret, a dangerous path, a missing test.
+Three are enough to succeed. For every environment variable read, ask what
+the code does when it is missing.
+
+### 3. Write the review
+
+In `revue.yaml` (the real one, in the working directory), one comment per
+defect: `fichier`, `ligne` (read AFTER `git apply`), `categorie`,
+`commentaire` and `proposition`. Then the `verdict`.
+
+### 4. Hand the mechanical part to ruff
+
+A linter tirelessly sees what a review should not have to look for. Add a
+ruff configuration to the project, for instance in `pyproject.toml`:
+
+```toml
+[tool.ruff]
+line-length = 120
+```
+
+Run `uv run ruff check .`: it reports defects in the base code. Read each
+line (rule code, file, line), then `uv run ruff check --fix .` fixes those
+marked `[*]`. Run again: `All checks passed!`.
+
+### 5. Check
+
+`dsoxlab check relire-une-automatisation`.

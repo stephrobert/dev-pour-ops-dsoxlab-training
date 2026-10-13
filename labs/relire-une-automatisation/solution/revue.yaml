@@ -1,32 +1,22 @@
 commentaires:
-  - fichier: certcheck.py
-    ligne: 291
-    categorie: secret-expose
+  - fichier: src/certcheck/cli.py
+    ligne: 98
+    categorie: secret-affiche
     commentaire: "L'URL du webhook contient le jeton (?token=...), et cette ligne l'écrit sur la sortie d'erreur : chaque nuit, le jeton finit dans le courriel de cron et dans les journaux."
-    proposition: "Ne jamais afficher l'URL : écrire « notification envoyée » seul, ou l'hôte obtenu par urllib.parse.urlsplit(webhook).hostname, sans chemin ni requête."
-  - fichier: maintenance.py
-    ligne: 52
-    categorie: tls-desactive
-    commentaire: "verify=False, et disable_warnings() deux lignes plus haut pour faire taire l'avertissement : n'importe quel serveur sur le chemin réseau peut se faire passer pour le chat et recevoir le jeton."
-    proposition: "Retirer verify=False et disable_warnings(). Si le chat a un certificat d'une AC interne, passer verify= avec le chemin du bundle de cette AC, lu dans une variable comme CERTCHECK_CA_BUNDLE."
-  - fichier: maintenance.py
-    ligne: 53
+    proposition: "Ne jamais afficher l'URL : écrire « notification envoyée » seul, ou seulement le nom d'hôte du chat, sans chemin ni paramètres."
+  - fichier: src/certcheck/maintenance.py
+    ligne: 16
+    categorie: chemin-dangereux
+    commentaire: "Si CERTCHECK_REPORT_DIR n'est pas défini, le dossier vaut « / » : la boucle passe sur /etc, /home et /var, et shutil.rmtree supprime tout ce qui est plus vieux que le seuil."
+    proposition: "Exiger CERTCHECK_REPORT_DIR (code 2 s'il manque), refuser « / » et un chemin relatif, et ne supprimer que les sous-dossiers dont le nom est une date AAAA-MM-JJ."
+  - fichier: src/certcheck/maintenance.py
+    ligne: 36
     categorie: erreur-avalee
-    commentaire: "except Exception: pass avale tout, y compris un jeton révoqué (401), une URL fausse (404) ou une faute de frappe dans le code : la notification peut ne jamais partir sans que personne le sache."
-    proposition: "Attraper requests.RequestException seulement, appeler raise_for_status() sur la réponse, et journaliser l'échec en avertissement (sans l'URL) : le contrôle continue, mais l'échec se voit."
-  - fichier: maintenance.py
-    ligne: 24
-    categorie: effet-de-bord-non-borne
-    commentaire: "Si CERTCHECK_REPORT_DIR n'est pas défini, le dossier vaut « / » : la boucle passe sur /etc, /home et /var, et shutil.rmtree supprime récursivement tout ce qui est plus vieux que le seuil, erreurs ignorées."
-    proposition: "Exiger CERTCHECK_REPORT_DIR (code 2 s'il manque), refuser un chemin qui n'est pas absolu ou qui est « / », ne supprimer que les sous-dossiers dont le nom est une date AAAA-MM-JJ, et proposer --dry-run."
-  - fichier: pyproject.toml
-    ligne: 9
-    categorie: dependance-non-epinglee
-    commentaire: "requests>=2.32 laisse entrer n'importe quelle version future, alors que la règle écrite deux lignes plus haut impose une version exacte ; la prochaine installation peut changer de comportement sans aucun commit."
-    proposition: "Épingler une version exacte, comme pour pytest et ruff (par exemple requests==2.34.2), et faire de chaque montée de version un commit relu."
-  - fichier: maintenance.py
-    ligne: 45
+    commentaire: "except Exception: pass avale tout, y compris un jeton révoqué (401) ou une URL fausse : la notification peut ne jamais partir sans que personne le sache."
+    proposition: "Attraper urllib.error.URLError seulement et journaliser l'échec en avertissement, sans l'URL : le contrôle continue, mais l'échec se voit."
+  - fichier: src/certcheck/maintenance.py
+    ligne: 27
     categorie: test-absent
-    commentaire: "notifier() n'est appelée par aucun test : ni l'envoi, ni le cas sans alerte, ni l'échec du chat. Les 8 tests verts ne disent rien de cette branche, ni de --notify dans certcheck.py."
-    proposition: "Ajouter des tests contre un petit serveur HTTP local (http.server sur 127.0.0.1) : un envoi réussi, une réponse 500 journalisée sans faire échouer le contrôle, et aucune requête quand il n'y a pas d'alerte."
+    commentaire: "notifier() n'est appelée par aucun test : ni l'envoi, ni le cas sans alerte, ni l'échec du chat. Le test ajouté ne couvre que la purge."
+    proposition: "Ajouter un test contre un petit serveur HTTP local (http.server sur 127.0.0.1) : un envoi réussi, et aucune requête quand il n'y a pas d'alerte."
 verdict: demander-des-changements

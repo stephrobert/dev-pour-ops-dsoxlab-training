@@ -8,18 +8,18 @@
   },
   "avant": {
    "echecs": [
-    "test_le_jeton_part_dans_l_en_tete",
-    "test_le_ticket_est_cherche_dans_toutes_les_pages",
-    "test_les_pannes_passageres_sont_reprises",
-    "test_un_delai_maximal_borne_chaque_requete",
-    "test_une_seule_creation_en_deux_executions"
+    "test_le_ticket_est_cree_avec_le_bon_titre",
+    "test_pas_de_doublon_si_le_ticket_est_deja_ouvert",
+    "test_requests_appelle_la_forge_avec_le_jeton_en_en_tete",
+    "test_un_delai_borne_l_attente",
+    "test_une_erreur_http_donne_le_code_3"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 153,
+  "duree_s": 16,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -33,11 +33,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_le_jeton_part_dans_l_en_tete",
-    "test_le_ticket_est_cherche_dans_toutes_les_pages",
-    "test_les_pannes_passageres_sont_reprises",
-    "test_un_delai_maximal_borne_chaque_requete",
-    "test_une_seule_creation_en_deux_executions"
+    "test_le_ticket_est_cree_avec_le_bon_titre",
+    "test_pas_de_doublon_si_le_ticket_est_deja_ouvert",
+    "test_requests_appelle_la_forge_avec_le_jeton_en_en_tete",
+    "test_un_delai_borne_l_attente",
+    "test_une_erreur_http_donne_le_code_3"
    ],
    "passed": 0,
    "score": 0,
@@ -58,7 +58,7 @@
     "test_aucune_regression",
     "test_la_suite_passe_sur_la_version_corrigee",
     "test_le_bogue_est_corrige",
-    "test_le_journal_de_debogage_raconte_la_demarche",
+    "test_le_journal_de_debogage_dit_ce_qui_s_est_passe",
     "test_un_test_reproduit_le_bogue"
    ],
    "passed": 0,
@@ -66,7 +66,7 @@
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 10,
+  "duree_s": 7,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -83,7 +83,7 @@
     "test_aucune_regression",
     "test_la_suite_passe_sur_la_version_corrigee",
     "test_le_bogue_est_corrige",
-    "test_le_journal_de_debogage_raconte_la_demarche",
+    "test_le_journal_de_debogage_dit_ce_qui_s_est_passe",
     "test_un_test_reproduit_le_bogue"
    ],
    "passed": 0,
@@ -102,11 +102,11 @@
   },
   "avant": {
    "echecs": [
-    "test_l_interpreteur_est_fixe",
-    "test_le_projet_s_installe_a_l_identique_ailleurs",
-    "test_le_verrou_existe_et_suit_pyproject",
-    "test_les_dependances_sont_declarees_dans_pyproject",
-    "test_une_seule_source_de_verite"
+    "test_la_version_de_python_est_notee",
+    "test_le_projet_s_installe_dans_un_environnement_neuf",
+    "test_les_dependances_sont_declarees",
+    "test_les_versions_sont_epinglees",
+    "test_rien_n_est_installe_a_la_main"
    ],
    "passed": 0,
    "score": 0,
@@ -127,11 +127,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_l_interpreteur_est_fixe",
-    "test_le_projet_s_installe_a_l_identique_ailleurs",
-    "test_le_verrou_existe_et_suit_pyproject",
-    "test_les_dependances_sont_declarees_dans_pyproject",
-    "test_une_seule_source_de_verite"
+    "test_la_version_de_python_est_notee",
+    "test_le_projet_s_installe_dans_un_environnement_neuf",
+    "test_les_dependances_sont_declarees",
+    "test_les_versions_sont_epinglees",
+    "test_rien_n_est_installe_a_la_main"
    ],
    "passed": 0,
    "score": 0,
@@ -149,18 +149,18 @@
   },
   "avant": {
    "echecs": [
-    "test_la_publication_est_sure_idempotente_et_bornee",
     "test_la_revue_de_la_pr_57_trouve_les_defauts",
-    "test_la_suite_de_l_apprenant_attrape_l_erreur_avalee",
-    "test_la_version_se_livre_depuis_son_etiquette",
-    "test_le_contrat_tient_sur_des_tirages_au_hasard"
+    "test_la_version_est_notee_et_etiquetee",
+    "test_le_contrat_tient_sur_des_tirages_au_hasard",
+    "test_le_projet_s_installe_dans_un_environnement_neuf",
+    "test_vos_tests_attrapent_le_defaut_herite"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 38,
+  "duree_s": 9,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -174,11 +174,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_la_publication_est_sure_idempotente_et_bornee",
     "test_la_revue_de_la_pr_57_trouve_les_defauts",
-    "test_la_suite_de_l_apprenant_attrape_l_erreur_avalee",
-    "test_la_version_se_livre_depuis_son_etiquette",
-    "test_le_contrat_tient_sur_des_tirages_au_hasard"
+    "test_la_version_est_notee_et_etiquetee",
+    "test_le_contrat_tient_sur_des_tirages_au_hasard",
+    "test_le_projet_s_installe_dans_un_environnement_neuf",
+    "test_vos_tests_attrapent_le_defaut_herite"
    ],
    "passed": 0,
    "score": 0,
@@ -198,7 +198,7 @@
    "echecs": [
     "test_l_execution_sans_risque_est_observee",
     "test_le_commit_de_l_erreur_avalee_est_retrouve",
-    "test_les_commandes_externes_sont_toutes_nommees",
+    "test_le_point_d_entree_et_ses_modules_sont_nommes",
     "test_les_defauts_reels_sont_nommes",
     "test_les_effets_de_bord_sont_identifies"
    ],
@@ -223,7 +223,7 @@
    "echecs": [
     "test_l_execution_sans_risque_est_observee",
     "test_le_commit_de_l_erreur_avalee_est_retrouve",
-    "test_les_commandes_externes_sont_toutes_nommees",
+    "test_le_point_d_entree_et_ses_modules_sont_nommes",
     "test_les_defauts_reels_sont_nommes",
     "test_les_effets_de_bord_sont_identifies"
    ],
@@ -243,9 +243,9 @@
   },
   "avant": {
    "echecs": [
-    "test_dist_contient_la_roue_et_le_sdist",
-    "test_l_etiquette_annotee_designe_la_livraison",
-    "test_l_etiquette_s_installe_dans_un_environnement_vierge",
+    "test_l_etiquette_designe_la_livraison",
+    "test_l_etiquette_s_installe_dans_un_environnement_neuf",
+    "test_l_outil_s_installe_dans_un_environnement_neuf",
     "test_la_version_a_une_seule_source",
     "test_le_changelog_porte_la_version"
    ],
@@ -268,9 +268,9 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_dist_contient_la_roue_et_le_sdist",
-    "test_l_etiquette_annotee_designe_la_livraison",
-    "test_l_etiquette_s_installe_dans_un_environnement_vierge",
+    "test_l_etiquette_designe_la_livraison",
+    "test_l_etiquette_s_installe_dans_un_environnement_neuf",
+    "test_l_outil_s_installe_dans_un_environnement_neuf",
     "test_la_version_a_une_seule_source",
     "test_le_changelog_porte_la_version"
    ],
@@ -290,18 +290,18 @@
   },
   "avant": {
    "echecs": [
-    "test_l_erreur_avalee_et_l_effet_de_bord_non_borne_sont_signales",
-    "test_la_dependance_non_epinglee_et_le_test_absent_sont_signales",
-    "test_le_pre_commit_detecte_secrets_et_defauts_avant_la_revue",
-    "test_le_secret_expose_et_le_tls_desactive_sont_signales",
-    "test_les_commentaires_sont_actionnables"
+    "test_au_moins_trois_defauts_sont_trouves",
+    "test_chaque_commentaire_propose_une_correction",
+    "test_le_verdict_demande_des_changements",
+    "test_ruff_check_passe_sur_le_code_de_base",
+    "test_une_configuration_ruff_est_versionnee"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 3,
+  "duree_s": 2,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -315,11 +315,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_l_erreur_avalee_et_l_effet_de_bord_non_borne_sont_signales",
-    "test_la_dependance_non_epinglee_et_le_test_absent_sont_signales",
-    "test_le_pre_commit_detecte_secrets_et_defauts_avant_la_revue",
-    "test_le_secret_expose_et_le_tls_desactive_sont_signales",
-    "test_les_commentaires_sont_actionnables"
+    "test_au_moins_trois_defauts_sont_trouves",
+    "test_chaque_commentaire_propose_une_correction",
+    "test_le_verdict_demande_des_changements",
+    "test_ruff_check_passe_sur_le_code_de_base",
+    "test_une_configuration_ruff_est_versionnee"
    ],
    "passed": 0,
    "score": 0,
@@ -338,17 +338,17 @@
   "avant": {
    "echecs": [
     "test_l_interface_est_previsible",
-    "test_la_configuration_vient_de_l_environnement",
     "test_la_sortie_json_est_exploitable",
-    "test_le_mode_simulation_n_envoie_rien",
-    "test_les_codes_de_sortie_suivent_le_contrat"
+    "test_le_seuil_vient_de_l_environnement",
+    "test_les_codes_de_sortie_suivent_le_contrat",
+    "test_les_erreurs_vont_sur_la_sortie_d_erreur"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 6,
+  "duree_s": 5,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -363,10 +363,10 @@
   "rejeu": {
    "echecs": [
     "test_l_interface_est_previsible",
-    "test_la_configuration_vient_de_l_environnement",
     "test_la_sortie_json_est_exploitable",
-    "test_le_mode_simulation_n_envoie_rien",
-    "test_les_codes_de_sortie_suivent_le_contrat"
+    "test_le_seuil_vient_de_l_environnement",
+    "test_les_codes_de_sortie_suivent_le_contrat",
+    "test_les_erreurs_vont_sur_la_sortie_d_erreur"
    ],
    "passed": 0,
    "score": 0,
@@ -384,18 +384,18 @@
   },
   "avant": {
    "echecs": [
-    "test_la_suite_attrape_un_code_zero_sur_alerte",
+    "test_la_suite_attrape_un_code_zero_malgre_une_alerte",
     "test_la_suite_attrape_un_seuil_exclusif",
-    "test_la_suite_attrape_une_erreur_avalee",
-    "test_la_suite_attrape_une_simulation_qui_envoie",
-    "test_la_suite_passe_sur_l_outil_juste_et_compte_assez_de_tests"
+    "test_la_suite_compte_au_moins_trois_tests",
+    "test_la_suite_passe_sur_l_outil_juste",
+    "test_un_test_isole_un_fichier_ou_la_date"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
   "date": "2026-10-13",
-  "duree_s": 16,
+  "duree_s": 4,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -409,11 +409,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_la_suite_attrape_un_code_zero_sur_alerte",
+    "test_la_suite_attrape_un_code_zero_malgre_une_alerte",
     "test_la_suite_attrape_un_seuil_exclusif",
-    "test_la_suite_attrape_une_erreur_avalee",
-    "test_la_suite_attrape_une_simulation_qui_envoie",
-    "test_la_suite_passe_sur_l_outil_juste_et_compte_assez_de_tests"
+    "test_la_suite_compte_au_moins_trois_tests",
+    "test_la_suite_passe_sur_l_outil_juste",
+    "test_un_test_isole_un_fichier_ou_la_date"
    ],
    "passed": 0,
    "score": 0,

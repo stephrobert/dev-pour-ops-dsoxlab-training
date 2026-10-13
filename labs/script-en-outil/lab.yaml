@@ -1,25 +1,24 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: script-en-outil
-title: "From script to tool: certcheck honours its contract"
+title: "Structure a Python project as a tool: certcheck honours its contract"
 description: |
-  The inherited script always exits 0, hides errors and has no help. Rewrite
-  it as a tool, in Python, Go or Bash, that honours a written contract:
-  help and arguments, actionable exit codes, a JSON output, configuration
-  through the environment, errors on stderr and a dry-run mode. Graded as a
-  black box, through bin/certcheck.
+  The inherited Bash script always exits 0, hides errors and has no help.
+  Replace it with a Python project to complete: a package in src layout,
+  declared in pyproject.toml and run by uv, that honours a short written
+  contract: help and version, actionable exit codes, a JSON output, a
+  threshold configurable through the environment and errors on stderr.
+  Graded as a black box, through bin/certcheck.
 section: fil-rouge
 level: o1
 difficulty: intermediate
 lab_type: lab
-estimated_time: 60m
+estimated_time: 30m
 skills:
+  - python
+  - packaging
   - cli-design
   - exit-codes
   - configuration
-  - dry-run
-  - python
-  - go
-  - bash
 distros:
   - any
 doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/
@@ -29,6 +28,11 @@ runtime:
   fixtures:
     - CONTRAT.md
     - certcheck.sh
+    - pyproject.toml
+    - uv.lock
+    - src/certcheck/__init__.py
+    - src/certcheck/certificats.py
+    - src/certcheck/cli.py
     - bin/certcheck
     - inventaire.txt
     - certs/web-01.pem

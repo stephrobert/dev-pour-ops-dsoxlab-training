@@ -1,31 +1,30 @@
-# Shipping an internal tool
+# Ship a tool
 
-A lab of the **Development for Ops** common thread, paired with the
-lesson "Livrer un outil". certcheck installs identically elsewhere; it now
-has to become a **release**: a version number with a single source, a
-changelog, a Git tag, built artefacts, and the proof that it installs from
-the tag alone.
+Common-thread lab of **Development for Ops**, paired with the lesson
+"Livrer un outil". certcheck installs elsewhere; it now has to become a
+**release**: a number written in one place, a changelog, a Git tag, and the
+proof that it installs in a fresh environment. Nothing is published: the
+release stays in the repository.
 
 | | |
 |---|---|
 | Target | your machine: uv, Python (`mise install`) and Git |
-| Duration | about 40 minutes |
-| Network | **required**: the clean install downloads the dependencies from PyPI (uv builds with its bundled `uv_build` backend) |
+| Duration | about 25 minutes |
+| Network | **required**: the fresh installation downloads dependencies from PyPI |
 | Paired lesson | [Livrer un outil](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
-| Previous | `dependances-reproductibles`, whose solution is the starting point |
+| Previous | `dependances-reproductibles` |
 
 ```bash
 dsoxlab run   livrer-un-outil
 cd labs/livrer-un-outil/challenge/work
-git init                     # the working directory is not a repository yet
-bin/certcheck --version
-# version, changelog, commit, tag, build
+bin/certcheck --version      # certcheck 0.5.0
+# follow the scenario steps
 dsoxlab check livrer-un-outil
 ```
 
-The check clones your repository at the `v1.0.0` tag into a temporary
-folder, builds the wheel there, installs it in a fresh environment and runs
-certcheck: what anyone installing your release does.
+The check installs your project in a fresh environment, then clones your
+repository at the `v1.0.0` tag and installs it the same way: what whoever
+fetches your release does.
 
 Validated by `scripts/valider-labs.py`: 0 before the work, 100 after the
 trainer's solution, replayable. The verdict is in `validation-labs.json`.

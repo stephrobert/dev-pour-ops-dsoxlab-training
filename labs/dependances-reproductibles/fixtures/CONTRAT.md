@@ -1,7 +1,7 @@
 # Contrat de l'outil certcheck
 
-Ce document dit ce que **certcheck** doit faire, vu de l'extérieur. Il ne dit
-rien du langage : l'outil peut être écrit en Bash, en Python ou en Go. Il est
+Ce document dit ce que **certcheck** doit faire, vu de l'extérieur. L'outil
+est un projet Python, mais le contrat ne dépend pas de son code : il est
 vérifié en **boîte noire**, en lançant `bin/certcheck` comme le feraient cron
 ou un pipeline.
 

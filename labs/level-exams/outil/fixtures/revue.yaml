@@ -20,14 +20,10 @@
 #   secret-expose              un secret (jeton, mot de passe) finit dans un
 #                              journal, une sortie ou un message
 #   tls-desactive              la vérification du certificat du serveur est coupée
-#   effet-de-bord-non-borne    une suppression ou une écriture dont la cible n'est
-#                              ni validée ni bornée
+#   injection-de-commande      une donnée externe est interprétée par un shell
 #   dependance-non-epinglee    une dépendance déclarée sans version exacte, alors
 #                              que le projet épingle les siennes
 #   test-absent                une nouvelle branche de code qu'aucun test n'exerce
-#   non-idempotent             deux exécutions successives n'aboutissent pas au
-#                              même état
-#   injection-de-commande      une donnée externe est interprétée par un shell
 #
 # Exemple de forme (sans rapport avec ce diff) :
 #   - fichier: deploy.py

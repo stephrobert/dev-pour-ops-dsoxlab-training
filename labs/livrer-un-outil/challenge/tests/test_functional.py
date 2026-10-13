@@ -3,12 +3,11 @@
 ## Ce qui est noté
 
 Ce qu'un utilisateur de l'outil obtient, pas les commandes tapées : la
-version affichée, le journal des changements, l'étiquette Git, les
-artefacts de `dist/`, et surtout une installation VIERGE depuis
-l'étiquette. Le dépôt est cloné à `v1.0.0` dans un dossier temporaire, la
-roue y est construite puis installée dans un environnement neuf, et
-certcheck y tourne sur un inventaire tiré au hasard. C'est exactement ce que
-fait celui qui installe la 1.0.0 sans jamais avoir vu votre poste.
+version affichée, le journal des changements, l'étiquette Git, et surtout
+une installation dans un environnement NEUF, d'abord depuis le répertoire de
+travail, puis depuis un clone de l'étiquette `v1.0.0`. C'est exactement ce
+que fait celui qui installe la 1.0.0 sans avoir vu votre poste. Le lab est
+une initiation : rien n'est publié, aucune roue n'est exigée dans `dist/`.
 
 ## Pourquoi vérifier que le dépôt est bien celui du lab
 
@@ -19,17 +18,14 @@ exige donc que la racine du dépôt soit le répertoire de travail lui-même.
 
 ## Réseau
 
-uv construit avec le backend `uv_build` qu'il embarque (rien à télécharger
-quand la contrainte de `[build-system]` accepte sa version), mais
-l'installation vierge télécharge les dépendances depuis PyPI : ces contrôles
-demandent un accès au réseau, au moins la première fois.
+L'installation neuve télécharge les dépendances depuis PyPI (uv les garde
+ensuite en cache).
 """
 
 from __future__ import annotations
 
 import re
 import tomllib
-import zipfile
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -57,10 +53,6 @@ WORKDIR = workdir_lab(__file__)
 LAB_ID = "livrer-un-outil"
 VERSION = "1.0.0"
 ETIQUETTE = f"v{VERSION}"
-ROUE = f"certcheck-{VERSION}-py3-none-any.whl"
-SDIST = f"certcheck-{VERSION}.tar.gz"
-RUBRIQUES = ("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security",
-             "Ajouté", "Modifié", "Obsolète", "Supprimé", "Corrigé", "Sécurité")
 
 
 @pytest.fixture(scope="module")
@@ -167,139 +159,71 @@ def test_le_changelog_porte_la_version(projet: Path) -> None:
     chemin = projet / "CHANGELOG.md"
     assert chemin.is_file(), "CHANGELOG.md a disparu : c'est lui qui dit aux utilisateurs ce qui change."
     lignes = chemin.read_text(encoding="utf-8").splitlines()
-    titres = [(i, m) for i, ligne in enumerate(lignes)
-              if (m := re.match(r"^##\s+\[([^\]]+)\](?:\s+-\s+(\S+))?\s*$", ligne))]
-    versions = [m.group(1) for _, m in titres]
-    assert VERSION in versions, (
-        f"CHANGELOG.md n'a pas de section `## [{VERSION}] - AAAA-MM-JJ` (sections "
-        f"trouvées : {versions}). Au format Keep a Changelog, livrer, c'est déplacer "
-        f"le contenu de [Unreleased] sous un titre daté [{VERSION}]."
+    titres = [i for i, ligne in enumerate(lignes) if re.match(r"^##\s", ligne)]
+    section = [i for i in titres if re.match(rf"^##\s+\[?{re.escape(VERSION)}\]?(\s|$)", lignes[i])]
+    assert section, (
+        f"CHANGELOG.md n'a pas de section `## [{VERSION}]`. Livrer, c'est dire ce qui "
+        f"change : déplacez le contenu de [Unreleased] sous un titre `## [{VERSION}] - "
+        "AAAA-MM-JJ`."
     )
-    rang = versions.index(VERSION)
-    debut, titre = titres[rang]
-    jour = titre.group(2) or ""
-    try:
-        date.fromisoformat(jour)
-    except ValueError:
-        pytest.fail(
-            f"La section [{VERSION}] porte la date {jour or '(aucune)'!r} : le format est "
-            f"`## [{VERSION}] - AAAA-MM-JJ`, la date de la livraison.",
-            pytrace=False,
-        )
-    fin = titres[rang + 1][0] if rang + 1 < len(titres) else len(lignes)
-    corps = lignes[debut + 1:fin]
-    rubriques = [ligne for ligne in corps if re.match(rf"^###\s+({'|'.join(RUBRIQUES)})\s*$", ligne)]
-    entrees = [ligne for ligne in corps if re.match(r"^\s*[-*]\s+\S", ligne)]
-    assert rubriques and entrees, (
-        f"La section [{VERSION}] est vide ou sans rubrique : il faut au moins une "
-        "rubrique `### Ajouté` / `### Modifié` / `### Corrigé` (ou Added, Changed, "
-        "Fixed) et une entrée `- ...`. Un utilisateur lit cette section pour décider "
-        "s'il met à jour."
-    )
-    au_dessus = [v for v in versions[:rang] if v.lower() != "unreleased"]
-    assert not au_dessus, (
-        f"{au_dessus} apparaissent au-dessus de [{VERSION}]. Le journal se lit du plus "
-        f"récent au plus ancien : [Unreleased] en tête, puis [{VERSION}], puis les "
-        "versions précédentes."
+    debut = section[0]
+    suivants = [i for i in titres if i > debut]
+    corps = lignes[debut + 1:suivants[0] if suivants else len(lignes)]
+    assert any(re.match(r"^\s*[-*]\s+\S", ligne) for ligne in corps), (
+        f"La section [{VERSION}] ne contient aucune entrée `- ...` : un utilisateur la "
+        "lit pour décider s'il met à jour."
     )
 
 
-def test_l_etiquette_annotee_designe_la_livraison(projet: Path, uv: str) -> None:
+def test_l_etiquette_designe_la_livraison(projet: Path) -> None:
     _exiger_etiquette(projet)
-    nature = git("cat-file", "-t", ETIQUETTE, cwd=projet).stdout.strip()
-    assert nature == "tag", (
-        f"{ETIQUETTE} est une étiquette LÉGÈRE (elle désigne directement un {nature}). "
-        "Une étiquette annotée porte un auteur, une date et un message, et c'est "
-        "elle que `git describe` et les forges traitent comme une version : "
-        f"`git tag -d {ETIQUETTE}` puis `git tag -a {ETIQUETTE} -m \"certcheck {VERSION}\"`."
-    )
     pyproject = git("show", f"{ETIQUETTE}:pyproject.toml", cwd=projet)
     version = _version_pyproject(pyproject.stdout, f"à l'étiquette {ETIQUETTE}") if pyproject.returncode == 0 else ""
     assert version == VERSION, (
         f"Au commit étiqueté {ETIQUETTE}, pyproject.toml porte la version {version!r}. "
         "L'étiquette a été posée avant le commit du passage en 1.0.0 : elle doit "
-        "désigner le commit qui CONTIENT la version livrée."
-    )
-    etat = git("status", "--porcelain", cwd=projet)
-    assert not etat.stdout.strip(), (
-        "L'arbre de travail n'est pas propre : des fichiers modifiés ou non suivis "
-        f"ne sont pas dans le commit étiqueté.\n{etat.stdout.strip()[:600]}\n"
-        "Ce qui est livré doit être exactement ce qui est étiqueté : committez (ou "
-        "ignorez dans .gitignore ce qui se régénère, comme .venv/ et dist/), puis "
-        "replacez l'étiquette sur ce commit."
-    )
-    with copie_temporaire(projet, avec_git=True) as copie:
-        git("checkout", "-q", "--force", ETIQUETTE, cwd=copie)
-        verrou = _uv(uv, "lock", "--check", cwd=copie)
-    assert verrou.code == 0, (
-        f"Au commit étiqueté, uv.lock ne correspond pas à pyproject.toml. Le verrou "
-        "enregistre aussi la version du projet : passer pyproject.toml en "
-        f"{VERSION} sans relancer `uv lock` livre un verrou périmé.\n  {verrou.resume()}"
+        "désigner le commit qui CONTIENT la version livrée. `git tag -d v1.0.0`, "
+        "committez, puis reposez l'étiquette."
     )
 
 
-def test_dist_contient_la_roue_et_le_sdist(projet: Path) -> None:
-    dist = projet / "dist"
-    presents = sorted(f.name for f in dist.iterdir()) if dist.is_dir() else []
-    manquants = [n for n in (ROUE, SDIST) if n not in presents]
-    assert not manquants, (
-        f"dist/ ne contient pas {manquants} (présents : {presents or 'rien'}). "
-        "`uv build` construit la roue (ce qui s'installe) et le sdist (les sources), "
-        "à partir de la version de pyproject.toml."
+def _installer(uv: str, source: Path, env: Path) -> Path:
+    """`pip install <source>` dans un environnement neuf ; rend le chemin de la commande certcheck."""
+    creation = _uv(uv, "venv", "--quiet", str(env), cwd=env.parent)
+    assert creation.code == 0, f"`uv venv` échoue.\n  {creation.resume()}"
+    installation = _uv(uv, "pip", "install", "--quiet", "--python", str(env / "bin" / "python"),
+                       str(source), cwd=env.parent)
+    assert installation.code == 0, (
+        f"`pip install {source.name}` échoue dans un environnement neuf : le projet ne se "
+        f"construit pas, ou ses dépendances ne se résolvent pas.\n  {installation.resume()}"
     )
-    try:
-        with zipfile.ZipFile(dist / ROUE) as roue:
-            metadonnees = roue.read(f"certcheck-{VERSION}.dist-info/METADATA").decode()
-            points = roue.read(f"certcheck-{VERSION}.dist-info/entry_points.txt").decode()
-    except (zipfile.BadZipFile, KeyError) as exc:
-        pytest.fail(f"{ROUE} n'est pas une roue lisible ({exc}) : reconstruisez-la par `uv build`.",
-                    pytrace=False)
-    requis = {re.split(r"[\s<>=!~;\[]", ligne.split(":", 1)[1].strip())[0].lower()
-              for ligne in metadonnees.splitlines() if ligne.startswith("Requires-Dist:")}
-    assert re.search(rf"(?m)^Version:\s*{re.escape(VERSION)}$", metadonnees) and {"requests", "cryptography"} <= requis, (
-        f"Les métadonnées de la roue doivent porter Version: {VERSION} et déclarer "
-        f"requests et cryptography (Requires-Dist trouvés : {sorted(requis)}). Sans "
-        "elles, la roue s'installe sans ses dépendances."
-    )
-    assert re.search(r"(?m)^certcheck\s*=\s*certcheck\.cli:main\s*$", points), (
-        "La roue ne déclare pas le point d'entrée `certcheck = certcheck.cli:main` : "
-        "une fois installée, aucune commande `certcheck` n'existerait."
+    return env / "bin" / "certcheck"
+
+
+def test_l_outil_s_installe_dans_un_environnement_neuf(projet: Path, uv: str, tmp_path: Path) -> None:
+    with copie_temporaire(projet) as copie:
+        certcheck = _installer(uv, copie, tmp_path / "env")
+        version = lancer(certcheck, "--version", cwd=tmp_path)
+    assert version.code == 0 and version.sortie.strip() == f"certcheck {VERSION}", (
+        f"Installé par `pip install .` dans un environnement neuf, `certcheck --version` "
+        f"doit afficher « certcheck {VERSION} ». Une version écrite en dur dans le code, "
+        "ou lue dans pyproject.toml par un chemin de fichier, casse ici : un paquet "
+        f"installé n'emporte que ses métadonnées.\n  {version.resume()}"
     )
 
 
-def test_l_etiquette_s_installe_dans_un_environnement_vierge(projet: Path, uv: str, tmp_path: Path) -> None:
+def test_l_etiquette_s_installe_dans_un_environnement_neuf(projet: Path, uv: str, tmp_path: Path) -> None:
     _exiger_etiquette(projet)
     clone = tmp_path / "clone"
     res = git("clone", "-q", "--branch", ETIQUETTE, str(projet), str(clone), cwd=tmp_path)
     assert res.returncode == 0, f"`git clone --branch {ETIQUETTE}` échoue :\n{res.stderr.strip()}"
-    construction = _uv(uv, "build", "--quiet", cwd=clone)
-    roues = sorted((clone / "dist").glob("certcheck-*.whl"))
-    assert construction.code == 0 and roues, (
-        "Le dépôt cloné à l'étiquette ne se construit pas : il manque au commit "
-        "étiqueté un fichier que votre poste possède (README.md cité par "
-        "pyproject.toml, un module non commité...).\n  "
-        f"{construction.resume()}"
-    )
-    assert roues[0].name == ROUE, (
-        f"Construite depuis l'étiquette {ETIQUETTE}, la roue s'appelle {roues[0].name}, "
-        f"attendu {ROUE} : le commit étiqueté ne porte pas la version {VERSION}."
-    )
-    env = tmp_path / "env"
-    creation = _uv(uv, "venv", "--quiet", str(env), cwd=clone)
-    assert creation.code == 0, f"`uv venv` échoue dans le clone.\n  {creation.resume()}"
-    installation = _uv(uv, "pip", "install", "--quiet", "--python", str(env / "bin" / "python"),
-                       str(roues[0]), cwd=tmp_path)
-    assert installation.code == 0, (
-        "La roue ne s'installe pas dans un environnement neuf : ses dépendances "
-        f"déclarées ne se résolvent pas.\n  {installation.resume()}"
-    )
-    certcheck = env / "bin" / "certcheck"
+    certcheck = _installer(uv, clone, tmp_path / "env")
     version = lancer(certcheck, "--version", cwd=tmp_path)
     assert version.code == 0 and version.sortie.strip() == f"certcheck {VERSION}", (
-        f"Installé depuis la roue de l'étiquette, `certcheck --version` doit afficher "
-        f"« certcheck {VERSION} ». Une version lue dans pyproject.toml par un chemin "
-        "de fichier casse ici : une roue installée n'emporte pas pyproject.toml, "
-        f"seulement ses métadonnées.\n  {version.resume()}"
+        f"Installé depuis un clone de l'étiquette {ETIQUETTE}, `certcheck --version` doit "
+        f"afficher « certcheck {VERSION} ». S'il manque au commit étiqueté un fichier que "
+        "votre poste possède (README.md cité par pyproject.toml, un module non "
+        f"commité), l'installation casse ici.\n  {version.resume()}"
     )
     hotes, jour, seuil, graine = _scenario()
     inventaire = ecrire_inventaire(tmp_path / "parc", hotes)

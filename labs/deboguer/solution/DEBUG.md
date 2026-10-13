@@ -1,8 +1,9 @@
 # Journal de débogage : ticket n°412, vpn-01 en erreur
 
-## Reproduire
+## Ce que j'ai vu
 
-Avec la date du ticket fixée, le symptôme revient à chaque fois :
+Avec la date fixée, le symptôme revient à chaque fois : vpn-01 est déclaré
+illisible et l'outil sort en 2.
 
 ```console
 $ CERTCHECK_NOW=2026-10-13 bin/certcheck; echo $?
@@ -10,47 +11,22 @@ vpn-01	error	certificat illisible
 2
 ```
 
-Le test `test_un_jour_a_un_chiffre_se_lit` le reproduit sans lancer l'outil
-entier : `date_expiration(certs/vpn-01.pem)` doit rendre 2031-03-05. Il
-échoue sur la version d'origine.
+openssl lit pourtant le certificat sans erreur. Le test
+`test_un_jour_a_un_chiffre_se_lit` reproduit le problème : il échouait sur la
+version d'origine.
 
-## Réduire
+## La cause
 
-Les trois autres certificats passent. openssl lit vpn-01 sans erreur, donc
-le problème est dans la lecture de sa sortie. La différence entre vpn-01 et
-les autres : son jour d'expiration n'a qu'un chiffre. La chaîne minimale qui
-déclenche le bogue, sans certificat ni openssl :
+openssl écrit `notAfter=Mar  5 12:00:00 2031 GMT`, avec deux espaces avant
+un jour à un chiffre. `brut.split(" ")` découpe sur UN espace et produit un
+champ vide : six morceaux au lieu de cinq, donc une `ValueError`. Le `except
+Exception` d'`analyser` l'avalait sans rien journaliser, d'où le silence de
+`--verbose`. Vu sous pdb (`breakpoint()` avant le découpage) : `p
+brut.split(" ")` affiche `['Mar', '', '5', '12:00:00', '2031', 'GMT']`.
 
-```python
-"Mar  5 12:00:00 2031 GMT".split(" ")
-```
+## La correction
 
-## Observer
-
-`python3 -m pdb certcheck.py --inventory inventaire.txt`, puis un point
-d'arrêt conditionnel sur la ligne du découpage :
-
-```text
-(Pdb) b 80, "vpn" in str(certificat)
-(Pdb) c
-(Pdb) p brut
-'Mar  5 12:00:00 2031 GMT'
-(Pdb) p brut.split(" ")
-['Mar', '', '5', '12:00:00', '2031', 'GMT']
-(Pdb) n
-ValueError: too many values to unpack (expected 5, got 6)
-```
-
-Six champs au lieu de cinq : les deux espaces produisent un champ vide. Le
-`except Exception` d'`analyser` avale ensuite l'exception sans rien
-journaliser, ce qui explique que `--verbose` ne montre rien.
-
-## Corriger
-
-- `brut.split()` sans argument découpe sur toute suite de blancs : plus de
-  champ vide.
+- `brut.split()` sans argument découpe sur toute suite de blancs.
 - `except Exception` devient `except (OSError, ValueError) as exc`, avec un
-  `log.error` qui nomme l'hôte et la cause : un certificat vraiment illisible
-  reste en `error`, mais laisse une trace.
-- Le test de reproduction reste dans la suite, avec un second sur le statut
-  de vpn-01.
+  `log.error` qui nomme l'hôte et la cause.
+- Le test de reproduction reste dans la suite.

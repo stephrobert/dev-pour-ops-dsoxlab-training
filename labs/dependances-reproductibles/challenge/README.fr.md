@@ -1,34 +1,33 @@
-# Challenge : certcheck s'installe à l'identique ailleurs
+# Challenge : certcheck s'installe aussi ailleurs
 
-5 tâches, 100 points, 40 minutes. Accès réseau requis (PyPI).
+5 tâches, 100 points, 25 minutes. Accès réseau requis (PyPI).
 
-Le contrôle lit les fichiers du projet, puis l'installe dans une **copie
-propre**, sans `.venv`, comme le ferait un collègue ou un pipeline.
+Le contrôle lit les fichiers du projet, puis l'installe dans un
+**environnement neuf**, sans votre `.venv` : par `uv sync --frozen` s'il
+trouve un `uv.lock`, sinon par `pip install -r requirements.txt` (s'il
+existe) puis `pip install .`.
 
-### Tâche 1 : des dépendances déclarées (20 pts)
+### Tâche 1 : les dépendances sont déclarées (20 pts)
 
-`pyproject.toml` déclare `requests` et `cryptography` dans
-`[project] dependencies`, chacune avec une borne basse (`>=` ou `~=`), et
-porte un `requires-python`.
+`requests` et `cryptography` sont déclarées, dans `pyproject.toml`
+(`[project] dependencies`) ou dans `requirements.txt`.
 
-### Tâche 2 : un verrou à jour (20 pts)
+### Tâche 2 : les versions sont épinglées (20 pts)
 
-`uv.lock` existe, fige `requests` et `cryptography`, et `uv lock --check`
-l'accepte : il correspond à `pyproject.toml`.
+Chacune porte une version exacte (`==`), ou un `uv.lock` fige les deux.
 
-### Tâche 3 : un interpréteur fixé (20 pts)
+### Tâche 3 : la version de Python est notée (20 pts)
 
-`.python-version` (ou `mise.toml`) porte une version précise `X.Y.Z`,
-comprise dans `requires-python`.
+`pyproject.toml` porte un `requires-python`, ou le projet a un fichier
+`.python-version`.
 
-### Tâche 4 : reproductible ailleurs (20 pts)
+### Tâche 4 : installation dans un environnement neuf (20 pts)
 
-Dans une copie sans `.venv`, `uv sync --frozen` réussit, puis
-`uv run certcheck --version` et une exécution sur un inventaire tiré au
-hasard, avec `CERTCHECK_NOW`, rendent le résultat du contrat.
+Installé depuis les seuls fichiers du projet, `certcheck --version` affiche
+`certcheck 0.5.0`.
 
-### Tâche 5 : une seule source de vérité (20 pts)
+### Tâche 5 : rien d'installé à la main (20 pts)
 
-`requirements.txt` est supprimé ou, s'il est gardé, généré depuis le verrou :
-chaque ligne en `==`, avec ses empreintes `--hash`, aux versions de
-`uv.lock`.
+Dans ce même environnement neuf, certcheck analyse un parc et publie son
+ticket sur une forge factice : tout ce qu'il importe, `requests` compris,
+vient des fichiers du projet.

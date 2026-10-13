@@ -26,7 +26,6 @@ import time
 from datetime import UTC, date, datetime
 from pathlib import Path
 
-import requests
 from cryptography import x509
 
 from certcheck import __version__
@@ -148,6 +147,8 @@ def en_json(resultats: list[dict], seuil: int) -> str:
 
 def requete(session: requests.Session, methode: str, url: str, **kwargs: object) -> requests.Response:
     """Une requête avec délai maximal, reprise sur 429 et 5xx, et jamais le jeton dans l'URL."""
+    import requests  # seule la publication en a besoin : importé ici, pas au démarrage
+
     raison = ""
     for essai in range(1, ESSAIS + 1):
         try:
@@ -206,6 +207,8 @@ def publier(resultats: list[dict], forge: tuple[str, str, str] | None) -> None:
     if forge is None:
         print(f"[simulation] ticket « {TITRE_TICKET} » :\n{corps}", file=sys.stderr)
         return
+    import requests  # seule la publication en a besoin : importé ici, pas au démarrage
+
     base, jeton, depot = forge
     with requests.Session() as session:
         session.headers.update({"Authorization": f"token {jeton}", "Accept": "application/json"})

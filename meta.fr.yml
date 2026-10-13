@@ -1,17 +1,17 @@
 repo:
   title: "Développer pour les Ops : les labs vérifiables"
   description: |
-    La méthode du développeur appliquée au code d'automatisation, en Bash,
-    Python ou Go. Un seul script hérité, certcheck, que vous lisez,
-    transformez en outil, testez, déboguez, faites relire, rendez
-    reproductible et livrez. Chaque lab est noté sur ce qu'un appelant
-    observe : sorties, codes de sortie, requêtes reçues par une forge
-    factice, fichiers du dépôt.
+    Développer comme un développeur, en Python. Un seul fil rouge,
+    certcheck : vous lisez un paquet Python hérité, structurez un projet
+    Python qui respecte un contrat, le testez, le déboguez, le faites
+    relire, le rendez reproductible et le livrez. Chaque lab est noté sur ce
+    qu'un appelant observe : sorties, codes de sortie, requêtes reçues par
+    une forge factice, fichiers du dépôt.
 
 sections:
   - id: fil-rouge
-    title: "Le fil rouge : du script hérité à l'outil livré"
-    description: "Lire un script hérité, en faire un outil à contrat, le tester, le déboguer, relire un changement, verrouiller ses dépendances et livrer une version."
+    title: "Le fil rouge : du code hérité à l'outil livré"
+    description: "Lire le code d'un paquet Python hérité, structurer un projet Python à contrat, le tester, le déboguer, relire un changement, verrouiller ses dépendances et livrer une version."
   - id: level-exams
     title: "Épreuve de niveau"
-    description: "Reprendre un outil d'exploitation hérité : le réécrire selon son contrat dans le langage de votre choix, couvrir le bogue semé par un test, livrer une version étiquetée et installable, et relire la pull request d'un collègue. Noté en boîte noire, sans indice."
+    description: "Reprendre un outil d'exploitation hérité : le remplacer par un projet Python qui respecte son contrat, attraper le bogue semé par des tests pytest, livrer une version étiquetée et installable, et relire la pull request d'un collègue. Noté en boîte noire, sans indice."

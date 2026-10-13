@@ -1,4 +1,4 @@
-# Parc surveille par certcheck.sh
+# Parc surveille par certcheck
 # hote        certificat collecte sur l hote
 web-01 certs/web-01.pem
 web-02 certs/web-02.pem

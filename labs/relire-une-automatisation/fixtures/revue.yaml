@@ -4,28 +4,23 @@
 # Pour lire le code tel qu'il serait fusionné, appliquez le diff dans une
 # copie du projet :
 #   cp -r . /tmp/pr42 && cd /tmp/pr42 && git apply pr/0042.diff
-# Les numéros de ligne se lisent dans les fichiers APRÈS application du diff.
+# Les numéros de ligne se lisent dans les fichiers APRÈS application du diff
+# (grep -n, ou l'éditeur).
 #
 # Chaque commentaire porte :
-#   fichier      le chemin du fichier, depuis la racine du projet (maintenance.py)
+#   fichier      le chemin du fichier, depuis la racine du projet
+#                (par exemple src/certcheck/maintenance.py)
 #   ligne        le numéro de la ligne fautive, dans le fichier après le diff
-#   categorie    une seule valeur de la liste FERMÉE ci-dessous
+#   categorie    une seule valeur de la liste ci-dessous
 #   commentaire  le problème, en une phrase : ce qui casse, et quand
 #   proposition  la correction concrète que vous demandez
 #
-# Catégories admises. Toutes ne sont pas forcément présentes dans ce diff :
-#   erreur-avalee              une exception large est attrapée et ignorée
-#   secret-expose              un secret (jeton, mot de passe) finit dans un
-#                              journal, une sortie ou un message
-#   tls-desactive              la vérification du certificat du serveur est coupée
-#   effet-de-bord-non-borne    une suppression ou une écriture dont la cible n'est
-#                              ni validée ni bornée
-#   dependance-non-epinglee    une dépendance déclarée sans version exacte, alors
-#                              que le projet épingle les siennes
-#   test-absent                une nouvelle branche de code qu'aucun test n'exerce
-#   non-idempotent             deux exécutions successives n'aboutissent pas au
-#                              même état
-#   injection-de-commande      une donnée externe est interprétée par un shell
+# Les quatre catégories :
+#   erreur-avalee      une exception est attrapée puis ignorée, sans trace
+#   secret-affiche     un secret (jeton, mot de passe) est écrit sur une sortie
+#                      ou dans un journal
+#   chemin-dangereux   une suppression dont le dossier cible n'est pas vérifié
+#   test-absent        une nouvelle fonction qu'aucun test n'exerce
 #
 # Exemple de forme (sans rapport avec ce diff) :
 #   - fichier: deploy.py

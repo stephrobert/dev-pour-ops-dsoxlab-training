@@ -1,22 +1,22 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: dependances-reproductibles
-title: "Reproducible dependencies: certcheck installs identically elsewhere"
+title: "Dependencies: certcheck installs elsewhere too"
 description: |
   A colleague moved certcheck to the cryptography and requests libraries,
-  packaged it, and left its dependencies in an unpinned requirements.txt:
-  "works on my machine". Declare the dependencies in pyproject.toml, lock
-  them in uv.lock, pin the interpreter, and prove that a clean copy
-  installs with uv sync --frozen and returns the expected result. Needs
-  network access to PyPI.
+  installed them by hand in his virtual environment, and declared nothing:
+  "works on my machine". Step by step: declare both dependencies, pin their
+  versions, note the Python version, and prove that a fresh environment
+  installs the tool from the project files alone. Needs network access to
+  PyPI.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 40m
+estimated_time: 25m
 skills:
   - dependencies
-  - lockfile
-  - reproducibility
+  - virtualenv
+  - pip
   - uv
   - python
 distros:
@@ -29,7 +29,6 @@ runtime:
     - CONTRAT.md
     - README.md
     - pyproject.toml
-    - requirements.txt
     - src/certcheck/__init__.py
     - src/certcheck/cli.py
     - bin/certcheck

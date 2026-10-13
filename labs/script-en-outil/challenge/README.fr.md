@@ -1,13 +1,16 @@
 # Challenge : certcheck respecte son contrat
 
-5 tâches, 100 points, 60 minutes.
+5 tâches, 100 points, 30 minutes.
 
-Votre outil est appelé par `bin/certcheck`, et seulement par lui. Le contrat
-est dans `CONTRAT.md`.
+Votre outil est le paquet Python `src/certcheck/` du projet, appelé par
+`bin/certcheck`, et seulement par lui. Le contrat est dans `CONTRAT.md`.
 
-### Tâche 1 : une interface prévisible (20 pts)
+### Tâche 1 : un projet Python et une interface prévisible (20 pts)
 
-`--help` sort en 0 et cite chaque option ; `--version` affiche
+`pyproject.toml` déclare la commande `certcheck` dans `[project.scripts]`
+vers une fonction du paquet `src/certcheck/`, et `bin/certcheck` lance ce
+paquet : `uv run certcheck --version` et `bin/certcheck --version` répondent
+la même chose. `--help` sort en 0 et cite chaque option ; `--version` affiche
 `certcheck X.Y.Z` ; une option inconnue, `--days abc` ou `--format xml`
 sortent en 2 avec un message sur la sortie d'erreur et rien sur la sortie
 standard.
@@ -23,13 +26,15 @@ certificat absent ou un inventaire absent rendent 2.
 `not_after` justes pour chaque hôte, seuil inclusif ; `--format text` porte
 l'hôte et son statut sur chaque ligne.
 
-### Tâche 4 : la configuration par l'environnement (20 pts)
+### Tâche 4 : le seuil vient de l'environnement (20 pts)
 
-`CERTCHECK_INVENTORY` et `CERTCHECK_DAYS` sont lus, l'option l'emporte sur la
-variable, une valeur invalide rend 2, et l'inventaire accepte tabulations et
-commentaires.
+`CERTCHECK_DAYS` règle le seuil, `--days` l'emporte sur la variable, une
+valeur invalide rend 2, et l'inventaire accepte tabulations et commentaires,
+lancé depuis un autre dossier.
 
-### Tâche 5 : une simulation qui n'envoie rien (20 pts)
+### Tâche 5 : les erreurs vont sur la sortie d'erreur (20 pts)
 
-`--publish --dry-run` n'envoie aucune requête et montre le ticket sur la
-sortie d'erreur ; `--publish` sans `FORGE_TOKEN` rend 2 sans rien envoyer.
+Un certificat absent figure dans le JSON en `error`, et son hôte est nommé
+sur la sortie d'erreur, sans polluer le document ; un inventaire absent rend
+2, avec un message d'une ligne sur la sortie d'erreur, ni trace Python ni
+rien sur la sortie standard.

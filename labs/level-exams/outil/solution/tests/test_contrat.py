@@ -1,7 +1,7 @@
 """La suite de certcheck, en boîte noire : elle lance l'exécutable, jamais le code.
 
 L'exécutable testé est celui de CERTCHECK_BIN (bin/certcheck par défaut). La
-même suite juge ainsi l'outil livré, une réécriture en Go, ou une version
+même suite juge ainsi l'outil livré, une version installée, ou une version
 d'avant : ce qu'elle vérifie est le contrat, pas une implémentation.
 
 Les certificats de certs/ ont des dates d'expiration connues, et CERTCHECK_NOW
@@ -16,9 +16,6 @@ import os
 import re
 import shutil
 import subprocess
-import threading
-from collections.abc import Iterator
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 import pytest
@@ -28,7 +25,6 @@ CERTS = RACINE / "certs"
 BINAIRE = Path(os.environ.get("CERTCHECK_BIN") or RACINE / "bin" / "certcheck").resolve()
 # Dates d'expiration des certificats de certs/ (openssl x509 -enddate).
 EXPIRATIONS = {"web-01": "2045-06-15", "web-02": "2025-11-20", "vpn-01": "2031-03-05", "mail-01": "2040-01-10"}
-TITRE = "certcheck : certificats à renouveler"
 
 
 def certcheck(*args: str, env: dict[str, str] | None = None, cwd: Path | None = None) -> subprocess.CompletedProcess:
@@ -57,7 +53,7 @@ def certificats(res: subprocess.CompletedProcess) -> dict[str, dict]:
 def test_l_aide_cite_chaque_option() -> None:
     res = certcheck("--help")
     assert res.returncode == 0
-    for option in ("--inventory", "--days", "--format", "--publish", "--dry-run", "--verbose", "--version"):
+    for option in ("--inventory", "--days", "--format", "--version"):
         assert option in res.stdout
 
 
@@ -131,8 +127,8 @@ def test_un_inventaire_absent_sort_en_2(tmp_path: Path) -> None:
 # --- Inventaire et configuration ----------------------------------------------------
 
 
-def test_tabulations_commentaires_et_crlf_sont_acceptes(tmp_path: Path) -> None:
-    inv = inventaire(tmp_path, ["# parc", "", "web-01\tcerts/web-01.pem", "web-02 \t certs/web-02.pem"], fin="\r\n")
+def test_tabulations_et_commentaires_sont_acceptes(tmp_path: Path) -> None:
+    inv = inventaire(tmp_path, ["# parc", "", "web-01\tcerts/web-01.pem", "web-02 \t certs/web-02.pem"])
     res = certcheck("--inventory", str(inv), "--format", "json", env={"CERTCHECK_NOW": "2026-06-01"})
     assert {h: c["status"] for h, c in certificats(res).items()} == {"web-01": "ok", "web-02": "expired"}
     assert res.returncode == 1
@@ -140,84 +136,9 @@ def test_tabulations_commentaires_et_crlf_sont_acceptes(tmp_path: Path) -> None:
 
 def test_l_option_l_emporte_sur_la_variable(tmp_path: Path) -> None:
     inv = inventaire(tmp_path, ["vpn-01 certs/vpn-01.pem"])
-    env = {"CERTCHECK_NOW": "2031-02-13", "CERTCHECK_INVENTORY": str(inv), "CERTCHECK_DAYS": "10"}  # 20 jours
+    env = {"CERTCHECK_NOW": "2031-02-13", "CERTCHECK_DAYS": "10"}  # vpn-01 expire dans 20 jours
     ailleurs = tmp_path / "ailleurs"
     ailleurs.mkdir()
-    assert certcheck(cwd=ailleurs, env=env).returncode == 0
-    assert certcheck("--days", "30", cwd=ailleurs, env=env).returncode == 1
-    assert certcheck(cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "dix"}).returncode == 2
-
-
-# --- Publication ------------------------------------------------------------------
-
-
-class Forge:
-    def __init__(self) -> None:
-        self.tickets: list[dict] = [{"number": n, "title": f"autre {n}", "state": "open"} for n in range(1, 4)]
-        self.requetes: list[tuple[str, str, str]] = []
-
-
-@pytest.fixture
-def forge() -> Iterator[tuple[Forge, str]]:
-    etat = Forge()
-
-    class Gestionnaire(BaseHTTPRequestHandler):
-        def _repondre(self, code: int, corps: object) -> None:
-            charge = json.dumps(corps).encode()
-            self.send_response(code)
-            self.send_header("Content-Type", "application/json")
-            self.send_header("Content-Length", str(len(charge)))
-            self.end_headers()
-            self.wfile.write(charge)
-
-        def do_GET(self) -> None:
-            etat.requetes.append(("GET", self.path, self.headers.get("Authorization", "")))
-            self._repondre(200, etat.tickets if "page=1" in self.path or "page" not in self.path else [])
-
-        def do_POST(self) -> None:
-            corps = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
-            etat.requetes.append(("POST", self.path, self.headers.get("Authorization", "")))
-            etat.tickets.append({"number": len(etat.tickets) + 1, "title": corps["title"], "state": "open"})
-            self._repondre(201, etat.tickets[-1])
-
-        def log_message(self, *args: object) -> None:
-            return
-
-    serveur = ThreadingHTTPServer(("127.0.0.1", 0), Gestionnaire)
-    threading.Thread(target=serveur.serve_forever, daemon=True).start()
-    yield etat, f"http://127.0.0.1:{serveur.server_address[1]}"
-    serveur.shutdown()
-    serveur.server_close()
-
-
-def test_la_publication_est_idempotente_et_garde_le_jeton_hors_de_l_url(tmp_path: Path, forge) -> None:
-    etat, url = forge
-    inv = inventaire(tmp_path, ["web-02 certs/web-02.pem", "web-01 certs/web-01.pem"])
-    env = {"CERTCHECK_NOW": "2026-06-01", "FORGE_URL": url, "FORGE_TOKEN": "s3cr3t-de-test",
-           "FORGE_REPO": "exploitation/certificats"}
-    for _ in range(2):
-        res = certcheck("--inventory", str(inv), "--publish", "--verbose", env=env)
-        assert res.returncode == 1
-        assert "s3cr3t-de-test" not in res.stdout + res.stderr
-    assert [t["title"] for t in etat.tickets].count(TITRE) == 1
-    assert all("s3cr3t-de-test" not in chemin for _, chemin, _ in etat.requetes)
-    assert all(auth == "token s3cr3t-de-test" or auth == "Bearer s3cr3t-de-test" for _, _, auth in etat.requetes)
-
-
-def test_la_simulation_n_envoie_rien(tmp_path: Path, forge) -> None:
-    etat, url = forge
-    inv = inventaire(tmp_path, ["web-02 certs/web-02.pem"])
-    res = certcheck("--inventory", str(inv), "--publish", "--dry-run",
-                    env={"CERTCHECK_NOW": "2026-06-01", "FORGE_URL": url})
-    assert res.returncode == 1
-    assert "web-02" in res.stderr
-    assert etat.requetes == []
-
-
-def test_publier_sans_jeton_sort_en_2_sans_rien_envoyer(tmp_path: Path, forge) -> None:
-    etat, url = forge
-    inv = inventaire(tmp_path, ["web-02 certs/web-02.pem"])
-    res = certcheck("--inventory", str(inv), "--publish",
-                    env={"CERTCHECK_NOW": "2026-06-01", "FORGE_URL": url, "FORGE_REPO": "a/b"})
-    assert res.returncode == 2
-    assert etat.requetes == []
+    assert certcheck("--inventory", str(inv), cwd=ailleurs, env=env).returncode == 0
+    assert certcheck("--inventory", str(inv), "--days", "30", cwd=ailleurs, env=env).returncode == 1
+    assert certcheck("--inventory", str(inv), cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "dix"}).returncode == 2

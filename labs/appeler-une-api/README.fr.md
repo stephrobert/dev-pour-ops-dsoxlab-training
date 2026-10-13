@@ -1,31 +1,32 @@
-# Appeler une API sans fragilité
+# Appeler une API avec requests
 
-Troisième lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon
-« Automatiser par une API REST : authentification, pagination, erreurs et
-reprise ». certcheck sait déjà contrôler un parc ; il doit maintenant
-**publier** son résultat sur la forge sans fuite de secret, sans doublon et
-sans rester bloqué quand la forge va mal.
+Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon
+« Automatiser par une API REST ». certcheck sait déjà contrôler un parc ; il
+doit maintenant **ouvrir un ticket** sur la forge quand des certificats sont
+à renouveler. Vous écrivez cet appel avec la bibliothèque `requests`, pas à
+pas : déclarer la dépendance, passer le jeton au bon endroit, borner
+l'attente, traiter les erreurs, ne pas créer de doublon.
 
 | | |
 |---|---|
-| Cible | votre poste : Python (`mise install`) et openssl |
-| Durée | environ 45 minutes |
+| Cible | votre poste : Python et uv (`mise install`), openssl |
+| Durée | environ 30 minutes |
+| Réseau | requis une fois : uv télécharge `requests` depuis PyPI |
 | Leçon jumelée | [Automatiser par une API REST](https://blog.stephane-robert.info/docs/developper/api-rest/) |
 | Précédent | `script-en-outil` |
 
 ```bash
 dsoxlab run   appeler-une-api
 cd labs/appeler-une-api/challenge/work
-less CONTRAT.md                       # section « Publication sur la forge »
 CERTCHECK_NOW=2026-06-01 bin/certcheck --publish --dry-run; echo "code : $?"
-# corrigez la partie « Publication sur la forge » de certcheck.py
+# suivez les étapes du scénario dans src/certcheck/forge.py
+python3 forge_factice.py        # dans un second terminal, pour essayer
 dsoxlab check appeler-une-api
 ```
 
-Le point de départ est l'outil du lab précédent, conforme au contrat sauf sa
-publication, écrite à la hâte par un collègue. Le contrôle ne lit pas votre
-code : il lance `bin/certcheck --publish` contre une forge factice qui répond
-comme l'API de Forgejo, et compte les requêtes qu'elle reçoit.
+Le contrôle ne lit pas votre code : il lance `bin/certcheck --publish`
+contre une forge factice qui répond comme l'API de Forgejo, et regarde les
+requêtes qu'elle reçoit.
 
 Validé par `scripts/valider-labs.py` : 0 avant le travail, 100 après la
 solution du formateur, rejouable. Le verdict est dans `validation-labs.json`.

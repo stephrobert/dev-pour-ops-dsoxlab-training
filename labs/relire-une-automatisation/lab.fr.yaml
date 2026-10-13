@@ -1,9 +1,9 @@
 id: relire-une-automatisation
-title: "Relire une automatisation : la pull request n°42 de certcheck"
+title: "Relire une pull request : quatre défauts dans la n°42 de certcheck"
 description: |
   Un collègue propose la pull request n°42 sur certcheck : purge des anciens
-  rapports et notification par webhook. Ses tests sont verts. Lisez le diff
-  tel qu'il serait fusionné, commentez chaque vrai défaut à la bonne ligne
-  avec une correction concrète, tranchez, puis ajoutez une configuration
-  pre-commit qui refuse les défauts mécaniques avant toute revue, chaque
-  hook épinglé sur une empreinte de commit.
+  rapports et notification du chat. Ses tests sont verts. Lisez le diff tel
+  qu'il serait fusionné, trouvez au moins trois de ses quatre défauts
+  (erreur avalée, secret affiché, chemin dangereux, test absent),
+  commentez-les avec une correction concrète, tranchez, puis versionnez une
+  configuration ruff et faites passer ruff check.

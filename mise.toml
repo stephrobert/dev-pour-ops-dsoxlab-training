@@ -2,11 +2,10 @@
 # mesurée ici, sans curl d'archive ni gestionnaire de paquets système.
 #
 # Les contrôles lancent l'outil de l'apprenant comme une boîte noire
-# (bin/certcheck) : uv et Python servent aux labs dont le point de départ est
-# en Python, Go à qui choisit de livrer en Go. openssl vient du système.
+# (bin/certcheck) : c'est un projet Python, joué par uv. openssl vient du
+# système.
 # Versions relevées le 2026-10-13 (`mise ls-remote <outil> | tail -1`).
 
 [tools]
 uv = "0.12.21"
 python = "3.14.8"
-go = "1.27.2"

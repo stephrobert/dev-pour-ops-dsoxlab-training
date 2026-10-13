@@ -1,11 +1,12 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: lire-du-code
-title: "Read code you did not write: the inherited certcheck.sh script"
+title: "Read the code of a Python application: the inherited certcheck package"
 description: |
-  An inherited Bash script checks certificate expiry every night, and
-  nobody on the team wrote it. Find its external commands, its side effects
-  and its configuration, run it without risk, name its real defects, and
-  find in its Git history the commit that started hiding errors.
+  An inherited Python package checks certificate expiry every night, and
+  nobody on the team wrote it. Find its entry point and the modules it
+  loads, its subprocess and its network call, run it without risk, name its
+  real defects, and find in its Git history the commit that started
+  swallowing errors.
 section: fil-rouge
 level: o1
 difficulty: intermediate
@@ -13,7 +14,8 @@ lab_type: lab
 estimated_time: 30m
 skills:
   - code-reading
-  - bash
+  - python
+  - packaging
   - git-history
   - side-effects
 distros:
@@ -23,7 +25,12 @@ runtime:
   type: shell
   workdir: challenge/work
   fixtures:
-    - certcheck.sh
+    - pyproject.toml
+    - uv.lock
+    - src/certcheck/__init__.py
+    - src/certcheck/cli.py
+    - src/certcheck/certificats.py
+    - src/certcheck/forge.py
     - inventaire.txt
     - certs/web-01.pem
     - certs/web-02.pem

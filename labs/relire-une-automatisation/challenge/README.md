@@ -1,41 +1,35 @@
 # Challenge: review pull request #42
 
-5 tasks, 100 points, 40 minutes.
+5 tasks, 100 points, 25 minutes.
 
-The `challenge/work` directory holds the project on `main`, the pull request
-description (`pr/DESCRIPTION.md`) and its diff (`pr/0042.diff`). Your review
-goes into `revue.yaml`, whose header documents the format and the closed list
-of categories. A comment points at a defect if it has the right file, the
-right category, and a line at most two lines away from the faulty line,
-counted in the file **after** `git apply`.
+The working directory holds the project on `main`, the PR description
+(`pr/DESCRIPTION.md`) and its diff (`pr/0042.diff`). Your review goes in
+`revue.yaml`, whose header documents the format and the four categories. A
+comment points at a defect if it names the right file, the right category,
+and a line at most two lines away from the faulty one, counted in the file
+**after** `git apply`.
 
-### Task 1: the exposed secret and the disabled TLS (20 pts)
+### Task 1: at least three defects found (20 pts)
 
-Two comments report the webhook URL, which carries a token, written to an
-output (`secret-expose`), and the chat certificate check turned off
-(`tls-desactive`).
+Of the PR's four defects (swallowed error, printed secret, dangerous path,
+missing test), at least three are pointed at by a comment.
 
-### Task 2: the swallowed error and the unbounded side effect (20 pts)
+### Task 2: every comment proposes a fix (20 pts)
 
-Two comments report the exception caught then ignored (`erreur-avalee`) and
-the recursive deletion whose target is not validated
-(`effet-de-bord-non-borne`).
+Every comment has a `commentaire` and a `proposition` of at least 25
+characters each, its category comes from the list, and at most two comments
+point at no real defect.
 
-### Task 3: the unpinned dependency and the missing test (20 pts)
+### Task 3: a verdict (20 pts)
 
-Two comments report the dependency declared without an exact version
-(`dependance-non-epinglee`) and the new function no test exercises
-(`test-absent`, on its `def` line within three lines, or on the test file).
+`verdict` is `demander-des-changements` (request changes).
 
-### Task 4: an actionable review (20 pts)
+### Task 4: a versioned ruff configuration (20 pts)
 
-Each comment has a `commentaire` and a `proposition` of at least 25
-characters, every category comes from the closed list, at most two comments
-point at no real defect, and `verdict` is `demander-des-changements`.
+The project carries a ruff configuration: a `[tool.ruff]` section in
+`pyproject.toml`, or a `ruff.toml` file.
 
-### Task 5: mechanical defects refused at commit time (20 pts)
+### Task 5: ruff check passes on the base code (20 pts)
 
-`.pre-commit-config.yaml`, at the project root, declares a secret detector
-(gitleaks, detect-secrets or detect-private-key) and the ruff linter, each
-from its official repository, and every `rev` is a full 40-character commit
-hash. The check reads the file, it does not run pre-commit.
+`uv run ruff check .` reports nothing any more, and the base code's unused
+import was removed from the code, not hidden by the configuration.

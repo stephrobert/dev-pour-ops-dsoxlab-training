@@ -1,10 +1,13 @@
 [project]
 name = "certcheck"
 version = "0.4.0"
-description = "Signale les certificats TLS d'un parc qui arrivent à expiration"
+description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
 requires-python = ">=3.12"
-# L'outil n'utilise que la bibliothèque standard et openssl.
+# Bibliothèque standard seule, plus le programme openssl du système.
 dependencies = []
+
+[project.scripts]
+certcheck = "certcheck.cli:main"
 
 [dependency-groups]
 # Les outils du développeur, pas ceux de l'outil : `uv run pytest` les installe
@@ -14,11 +17,9 @@ dev = [
     "pytest==9.1.1",
 ]
 
-[tool.uv]
-# certcheck est un script et son lanceur bin/certcheck, pas un paquet à publier.
-package = false
-
 [tool.pytest.ini_options]
-# Les tests importent certcheck depuis la racine du projet.
-pythonpath = ["."]
 testpaths = ["tests"]
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13"]
+build-backend = "uv_build"

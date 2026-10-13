@@ -2,38 +2,81 @@
 
 ## Situation
 
-certcheck declares its dependencies, locks them in `uv.lock` and pins its
-interpreter: it installs identically on any machine. The team now wants to
-**ship** it to the other teams, as version 1.0.0.
+certcheck declares its dependencies and locks them in `uv.lock`: it installs
+on any machine. The team now wants to ship it to other teams, as version
+**1.0.0**.
 
-The starting point is the previous lab's solution, with two differences: the
-project is not under Git yet (the `git init` and the commits are yours), and
-`CHANGELOG.md`, in the Keep a Changelog format, only carries an
-`## [Unreleased]` section. The version itself is written twice: in
-`pyproject.toml` and hard-coded in `src/certcheck/__init__.py`.
+Two things are in the way. The version is written **twice**: in
+`pyproject.toml` and hard-coded in `src/certcheck/__init__.py`. And the
+project is not under Git yet. `CHANGELOG.md` only has an `## [Unreleased]`
+section.
 
-## Goal
+## Why version
 
-1. Version 1.0.0 has a single source, `pyproject.toml`; `certcheck
-   --version` prints `certcheck 1.0.0` by reading it from the installed
-   package's metadata.
-2. `CHANGELOG.md` carries a non-empty `## [1.0.0] - YYYY-MM-DD` section,
-   below `[Unreleased]` and above earlier versions.
-3. An **annotated** Git tag `v1.0.0` points at the commit that carries
-   1.0.0, and the working tree is clean.
-4. `dist/` holds the 1.0.0 wheel and sdist, built by `uv build`.
-5. A clean environment installs the wheel built from the tag, and certcheck
-   runs there.
+A version is a stable name for a state of the code: "1.0.0", which the
+on-call team can install, quote in a ticket, or reinstall six months later.
+It is written in **one place only**, otherwise two files end up stating two
+numbers. The changelog says what changes; the Git tag marks the exact commit
+carrying that version.
 
-## Hints
+## Steps
 
-- The working directory sits inside the catalogue repository: without
-  `git init` here, Git would climb up to the catalogue's repository.
-- `importlib.metadata.version("certcheck")` reads the installed package's
-  version; a wheel does not carry `pyproject.toml`.
-- The lockfile also records the project's version: after changing
-  `pyproject.toml`, run `uv lock` again before committing.
-- The Python wheel is only one of the delivery forms covered in the lesson.
-  The static Go binary and the container image are the two others; they
-  stay out of this lab.
-- This lab needs network access: uv downloads from PyPI.
+### 1. A single source for the version
+
+In `pyproject.toml`, set `version` to `"1.0.0"`. In
+`src/certcheck/__init__.py`, replace the hard-coded string with a read of the
+installed package's metadata:
+
+```python
+from importlib.metadata import version
+
+__version__ = version("certcheck")
+```
+
+`bin/certcheck --version` must print `certcheck 1.0.0`.
+
+### 2. The changelog
+
+In `CHANGELOG.md`, keep `## [Unreleased]` on top (empty), and put right
+below it a `## [1.0.0] - YYYY-MM-DD` section (today's date) holding the
+entries.
+
+### 3. The repository and the tag
+
+The working directory lives inside the catalogue's repository: it needs ITS
+own repository, otherwise Git would walk up to the catalogue's.
+
+```bash
+git init
+git add -A
+git commit -m "certcheck 1.0.0"
+git tag -a v1.0.0 -m "certcheck 1.0.0"
+```
+
+`.gitignore` already excludes `.venv/` and `dist/`. The tag goes **after**
+the commit that contains 1.0.0.
+
+### 4. Install in a fresh environment
+
+```bash
+python3 -m venv /tmp/trial-env
+/tmp/trial-env/bin/pip install .
+/tmp/trial-env/bin/certcheck --version
+```
+
+### 5. Install from the tag
+
+```bash
+git clone --branch v1.0.0 . /tmp/trial-clone
+python3 -m venv /tmp/trial-env2
+/tmp/trial-env2/bin/pip install /tmp/trial-clone
+/tmp/trial-env2/bin/certcheck --version
+```
+
+Then `dsoxlab check livrer-un-outil`.
+
+## Outside this lab
+
+Publishing a wheel to an index, building a container image or shipping
+through a pipeline belong to other courses: here, the release stays in the
+repository.

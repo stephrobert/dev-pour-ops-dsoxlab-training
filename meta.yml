@@ -2,10 +2,11 @@
 #
 # Catalogue dev-pour-ops-dsoxlab-training, décrit par le contrat v1 de dsoxlab.
 #
-# Les labs de la formation « Développer pour les Ops » du blog. Un FIL ROUGE :
-# certcheck, un contrôle d'expiration de certificats hérité en Bash, que
-# l'apprenant lit, transforme en outil, teste, débogue, fait relire, rend
-# reproductible et livre. L'ordre ci-dessous est celui du jeu.
+# Les labs de la formation « Développer pour les Ops » du blog : développer
+# comme un développeur, en Python. Un FIL ROUGE : certcheck, un contrôle
+# d'expiration de certificats que l'apprenant lit (paquet Python hérité),
+# structure en projet Python, teste, débogue, fait relire, rend reproductible
+# et livre. L'ordre ci-dessous est celui du jeu.
 #
 # L'outil livré au bout de ce fil rouge est le dépôt dont la formation
 # « Introduction aux pipelines CI/CD » construit la chaîne, sur la forge
@@ -22,11 +23,12 @@ repo:
   blog_url: "https://blog.stephane-robert.info/docs/developper/"
   issues_url: "https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/issues"
   description: |
-    The developer's method applied to automation code, in Bash, Python or
-    Go. One inherited script, certcheck, that you read, turn into a tool,
-    test, debug, get reviewed, make reproducible and ship. Each lab is graded
-    on what a caller observes: outputs, exit codes, requests received by a
-    fake forge, files in the repository.
+    Develop the way a developer does, in Python. One common thread,
+    certcheck: you read an inherited Python package, structure a Python
+    project that honours a contract, test it, debug it, get it reviewed, make
+    it reproducible and ship it. Each lab is graded on what a caller
+    observes: outputs, exit codes, requests received by a fake forge, files
+    in the repository.
 
 # PAS de bloc `infra:` : tous les labs sont de type `shell`. L'outil se joue
 # sur le poste de l'apprenant. Prérequis : les outils de mise.toml
@@ -34,8 +36,8 @@ repo:
 
 sections:
   - id: fil-rouge
-    title: "The common thread: from inherited script to shipped tool"
-    description: "Read an inherited script, turn it into a tool with a contract, test it, debug it, review a change, lock its dependencies and ship a version."
+    title: "The common thread: from inherited code to shipped tool"
+    description: "Read the code of an inherited Python package, structure a Python project with a contract, test it, debug it, review a change, lock its dependencies and ship a version."
     labs:
       - lire-du-code
       - script-en-outil
@@ -46,11 +48,10 @@ sections:
       - dependances-reproductibles
       - livrer-un-outil
 
-  # Épreuve de fin du niveau o1 : une MESURE, pas un cours. Notée sur le
-  # contrat de l'outil, en boîte noire, dans le langage choisi par
-  # l'apprenant (Bash, Python ou Go), sans indice.
+  # Épreuve de fin du niveau o1 : une MESURE, pas un cours. Un projet Python,
+  # noté sur le contrat de l'outil, en boîte noire, sans indice.
   - id: level-exams
     title: "Level exam"
-    description: "Take over an inherited operations tool: rewrite it to its contract in the language of your choice, cover the seeded bug with a test, ship a tagged and installable version, and review a colleague's pull request. Graded as a black box, without hints."
+    description: "Take over an inherited operations tool: replace it with a Python project that honours its contract, catch the seeded bug with pytest tests, ship a tagged and installable version, and review a colleague's pull request. Graded as a black box, without hints."
     labs:
       - level-exams/outil

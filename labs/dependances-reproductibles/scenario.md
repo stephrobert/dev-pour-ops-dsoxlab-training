@@ -2,38 +2,67 @@
 
 ## Situation
 
-A colleague evolved certcheck. The expiry date is now read by the
-`cryptography` library (no more call to `openssl`), and publishing to the
-forge goes through `requests`. He made it a package: `src/certcheck/`, a
-`certcheck` entry point declared in `[project.scripts]`, version 0.5.0.
-
-Its dependencies stayed in a `requirements.txt` he installed by hand in his
-virtual environment: two names, no version at all. `pyproject.toml` declares
-none of them, does not say which Python versions are supported, there is no
-lockfile, and nothing says which interpreter to use. "Works on my machine."
+A colleague evolved certcheck: the expiry date is read by the
+`cryptography` library, and publishing to the forge goes through
+`requests`. He installed both by hand in his virtual environment (his
+`README.md` shows it), and declared nothing: `pyproject.toml` lists no
+dependency and no Python version. "Works on my machine."
 
 On yours, `bin/certcheck --version` already fails.
 
-## Goal
+## Why declare and pin
 
-Anyone, starting from the repository alone, gets exactly the same tool:
+A **virtual environment** (`.venv`) isolates a project's libraries from the
+system's. But it is not shared: what counts are the repository files that
+say what to install in it. A library installed by hand only exists on your
+machine. And a dependency declared without a version takes the latest
+release: two machines, two versions, two behaviours.
 
-1. `pyproject.toml` declares `requests` and `cryptography` (with a lower
-   bound) and a `requires-python`;
-2. a `uv.lock` exists and matches `pyproject.toml`;
-3. the interpreter is pinned to a precise version, compatible with
-   `requires-python`;
-4. a clean copy, without `.venv`, installs with `uv sync --frozen` and
-   returns the contract's result;
-5. only one source of truth remains: `requirements.txt` is deleted, or
-   generated from the lockfile.
+## Steps
 
-## Hints
+### 1. See the failure
 
-- The lower bound (`>=`) goes in `pyproject.toml`; the exact version of each
-  package, transitive ones included, goes in `uv.lock`.
-- `uv lock --check` tells whether the lockfile still matches
-  `pyproject.toml`.
-- A pinned Python version must be obtainable elsewhere: check that uv can
-  find or download it (`uv python list`).
-- This lab needs network access: uv downloads from PyPI.
+```bash
+bin/certcheck --version; echo "code: $?"
+```
+
+`ModuleNotFoundError: No module named 'cryptography'`: the code imports it,
+nothing declares it.
+
+### 2. Declare both dependencies
+
+With uv, one command writes the dependency in `pyproject.toml` and installs
+it in `.venv`:
+
+```bash
+uv add requests cryptography
+```
+
+Look at `pyproject.toml`: a `dependencies` section appeared. So did a
+`uv.lock` file.
+
+### 3. Pin the versions
+
+Open `uv.lock`: it freezes the **exact** version of every package,
+including those `requests` needs (`urllib3`, `idna`...). This lockfile is
+versioned with the code: a colleague running `uv sync` gets exactly the same
+versions. Without uv, the equivalent is a `requirements.txt` whose every
+line carries `==` (`requests==2.34.2`).
+
+### 4. Note the Python version
+
+In `pyproject.toml`, `[project]` section, add `requires-python = ">=3.12"`:
+the oldest supported version. You can also pin the project's own with
+`uv python pin 3.14`, which writes `.python-version`. Run `uv lock` again
+after editing `pyproject.toml`.
+
+### 5. Check as a colleague would
+
+In a copy without `.venv`, the tool must install from the files alone:
+
+```bash
+rsync -a --exclude .venv ./ /tmp/trial/ && cd /tmp/trial
+uv sync && uv run certcheck --version
+```
+
+Then `dsoxlab check dependances-reproductibles`.

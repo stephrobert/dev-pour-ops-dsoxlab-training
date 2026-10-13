@@ -1,33 +1,33 @@
-# Challenge: a suite that catches four real bugs
+# Challenge: first tests, two real bugs caught
 
-5 tasks, 100 points, 45 minutes.
+5 tasks, 100 points, 25 minutes.
 
 Your suite lives in `tests/` and runs with `uv run pytest`. The check runs it
-on a copy of the project where `certcheck.py` is replaced: first by the
-correct tool, then by each of the four mutants. Each mutant task also
-requires the suite to pass on the correct tool.
+on a copy of the project where `src/certcheck/certificats.py` is replaced:
+first by the
+correct tool, then by each of two buggy versions. Every task also requires
+the suite to pass on the correct tool.
 
-### Task 1: a suite that is green on the correct tool (20 pts)
+### Task 1: the suite passes on the correct tool (20 pts)
 
-At least six tests, all green on the reference, whatever the day they run:
-the date is set through `CERTCHECK_NOW` or passed to the functions.
+`uv run pytest` finds at least one test, and all of them are green on the
+reference, whatever the day they run.
 
-### Task 2: catch an exclusive threshold (20 pts)
+### Task 2: at least three tests (20 pts)
 
-The suite fails on a tool where a certificate expiring in exactly N days,
-with a threshold of N, is `ok` instead of `warning`.
+The suite has at least three green tests: one rule per test.
 
-### Task 3: catch a swallowed error (20 pts)
+### Task 3: catch an exclusive threshold (20 pts)
 
-The suite fails on a tool that counts an unreadable certificate as `ok`,
-without the exit code reporting it.
+The suite fails on a tool where a certificate expiring in exactly 30 days,
+with a threshold of 30, is `ok` instead of `warning`.
 
-### Task 4: catch a silent exit code (20 pts)
+### Task 4: catch an exit code 0 despite an alert (20 pts)
 
-The suite fails on a tool that exits 0 while certificates are in `warning`.
+The suite fails on a tool that exits with 0 while a certificate is in
+`warning`.
 
-### Task 5: catch a dry run that sends (20 pts)
+### Task 5: a temporary file or a fixed date (20 pts)
 
-The suite fails on a tool whose `--publish --dry-run` still sends the ticket
-to the forge. The network is replaced by a test double: a local HTTP server
-or a replacement of the request function.
+At least one test takes `tmp_path` as a parameter, or sets today's date with
+`CERTCHECK_NOW` to run the whole tool.

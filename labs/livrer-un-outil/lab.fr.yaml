@@ -1,9 +1,9 @@
 id: livrer-un-outil
-title: "Livrer un outil interne : certcheck 1.0.0, étiqueté et installable"
+title: "Livrer un outil : certcheck 1.0.0, versionné et installable"
 description: |
-  certcheck a des dépendances reproductibles ; il reste à le livrer.
-  Passez-le en version 1.0.0 avec une seule source pour la version, datez
-  le journal des changements, mettez le projet sous Git avec une étiquette
-  annotée v1.0.0, construisez la roue et le sdist, et prouvez qu'un
-  environnement vierge installe et lance l'outil à partir de l'étiquette
-  seule. Demande un accès réseau à PyPI.
+  certcheck déclare ses dépendances ; il reste à le livrer, sans rien
+  publier. Pas à pas : la version 1.0.0 écrite une seule fois dans
+  pyproject.toml et affichée par --version, une section 1.0.0 dans le
+  CHANGELOG, une étiquette Git v1.0.0, puis la preuve qu'un environnement
+  neuf installe l'outil, depuis le répertoire de travail et depuis un clone
+  de l'étiquette. Demande un accès réseau à PyPI.

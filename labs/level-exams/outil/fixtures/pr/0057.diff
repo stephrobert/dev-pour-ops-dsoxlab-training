@@ -1,5 +1,5 @@
 diff --git a/certcheck.py b/certcheck.py
-index d204df2..63d5d54 100644
+index d204df2..f0a4246 100644
 --- a/certcheck.py
 +++ b/certcheck.py
 @@ -19,6 +19,7 @@ import argparse
@@ -65,35 +65,7 @@ index d204df2..63d5d54 100644
                  return json.loads(reponse.read() or b"null"), dict(reponse.headers)
          except urllib.error.HTTPError as exc:
              if exc.code != 429 and exc.code < 500:
-@@ -172,20 +177,13 @@ def requete(methode: str, url: str, jeton: str, corps: dict | None = None) -> tu
- 
- 
- def ticket_ouvert(base: str, depot: str, jeton: str) -> int | None:
--    """Le numéro du ticket déjà ouvert par certcheck, en parcourant TOUTES les pages."""
--    page = 1
--    while True:
--        query = urllib.parse.urlencode({"state": "open", "type": "issues",
--                                        "limit": TAILLE_PAGE, "page": page})
--        tickets, _ = requete("GET", f"{base}/api/v1/repos/{depot}/issues?{query}", jeton)
--        if not isinstance(tickets, list) or not tickets:
--            return None
--        for ticket in tickets:
--            if ticket.get("title") == TITRE_TICKET:
--                return int(ticket["number"])
--        if len(tickets) < TAILLE_PAGE:
--            return None
--        page += 1
-+    """Le numéro du ticket déjà ouvert par certcheck, s'il y en a un."""
-+    query = urllib.parse.urlencode({"state": "open", "type": "issues"})
-+    tickets, _ = requete("GET", f"{base}/api/v1/repos/{depot}/issues?{query}", jeton)
-+    for ticket in tickets if isinstance(tickets, list) else []:
-+        if ticket.get("title") == TITRE_TICKET:
-+            return int(ticket["number"])
-+    return None
- 
- 
- def config_forge() -> tuple[str, str, str]:
-@@ -270,7 +268,7 @@ def analyseur() -> argparse.ArgumentParser:
+@@ -270,7 +275,7 @@ def analyseur() -> argparse.ArgumentParser:
  
  def main(argv: list[str] | None = None) -> int:
      args = analyseur().parse_args(argv)  # usage incorrect : argparse sort en 2

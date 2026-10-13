@@ -1,0 +1,28 @@
+[project]
+name = "certcheck"
+version = "0.4.0"
+description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
+requires-python = ">=3.12"
+# Bibliothèque standard seule, plus le programme openssl du système.
+dependencies = []
+
+[project.scripts]
+certcheck = "certcheck.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "ruff==0.17.0",
+]
+
+[tool.ruff]
+# La configuration du linter vit avec le code : chacun, et la CI, lance les
+# mêmes règles. Les règles par défaut de ruff, lignes de 120 caractères.
+line-length = 120
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13"]
+build-backend = "uv_build"

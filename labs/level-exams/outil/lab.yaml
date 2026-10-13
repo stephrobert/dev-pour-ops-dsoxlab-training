@@ -4,27 +4,25 @@ title: "Exam: take over an operations tool"
 description: |
   You inherit certcheck.sh, a Bash script that counts a missing certificate
   as "0 days" and always exits 0, its written contract, and a colleague's
-  pull request to review. In Bash, Python or Go, deliver a tool that honours
-  the contract, its own black-box test suite, a tagged and installable
-  version, and the review. Graded on the contract with hidden tests, without
+  pull request to review. Replace it with a Python project that honours the
+  contract, its own pytest suite that catches the inherited bug, an
+  installable package, a version recorded in the CHANGELOG and tagged in
+  Git, and the review. Graded on the contract with hidden tests, without
   hints.
 section: level-exams
 level: o1
 difficulty: intermediate
 lab_type: capstone
 exam_passing_score: 70
-estimated_time: 120m
+estimated_time: 60m
 skills:
+  - python
+  - packaging
   - cli-design
   - exit-codes
-  - http-api
   - testing
   - release
-  - dependency-pinning
   - code-review
-  - python
-  - go
-  - bash
 distros:
   - any
 doc_url: https://blog.stephane-robert.info/docs/developper/parcours/
@@ -33,11 +31,10 @@ runtime:
   workdir: challenge/work
   # Le point de départ : le script hérité et son lanceur, le contrat, un
   # inventaire, la pull request n°57 à relire (le projet pr/main et son diff),
-  # et les deux fichiers à remplir, revue.yaml et CHOIX.md.
+  # et le fichier de la revue, revue.yaml.
   fixtures:
     - .gitignore
     - CONTRAT.md
-    - CHOIX.md
     - certcheck.sh
     - bin/certcheck
     - inventaire.txt

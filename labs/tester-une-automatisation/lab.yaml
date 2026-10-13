@@ -1,36 +1,39 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: tester-une-automatisation
-title: "Test an automation: a suite that catches four real bugs"
+title: "Your first tests: pytest catches two real bugs"
 description: |
-  certcheck decides whether a nightly check turns red and opens a ticket on
-  the forge: it must not change behaviour unnoticed. Write its pytest suite,
-  with an injected clock and a fake forge. It is graded on what it catches:
-  it must pass on the correct tool and fail on four mutants, each carrying
-  one realistic bug.
+  certcheck decides whether the nightly check turns red: it must not change
+  behaviour unnoticed. Write your first pytest tests, step by step: a
+  fixed date, the threshold boundary, the exit code, a temporary file. The
+  suite is graded on what it catches: green on the correct tool, red on two
+  versions that each carry one realistic bug.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 45m
+estimated_time: 25m
 skills:
   - python
   - pytest
   - testing
-  - test-doubles
-  - mutation-testing
 distros:
   - any
 doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/
 runtime:
   type: shell
   workdir: challenge/work
-  # Le point de départ est la référence de certcheck dans un petit projet uv,
-  # plus un fichier de tests qui ne contient qu'un exemple.
+  # Le point de départ est le paquet de référence de certcheck, plus un
+  # fichier de tests qui ne contient encore aucun test.
   fixtures:
     - .gitignore
     - pyproject.toml
     - uv.lock
-    - certcheck.py
+    - src/certcheck/__init__.py
+    - src/certcheck/erreurs.py
+    - src/certcheck/certificats.py
+    - src/certcheck/inventaire.py
+    - src/certcheck/forge.py
+    - src/certcheck/cli.py
     - bin/certcheck
     - CONTRAT.md
     - inventaire.txt

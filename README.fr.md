@@ -1,4 +1,4 @@
-# Formation Python : les labs vérifiables
+# Développer pour les Ops : les labs vérifiables
 
 **Langue :** [English](./README.md) · [Français](./README.fr.md)
 
@@ -8,41 +8,53 @@
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](./LICENSE)
 
-Les labs de la piste **Automatisation** de la
-[formation Python](https://blog.stephane-robert.info/docs/developper/programmation/python/)
-du blog, joués avec [dsoxlab](https://github.com/stephrobert/dsoxlab). Un seul
-outil, `security_check.py`, construit lab après lab : lire le rapport d'un
-scanner, interroger la base OSV, analyser un vrai rapport Trivy, rendre un
-code de sortie qu'un pipeline sait exploiter, et le tester.
+Les labs de la formation
+[Développer pour les Ops](https://blog.stephane-robert.info/docs/developper/)
+du blog, joués avec [dsoxlab](https://github.com/stephrobert/dsoxlab). La
+formation apprend à un Ops à développer comme un développeur, en Python. Un
+seul fil rouge, `certcheck`, un contrôle d'expiration de certificats TLS :
+vous lisez le code d'un paquet Python hérité, structurez un projet Python
+(src layout, `pyproject.toml`, uv) qui respecte un contrat, appelez une API,
+testez avec pytest, déboguez, relisez un changement, verrouillez les
+dépendances et livrez une version installable. L'épreuve de fin reprend un
+outil d'exploitation de bout en bout.
 
-Chaque lab a un point de départ (la solution du précédent), une vérification
-qui exécute votre code, une solution de référence, et a été éprouvé dans les
-deux sens : 0 avant le travail, 100 après. Le verdict de chaque lab est dans
+Chaque lab a un point de départ, une vérification qui juge ce qu'un appelant
+observe (sorties, codes de sortie, requêtes reçues par une forge factice,
+fichiers du dépôt), une solution de référence, et a été éprouvé dans les deux
+sens : 0 avant le travail, 100 après. Le verdict de chaque lab est dans
 `validation-labs.json`.
 
 ```bash
 mise install                                     # uv et Python
 export LAB_HOME=$PWD
 dsoxlab list-labs
-dsoxlab run   automatisation-lire-un-rapport
-dsoxlab check automatisation-lire-un-rapport
+dsoxlab run   lire-du-code
+dsoxlab check lire-du-code
 ```
 
-Aucune VM : l'outil tourne sur votre poste, dans son propre projet uv. Seul
-le dernier lab demande Docker, pour act.
+Aucune VM : l'outil tourne sur votre poste, dans son propre projet uv, avec
+openssl et Git du système. Quelques labs téléchargent des paquets depuis PyPI.
 
 <!-- LABS:START -->
-### Automatisation : un outil de sécurité, pas à pas
+### Le fil rouge : du code hérité à l'outil livré
 
 | Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
 |---|---|---|---|---|---|
-| `automatisation-lire-un-rapport` | Lire le rapport d'un scanner : compter les vulnérabilités par sévérité | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/json/) |
-| `automatisation-interroger-osv` | Interroger l'API OSV : ce qu'on sait de chaque paquet du rapport | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/requests/) |
-| `automatisation-rapport-trivy` | Lire un vrai rapport Trivy : résultats imbriqués, clés absentes et doublons | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/dictionnaire/) |
-| `automatisation-code-de-sortie` | Un code de sortie qu'un pipeline sait exploiter : --fail-on avec Click | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/click/) |
-| `automatisation-tester-son-outil` | Tester son outil : une suite pytest qui attrape quatre vrais bugs | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/tests/pytest/) |
-| `automatisation-dans-la-ci` | Une porte de sécurité dans le pipeline : security_check.py dans GitHub Actions | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/pipeline-cicd/github/securite/lab/pipeline-ci/) |
-| `automatisation-lire-un-sbom` | Lire un SBOM : croiser un inventaire CycloneDX avec la base OSV | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/securiser/supply-chain/sbom/) |
+| `lire-du-code` | Lire le code d'une application Python : le paquet certcheck hérité | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
+| `script-en-outil` | Structurer un projet Python en outil : certcheck respecte son contrat | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
+| `appeler-une-api` | Appeler une API sans fragilité : certcheck publie son ticket | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/api-rest/) |
+| `tester-une-automatisation` | Premiers tests : pytest attrape deux vrais bogues | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
+| `deboguer` | Déboguer pas à pas : le certificat que certcheck ne sait pas lire | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) |
+| `relire-une-automatisation` | Relire une automatisation : la pull request n°42 de certcheck | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
+| `dependances-reproductibles` | Dépendances reproductibles : certcheck s'installe à l'identique ailleurs | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
+| `livrer-un-outil` | Livrer un outil interne : certcheck 1.0.0, étiqueté et installable | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 
-_7 labs, table générée par `scripts/gen_catalog.py`._
+### Épreuve de niveau
+
+| Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
+|---|---|---|---|---|---|
+| `level-exams-outil` | Épreuve : reprendre un outil d'exploitation | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/parcours/) |
+
+_9 labs, table générée par `scripts/gen_catalog.py`._
 <!-- LABS:END -->

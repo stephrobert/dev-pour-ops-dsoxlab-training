@@ -3,18 +3,22 @@ name = "certcheck"
 version = "1.0.0"
 description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
 requires-python = ">=3.12"
-# L'outil n'utilise que la bibliothèque standard et openssl.
+# Bibliothèque standard seule, plus le programme openssl du système.
 dependencies = []
 
+[project.scripts]
+certcheck = "certcheck.cli:main"
+
 [dependency-groups]
-# Les outils du développeur, verrouillés dans uv.lock : la suite de tests.
+# Les outils du développeur, épinglés à une version exacte et verrouillés
+# dans uv.lock : la suite de tests.
 dev = [
     "pytest==9.1.1",
 ]
 
-[tool.uv]
-# certcheck est un script et son lanceur bin/certcheck, pas un paquet à publier.
-package = false
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13"]
+build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

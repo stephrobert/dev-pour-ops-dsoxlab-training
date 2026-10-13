@@ -7,13 +7,16 @@ bogue ; une correction qui casse le reste du contrat en ouvre un autre. Les
 cinq contrôles suivent donc la démarche :
 
 1. un test de l'apprenant REPRODUIT le bogue : sa suite échoue sur la version
-   boguée d'origine (`fixtures/certcheck.py`) et passe sur la référence ;
+   boguée d'origine (`fixtures/src/certcheck/certificats.py`) et passe sur
+   la référence ;
 2. le bogue est corrigé, vu de l'extérieur : `bin/certcheck` lit les
    certificats dont le jour n'a qu'un chiffre, sur des parcs et des dates
    tirés au hasard ;
 3. la suite de l'apprenant, enrichie, passe sur sa version corrigée ;
-4. aucune régression : le reste du contrat tient toujours ;
-5. le journal `DEBUG.md` raconte les quatre temps de la démarche.
+4. aucune régression : le reste du contrat tient toujours, et un certificat
+   vraiment illisible laisse désormais une trace sur la sortie d'erreur ;
+5. le journal `DEBUG.md` dit, en trois rubriques simples, ce qui a été vu,
+   la cause et la correction.
 
 Les contrôles 3 et 4 n'ont de sens que sur une version corrigée : ils
 l'exigent d'abord, sans quoi le point de départ les passerait sans travail.
@@ -30,14 +33,14 @@ import pytest
 
 from conftest import (
     EXPIRATIONS,
-    REFERENCE,
+    REFERENCE_PAQUET,
     Passage,
     attendus,
     code_attendu,
     ecrire_inventaire,
     exiger_executable,
     exiger_workdir,
-    jouer_suite_pytest,
+    jouer_suite_paquet,
     lancer,
     lire_json_sortie,
     tirage,
@@ -47,17 +50,19 @@ from conftest import (
 WORKDIR = workdir_lab(__file__)
 LAB_ID = "deboguer"
 FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
-BOGUE = FIXTURES / "certcheck.py"
+BOGUE = FIXTURES / "src" / "certcheck" / "certificats.py"
+REFERENCE = REFERENCE_PAQUET / "certificats.py"
 # Les certificats dont openssl écrit le jour avec deux espaces (« Mar  5 »).
 UN_CHIFFRE = sorted(h for h, d in EXPIRATIONS.items() if d.day < 10)
 DEUX_CHIFFRES = sorted(h for h, d in EXPIRATIONS.items() if d.day >= 10)
-SECTIONS = ("reproduire", "réduire", "observer", "corriger")
+# Les trois rubriques de DEBUG.md, reconnues par un mot de leur titre.
+RUBRIQUES = {"vu": "Ce que j'ai vu", "cause": "La cause", "correction": "La correction"}
 
 
 @cache
 def jouer(projet: str, outil: str | None) -> Passage:
     exiger_workdir(WORKDIR, LAB_ID)
-    return jouer_suite_pytest(Path(projet), Path(outil) if outil else None)
+    return jouer_suite_paquet(Path(projet), Path(outil) if outil else None)
 
 
 @pytest.fixture(scope="module")
@@ -195,48 +200,47 @@ def test_aucune_regression(outil: Path, tmp_path: Path) -> None:
     )
 
 
-def _sections(texte: str) -> dict[str, str]:
-    """Titre `## …` (en minuscules, accents tolérés) -> contenu de la section."""
+def _rubriques(texte: str) -> dict[str, str]:
+    """Clé de RUBRIQUES -> contenu de la section `## …` dont le titre la contient."""
     sections: dict[str, str] = {}
     courant = None
     for ligne in texte.splitlines():
         m = re.match(r"^##\s+(.+?)\s*$", ligne)
         if m:
-            courant = m.group(1).strip().lower().replace("reduire", "réduire")
-            sections[courant] = ""
+            titre = m.group(1).lower().replace("\u2019", "'")
+            courant = next((cle for cle in RUBRIQUES if re.search(rf"\b{cle}\b", titre)), None)
+            if courant is not None:
+                sections.setdefault(courant, "")
         elif courant is not None:
             sections[courant] += ligne + "\n"
     return sections
 
 
-# « Mar  5 » (deux espaces), ou un jour à un chiffre (« Mar 5 12:00 »).
-MOIS = r"(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)"
-CHAINE_MINIMALE = re.compile(rf"\S {{2,}}\d|{MOIS} \d(?!\d)")
+# La cause se dit avec des mots (« deux espaces ») ou se montre (« Mar  5 »).
+CAUSE = re.compile(r"espace|split|\S {2,}\d", re.IGNORECASE)
 
 
-def test_le_journal_de_debogage_raconte_la_demarche() -> None:
+def test_le_journal_de_debogage_dit_ce_qui_s_est_passe() -> None:
     exiger_workdir(WORKDIR, LAB_ID)
     journal = WORKDIR / "DEBUG.md"
     assert journal.is_file(), (
-        "DEBUG.md est absent du répertoire de travail. Un débogage se raconte : "
-        "ce qui reproduit, ce qui réduit, ce qu'on a observé, ce qu'on a changé. "
-        "Le prochain qui tombe sur un symptôme voisin gagnera une heure."
+        "DEBUG.md est absent du répertoire de travail. Un débogage se raconte en "
+        "quelques lignes : ce que vous avez vu, la cause, la correction. Le "
+        "prochain qui tombe sur un symptôme voisin gagnera une heure."
     )
-    sections = _sections(journal.read_text(encoding="utf-8"))
-    manquantes = [s for s in SECTIONS if s not in sections]
+    sections = _rubriques(journal.read_text(encoding="utf-8"))
+    manquantes = [titre for cle, titre in RUBRIQUES.items() if cle not in sections]
     assert not manquantes, (
-        f"DEBUG.md n'a pas de section `## {manquantes[0].capitalize()}`. Il en faut "
-        "quatre, dans l'ordre de la démarche : ## Reproduire, ## Réduire, "
-        "## Observer, ## Corriger."
+        f"DEBUG.md n'a pas de rubrique `## {manquantes[0]}`. Il en faut trois : "
+        "## Ce que j'ai vu, ## La cause, ## La correction."
     )
-    vides = [s for s in SECTIONS if len(re.sub(r"\s", "", sections[s])) < 20]
+    vides = [RUBRIQUES[cle] for cle in RUBRIQUES if len(re.sub(r"\s", "", sections[cle])) < 20]
     assert not vides, (
-        f"La section `## {vides[0].capitalize()}` de DEBUG.md est vide ou presque : "
-        "une phrase au moins, qui dit ce que vous avez fait et ce que vous avez vu."
+        f"La rubrique `## {vides[0]}` de DEBUG.md est vide ou presque : une phrase "
+        "au moins, qui dit ce que vous avez fait ou constaté."
     )
-    assert CHAINE_MINIMALE.search(sections["réduire"]), (
-        "La section Réduire ne cite pas la chaîne minimale qui déclenche le bogue. "
-        "Réduire, c'est retirer tout ce qui n'est pas nécessaire (le certificat, "
-        "openssl, l'inventaire) jusqu'à la plus petite entrée qui casse encore : "
-        "citez-la, avec ses espaces exacts."
+    assert CAUSE.search(sections["cause"]), (
+        "La rubrique « La cause » ne dit pas ce qui casse la lecture de la date. "
+        "Comparez ce qu'openssl écrit pour vpn-01 et pour web-01 : quelle "
+        "différence de caractères, et que fait `split(\" \")` de cette différence ?"
     )

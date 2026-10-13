@@ -1,11 +1,13 @@
 """Épreuve : reprendre un outil d'exploitation. Cinq contrôles, vingt points chacun.
 
-## Une épreuve notée sur le contrat, dans n'importe quel langage
+## Un projet Python, noté en boîte noire
 
-L'apprenant livre certcheck en Bash, en Python ou en Go. Rien ici ne lit son
-code : les contrôles lancent `bin/certcheck`, sa suite `./test.sh`, son
-`Makefile` et son dépôt Git comme le ferait un collègue qui reprend l'outil,
-et ne jugent que ce qui s'observe.
+L'apprenant livre certcheck sous la forme d'un projet Python : `pyproject.toml`,
+le paquet sous `src/`, une suite pytest sous `tests/`, un CHANGELOG et une
+étiquette Git. Rien ici ne lit son code : les contrôles lancent
+`bin/certcheck`, sa suite de tests, l'installation de son projet dans un
+environnement neuf et son dépôt Git, comme le ferait un collègue qui reprend
+l'outil, et ne jugent que ce qui s'observe.
 
 ## Ce qui est attendu se calcule
 
@@ -22,8 +24,7 @@ et ne jugent que ce qui s'observe.
 from __future__ import annotations
 
 import re
-import shutil
-import time
+import tomllib
 from dataclasses import dataclass
 from datetime import date, timedelta
 from pathlib import Path
@@ -33,8 +34,6 @@ import pytest
 from conftest import (
     EXPIRATIONS,
     REFERENCE,
-    TITRE_TICKET,
-    Forge,
     attendus,
     code_attendu,
     copie_temporaire,
@@ -48,7 +47,6 @@ from conftest import (
     lire_json_sortie,
     lire_yaml,
     rendre_executable,
-    serveur_muet,
     tirage,
     workdir_lab,
 )
@@ -56,18 +54,25 @@ from conftest import (
 WORKDIR = workdir_lab(__file__)
 LAB_ID = "level-exams-outil"
 FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
-OPTIONS = ("--inventory", "--days", "--format", "--publish", "--dry-run", "--verbose", "--version")
+OPTIONS = ("--inventory", "--days", "--format", "--version")
 # Les certificats dont le jour d'expiration s'écrit sur un chiffre : openssl
 # l'affiche avec deux espaces (« Mar  5 12:00:00 2031 GMT »).
 JOUR_A_UN_CHIFFRE = sorted(h for h, d in EXPIRATIONS.items() if d.day < 10)
-DELAI_MAXIMAL = 60  # secondes, pour rendre la main face à une forge muette
 SEMVER = re.compile(r"^v(\d+)\.(\d+)\.(\d+)$")
+TESTS_MINIMUM = 3
 
 
 @pytest.fixture(scope="module")
 def outil() -> Path:
     exiger_workdir(WORKDIR, LAB_ID)
     return exiger_executable(WORKDIR)
+
+
+def _pyproject(texte: str, ou: str) -> dict:
+    try:
+        return tomllib.loads(texte)
+    except tomllib.TOMLDecodeError as exc:
+        pytest.fail(f"pyproject.toml {ou} n'est pas un TOML valide : {exc}", pytrace=False)
 
 
 # --- Tâche 1 : le contrat -------------------------------------------------------
@@ -85,15 +90,13 @@ def _scenario(rnd) -> tuple[list[str], date, int]:
     return hotes, jour, seuil
 
 
-def _inventaire_brut(dossier: Path, hotes: list[str], rnd, *, crlf: bool) -> Path:
-    """Un inventaire comme on en reçoit : espaces et tabulations mêlés, commentaires, CRLF."""
+def _inventaire_brut(dossier: Path, hotes: list[str], rnd) -> Path:
+    """Un inventaire comme on en reçoit : espaces et tabulations mêlés, commentaires."""
     inventaire = ecrire_inventaire(dossier, hotes)
     lignes = ["# inventaire exporté depuis l'outil de parc", ""]
     for hote in hotes:
-        separateur = rnd.choice([" ", "\t", "   ", " \t "])
-        lignes.append(f"{hote}{separateur}certs/{hote}.pem")
-    fin = "\r\n" if crlf else "\n"
-    inventaire.write_bytes((fin.join(lignes) + fin).encode())
+        lignes.append(f"{hote}{rnd.choice([' ', chr(9), '   ', ' ' + chr(9) + ' '])}certs/{hote}.pem")
+    inventaire.write_text("\n".join(lignes) + "\n", encoding="utf-8")
     return inventaire
 
 
@@ -116,17 +119,15 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
             f"la sortie d'erreur, rien sur la sortie standard.\n  {res.resume()}"
         )
 
-    # Trois parcs tirés au hasard, dont un aux fins de ligne CRLF.
+    # Trois parcs tirés au hasard.
     graine = tirage().randrange(10**6)
     rnd = tirage(graine)
     for i in range(3):
         hotes, jour, seuil = _scenario(rnd)
         dossier = tmp_path / f"parc-{i}"
-        crlf = i == 0
-        inventaire = _inventaire_brut(dossier, hotes, rnd, crlf=crlf)
+        inventaire = _inventaire_brut(dossier, hotes, rnd)
         attendu = attendus(hotes, jour, seuil)
-        contexte = (f"graine {graine}, parc {i}, aujourd'hui {jour}, seuil {seuil}, "
-                    f"fins de ligne {'CRLF' if crlf else 'LF'}")
+        contexte = f"graine {graine}, parc {i}, aujourd'hui {jour}, seuil {seuil}"
         res = lancer(outil, "--inventory", str(inventaire), "--days", str(seuil), "--format", "json",
                      cwd=tmp_path, env={"CERTCHECK_NOW": jour.isoformat()})
         donnees = lire_json_sortie(res)
@@ -138,8 +139,8 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
                 f"{hote} : lu days_left={lu.get('days_left')} status={lu.get('status')} "
                 f"not_after={lu.get('not_after')}, attendu {jours}, {statut}, "
                 f"{EXPIRATIONS[hote].isoformat()} ({contexte}). Vérifiez le seuil inclusif, "
-                "les séparateurs (espaces ET tabulations), le retour chariot d'un fichier "
-                "CRLF, et les jours à un chiffre, qu'openssl écrit avec deux espaces."
+                "les séparateurs (espaces ET tabulations) et les jours à un chiffre, "
+                "qu'openssl écrit avec deux espaces."
             )
         code = code_attendu([s for _, s in attendu.values()])
         assert res.code == code, f"Code {res.code}, attendu {code} ({contexte}).\n  {res.resume()}"
@@ -151,23 +152,25 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
                 f"  {texte.resume()}"
             )
 
-    # La configuration par l'environnement, et l'option qui l'emporte.
+    # Le seuil par l'environnement, et l'option qui l'emporte.
     inventaire = ecrire_inventaire(tmp_path / "conf", ["api-01", "web-01"], separateur="\t")
     jour = EXPIRATIONS["api-01"] - timedelta(days=20)
-    env = {"CERTCHECK_NOW": jour.isoformat(), "CERTCHECK_INVENTORY": str(inventaire)}
     ailleurs = tmp_path / "ailleurs"
     ailleurs.mkdir()
-    res = lancer(outil, "--format", "json", cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "10"})
+    env = {"CERTCHECK_NOW": jour.isoformat()}
+    res = lancer(outil, "--inventory", str(inventaire), "--format", "json", cwd=ailleurs,
+                 env={**env, "CERTCHECK_DAYS": "10"})
     statuts = {c.get("host"): c.get("status") for c in lire_json_sortie(res)["certificates"]}
     assert res.code == 0 and statuts == {"api-01": "ok", "web-01": "ok"}, (
-        "CERTCHECK_INVENTORY désigne l'inventaire (lancé depuis un autre dossier) et "
-        f"CERTCHECK_DAYS=10 laisse api-01, à 20 jours, en ok.\n  {res.resume()}"
+        "CERTCHECK_DAYS=10 laisse api-01, à 20 jours, en ok (lancé depuis un autre dossier : "
+        f"les chemins des certificats sont relatifs à l'inventaire).\n  {res.resume()}"
     )
-    res = lancer(outil, "--format", "json", "--days", "30", cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "10"})
+    res = lancer(outil, "--inventory", str(inventaire), "--days", "30", cwd=ailleurs,
+                 env={**env, "CERTCHECK_DAYS": "10"})
     assert res.code == 1, (
         f"--days 30 l'emporte sur CERTCHECK_DAYS=10 : api-01 passe en warning, code 1.\n  {res.resume()}"
     )
-    res = lancer(outil, cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "dix"})
+    res = lancer(outil, "--inventory", str(inventaire), cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "dix"})
     assert res.code == 2 and res.erreurs.strip(), (
         f"CERTCHECK_DAYS=dix est une configuration invalide : code 2 et un message.\n  {res.resume()}"
     )
@@ -188,90 +191,7 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
     )
 
 
-# --- Tâche 2 : la publication ---------------------------------------------------
-
-
-def _publier(outil: Path, dossier: Path, forge: Forge, *, timeout: int = 120):
-    inventaire = ecrire_inventaire(dossier, ["web-02", "web-01", "vpn-01"])  # web-02 a expiré
-    return lancer(outil, "--inventory", str(inventaire), "--publish", "--verbose", cwd=dossier,
-                  env={"CERTCHECK_NOW": "2026-06-01", **forge.env()}, timeout=timeout)
-
-
-def _remettre(forge: Forge, *, pannes: int = 0) -> None:
-    forge.tickets.clear()
-    forge.requetes.clear()
-    forge.pannes = pannes
-
-
-def test_la_publication_est_sure_idempotente_et_bornee(outil: Path, tmp_path: Path, forge: Forge) -> None:
-    # Un ticket, le jeton dans l'en-tête, nulle part ailleurs.
-    forge.ajouter_tickets(3)
-    res = _publier(outil, tmp_path / "a", forge)
-    creations = forge.creations()
-    assert res.code == 1 and len(creations) == 1, (
-        f"Un certificat expiré et --publish : un ticket ouvert ({len(creations)} reçu(s)), et "
-        f"le code reste celui du contrôle, 1.\n  {res.resume()}"
-    )
-    assert (creations[0]["corps"] or {}).get("title") == TITRE_TICKET, (
-        f"Le ticket s'intitule exactement « {TITRE_TICKET} » : c'est par ce titre que "
-        "l'outil le retrouve la nuit suivante."
-    )
-    fuites = [f"{r['methode']} {r['chemin']}?{r['query']}" for r in forge.requetes
-              if forge.jeton in r["chemin"] or forge.jeton in r["query"]]
-    assert not fuites, (
-        f"Le jeton figure dans l'URL de {fuites} : une URL finit dans les journaux du "
-        "serveur et des mandataires. Il part dans l'en-tête Authorization."
-    )
-    sans_entete = [r["methode"] for r in forge.requetes
-                   if r["auth"] not in (f"token {forge.jeton}", f"Bearer {forge.jeton}")]
-    assert not sans_entete, (
-        f"{len(sans_entete)} requête(s) sans `Authorization: token <jeton>` : la forge les refuse."
-    )
-    assert forge.jeton not in res.sortie + res.erreurs, (
-        "Le jeton apparaît sur une sortie, même avec --verbose : la sortie d'un cron "
-        "finit dans un courriel. Aucun secret n'est jamais écrit."
-    )
-    # Idempotence : la nuit suivante n'ouvre rien de plus.
-    res = _publier(outil, tmp_path / "a", forge)
-    assert len(forge.creations()) == 1, (
-        f"Deuxième passage : {len(forge.creations())} ticket(s) en tout. Le ticket déjà "
-        f"ouvert doit être retrouvé, pas doublé.\n  {res.resume()}"
-    )
-
-    # Pagination : le ticket existant est en deuxième page.
-    _remettre(forge)
-    forge.ajouter_tickets(70, cible_en=55)
-    res = _publier(outil, tmp_path / "b", forge)
-    assert not forge.creations(), (
-        "70 tickets ouverts, celui de certcheck en 56e position : il est en deuxième page "
-        "(la forge rend 30 tickets par page par défaut, 50 au plus avec limit). Un outil "
-        "qui ne lit que la première page en ouvre un doublon chaque nuit.\n  " + res.resume()
-    )
-
-    # Reprise : deux 503 avant que la forge réponde.
-    _remettre(forge, pannes=2)
-    res = _publier(outil, tmp_path / "c", forge)
-    assert res.code == 1 and len(forge.creations()) == 1, (
-        "La forge rend 503 deux fois, puis répond : une erreur passagère se reprend (trois "
-        f"essais au total), et le ticket s'ouvre. {len(forge.creations())} ticket(s) reçu(s).\n"
-        f"  {res.resume()}"
-    )
-
-    # Délai maximal : une forge qui accepte la connexion et ne répond jamais.
-    with serveur_muet() as url:
-        muette = Forge(url=url)
-        debut = time.monotonic()
-        res = _publier(outil, tmp_path / "d", muette, timeout=DELAI_MAXIMAL + 30)
-        duree = time.monotonic() - debut
-    assert res.code == 3 and duree < DELAI_MAXIMAL, (
-        f"Face à une forge qui ne répond jamais, l'outil a rendu la main en {duree:.0f} s "
-        f"avec le code {res.code}. Attendu : moins de {DELAI_MAXIMAL} s et le code 3 "
-        "(publication échouée). Chaque requête porte un délai maximal, et les essais "
-        f"sont comptés.\n  {res.resume()}"
-    )
-
-
-# --- Tâche 3 : la suite de tests de l'apprenant ---------------------------------
+# --- Tâche 2 : la suite de tests de l'apprenant ---------------------------------
 
 
 def _lanceur(dossier: Path, nom: str, script: Path) -> Path:
@@ -297,139 +217,117 @@ def _variante_boguee(dossier: Path) -> Path:
     return variante
 
 
-def test_la_suite_de_l_apprenant_attrape_l_erreur_avalee(tmp_path: Path) -> None:
+def _reussis(sortie: str) -> int:
+    trouves = re.findall(r"(\d+) passed", sortie)
+    return int(trouves[-1]) if trouves else 0
+
+
+def test_vos_tests_attrapent_le_defaut_herite(tmp_path: Path) -> None:
     exiger_workdir(WORKDIR, LAB_ID)
-    suite = WORKDIR / "test.sh"
-    if not suite.is_file():
+    uv = exiger_outil("uv")
+    if not any((WORKDIR / "tests").glob("test_*.py")):
         pytest.fail(
-            "test.sh est absent de la racine du dépôt. Il lance VOTRE suite de tests contre "
-            "l'exécutable désigné par CERTCHECK_BIN (bin/certcheck par défaut), et sort en 0 "
-            "si tout passe.",
+            "Aucun fichier tests/test_*.py : vos tests pytest vivent dans le dossier tests/ "
+            "du projet. Ils lancent l'exécutable désigné par la variable CERTCHECK_BIN "
+            "(bin/certcheck par défaut), jamais une fonction importée.",
             pytrace=False,
         )
-    if not suite.stat().st_mode & 0o100:
-        pytest.fail("test.sh n'est pas exécutable : `chmod +x test.sh`.", pytrace=False)
-
     reference = _lanceur(tmp_path, "reference", REFERENCE)
     boguee = _lanceur(tmp_path, "boguee", _variante_boguee(tmp_path))
     with copie_temporaire(WORKDIR) as copie:
         def jouer(binaire: Path):
-            return executer(["./test.sh"], cwd=copie, env={"CERTCHECK_BIN": str(binaire)}, timeout=300)
+            return executer([uv, "run", "--quiet", "--with", "pytest", "pytest", "-q", "-p", "no:cacheprovider",
+                             "tests"], cwd=copie, env={"CERTCHECK_BIN": str(binaire)}, timeout=600)
 
         def resume(res) -> str:
             return f"code {res.returncode}\n{(res.stdout + res.stderr).strip()[-1500:]}"
 
         sien = jouer(copie / "bin" / "certcheck")
-        assert sien.returncode == 0, (
-            "./test.sh échoue contre VOTRE outil (CERTCHECK_BIN=bin/certcheck) : une suite "
-            "livrée passe sur l'outil livré.\n" + resume(sien)
+        assert sien.returncode == 0 and _reussis(sien.stdout) >= TESTS_MINIMUM, (
+            f"`uv run pytest tests` doit passer contre VOTRE outil (CERTCHECK_BIN=bin/certcheck), "
+            f"avec au moins {TESTS_MINIMUM} tests réussis ({_reussis(sien.stdout)} lus).\n" + resume(sien)
         )
         ref = jouer(reference)
         assert ref.returncode == 0, (
-            "./test.sh échoue contre l'outil de RÉFÉRENCE, qui respecte CONTRAT.md : un test "
+            "Vos tests échouent contre l'outil de RÉFÉRENCE, qui respecte CONTRAT.md : un test "
             "attend autre chose que le contrat (une version exacte, un format de texte "
             "précis, la date du jour réelle au lieu de CERTCHECK_NOW), ou la suite ignore "
             "CERTCHECK_BIN.\n" + resume(ref)
         )
         bug = jouer(boguee)
     assert bug.returncode != 0, (
-        "./test.sh passe contre une variante qui reproduit le défaut du script hérité : un "
+        "Vos tests passent contre une variante qui reproduit le défaut du script hérité : un "
         "certificat absent y est compté « warning, 0 jour », code 1, au lieu de error et "
         "code 2. Le défaut qui a motivé la reprise n'est couvert par aucun test, ou la "
         "suite teste toujours bin/certcheck au lieu de CERTCHECK_BIN.\n" + resume(bug)
     )
 
 
-# --- Tâche 4 : la livraison -----------------------------------------------------
+# --- Tâche 3 : le projet s'installe ---------------------------------------------
 
 
-def _etiquette_annotee() -> tuple[str, str]:
-    if not (WORKDIR / ".git").exists():
-        pytest.fail(
-            "Le répertoire de travail n'est pas un dépôt Git : `git init`, des commits, puis "
-            "une étiquette annotée `git tag -a vX.Y.Z -m ...`.",
-            pytrace=False,
-        )
-    res = git("for-each-ref", "--format=%(objecttype) %(refname:strip=2)", "refs/tags", cwd=WORKDIR)
-    annotees, legeres = [], []
-    for ligne in res.stdout.splitlines():
-        genre, _, nom = ligne.partition(" ")
-        if SEMVER.match(nom):
-            (annotees if genre == "tag" else legeres).append(nom)
-    if not annotees:
-        detail = f" Étiquette(s) légère(s) trouvée(s) : {legeres}." if legeres else ""
-        pytest.fail(
-            "Aucune étiquette annotée de la forme vX.Y.Z. Une étiquette légère n'est qu'un "
-            "pointeur : elle n'a ni auteur, ni date, ni message, et `git describe` l'ignore. "
-            f"`git tag -a v1.0.0 -m \"certcheck 1.0.0\"`.{detail}",
-            pytrace=False,
-        )
-    nom = max(annotees, key=lambda n: tuple(int(x) for x in SEMVER.match(n).groups()))
-    return nom, nom[1:]
-
-
-def _verrou_present(fichiers: set[str], lire) -> bool:
-    if "uv.lock" in fichiers or "go.sum" in fichiers:
+def _dependances_epinglees(projet: dict) -> bool:
+    """uv.lock, un requirements*.txt tout en ==, ou des dépendances de dev toutes en ==."""
+    if (WORKDIR / "uv.lock").is_file():
         return True
-    if "go.mod" in fichiers and re.search(r"^toolchain go\d+\.\d+\.\d+\s*$", lire("go.mod"), re.MULTILINE):
-        return True
-    if "mise.toml" in fichiers:
-        outils = re.search(r"^\[tools\](.*?)(?=^\[|\Z)", lire("mise.toml"), re.MULTILINE | re.DOTALL)
-        valeurs = re.findall(r'^\s*[\w.:/-]+\s*=\s*"([^"]*)"', outils.group(1), re.MULTILINE) if outils else []
-        return bool(valeurs) and all(re.fullmatch(r"\d+\.\d+\.\d+", v) for v in valeurs)
-    return False
+    for fichier in WORKDIR.glob("requirements*.txt"):
+        lignes = [ligne.split("#")[0].strip() for ligne in fichier.read_text(encoding="utf-8").splitlines()]
+        lignes = [ligne for ligne in lignes if ligne and not ligne.startswith("-")]
+        if lignes and all("==" in ligne for ligne in lignes):
+            return True
+    groupes = list((projet.get("dependency-groups") or {}).values())
+    groupes += list(((projet.get("project") or {}).get("optional-dependencies") or {}).values())
+    specs = [s for g in groupes for s in g if isinstance(s, str)]
+    return bool(specs) and all("==" in s for s in specs)
 
 
-def test_la_version_se_livre_depuis_son_etiquette(tmp_path: Path) -> None:
+def test_le_projet_s_installe_dans_un_environnement_neuf(tmp_path: Path) -> None:
     exiger_workdir(WORKDIR, LAB_ID)
-    exiger_outil("make")
-    etiquette, version = _etiquette_annotee()
-
-    fichiers = set(git("ls-tree", "-r", "--name-only", etiquette, cwd=WORKDIR).stdout.split())
-
-    def lire(nom: str) -> str:
-        return git("show", f"{etiquette}:{nom}", cwd=WORKDIR).stdout
-
-    assert "CHANGELOG.md" in fichiers and re.search(
-        rf"^## \[{re.escape(version)}\]", lire("CHANGELOG.md"), re.MULTILINE), (
-        f"Le CHANGELOG.md de l'étiquette {etiquette} doit porter une section `## [{version}]` : "
-        "c'est ce que lit celui qui se demande ce qui a changé avant de mettre à jour."
+    uv = exiger_outil("uv")
+    if not (WORKDIR / "pyproject.toml").is_file():
+        pytest.fail("pyproject.toml est absent : le projet Python n'existe pas encore.", pytrace=False)
+    projet = _pyproject((WORKDIR / "pyproject.toml").read_text(encoding="utf-8"), "du répertoire de travail")
+    version = str((projet.get("project") or {}).get("version", ""))
+    scripts = (projet.get("project") or {}).get("scripts") or {}
+    assert "certcheck" in scripts, (
+        "pyproject.toml ne déclare pas la commande `certcheck` dans [project.scripts] "
+        "(forme `certcheck = \"certcheck.cli:main\"`) : une fois installé, le paquet ne "
+        "créerait aucune commande."
     )
-    assert _verrou_present(fichiers, lire), (
-        f"L'étiquette {etiquette} ne porte aucun verrou des versions : uv.lock (Python), "
-        "go.sum ou un go.mod avec `toolchain goX.Y.Z` (Go), ou un mise.toml dont chaque "
-        "outil est à une version exacte X.Y.Z (Bash). Sans lui, la même étiquette ne "
-        "reconstruit pas le même outil dans six mois."
+    assert any(WORKDIR.glob("src/*/__init__.py")), (
+        "Aucun paquet sous src/ (src/<paquet>/__init__.py) : le code de l'outil vit dans un "
+        "paquet, en src layout."
     )
-
-    clone, prefixe = tmp_path / "clone", tmp_path / "prefixe"
-    res = git("clone", "--quiet", "--branch", etiquette, str(WORKDIR), str(clone), cwd=tmp_path)
-    assert res.returncode == 0, f"`git clone --branch {etiquette}` a échoué : {res.stderr.strip()}"
-    assert (clone / "Makefile").is_file(), f"Le clone de {etiquette} n'a pas de Makefile à sa racine."
-    res = executer(["make", "install", f"PREFIX={prefixe}"], cwd=clone, timeout=300)
-    installe = prefixe / "bin" / "certcheck"
-    assert res.returncode == 0 and installe.is_file(), (
-        f"`make install PREFIX={prefixe}`, depuis un clone de {etiquette}, doit installer "
-        f"{installe}. Code {res.returncode}.\n{(res.stdout + res.stderr).strip()[-1200:]}"
+    assert _dependances_epinglees(projet), (
+        "Les dépendances de développement (pytest au moins) ne sont pas épinglées : un "
+        "uv.lock, un requirements-dev.txt dont chaque ligne porte ==, ou un groupe "
+        "[dependency-groups] dont chaque entrée porte ==. Sans cela, la même suite ne tourne "
+        "pas avec les mêmes versions dans six mois."
     )
-    shutil.rmtree(clone)  # l'outil installé ne dépend pas du clone qui l'a construit
-    assert installe.exists(), (
-        f"{installe} ne mène plus à rien une fois le clone supprimé : c'est un lien vers le "
-        "clone, pas une installation. `make install` copie dans PREFIX tout ce dont l'outil "
-        "a besoin pour tourner."
+    env = tmp_path / "env"
+    python = env / "bin" / "python"
+    creation = executer([uv, "venv", "--quiet", str(env)], cwd=tmp_path)
+    assert creation.returncode == 0, f"`uv venv` échoue : {creation.stderr.strip()}"
+    with copie_temporaire(WORKDIR) as copie:
+        installation = executer([uv, "pip", "install", "--quiet", "--python", str(python), str(copie)],
+                                cwd=tmp_path, timeout=600)
+    assert installation.returncode == 0, (
+        "Le projet ne s'installe pas dans un environnement neuf (`pip install .`, ici "
+        "`uv pip install`) : pyproject.toml incomplet, [build-system] absent, ou fichier "
+        f"cité introuvable.\n{(installation.stdout + installation.stderr).strip()[-1200:]}"
     )
-
-    res = lancer(installe, "--version", cwd=tmp_path)
-    assert res.sortie.strip() == f"certcheck {version}" and res.code == 0, (
-        f"L'outil installé depuis {etiquette} doit afficher « certcheck {version} » : la "
-        "version annoncée et l'étiquette disent la même chose. (Le clone a été supprimé "
-        f"après l'installation.)\n  {res.resume()}"
+    certcheck = env / "bin" / "certcheck"
+    res = lancer(certcheck, "--version", cwd=tmp_path)
+    assert res.code == 0 and res.sortie.strip() == f"certcheck {version}", (
+        f"Installé, `certcheck --version` doit afficher « certcheck {version} », la version "
+        "de pyproject.toml : la version annoncée et la version installée disent la même "
+        f"chose.\n  {res.resume()}"
     )
     rnd = tirage()
     hotes = rnd.sample(sorted(EXPIRATIONS), 4)
     jour, seuil = date(2026, 6, 1) + timedelta(days=rnd.randint(0, 900)), 30
     inventaire = ecrire_inventaire(tmp_path / "fumee", hotes)
-    res = lancer(installe, "--inventory", str(inventaire), "--format", "json", cwd=tmp_path,
+    res = lancer(certcheck, "--inventory", str(inventaire), "--format", "json", cwd=tmp_path,
                  env={"CERTCHECK_NOW": jour.isoformat()})
     lus = {c.get("host"): (c.get("days_left"), c.get("status"))
            for c in lire_json_sortie(res)["certificates"] if isinstance(c, dict)}
@@ -440,15 +338,53 @@ def test_la_version_se_livre_depuis_son_etiquette(tmp_path: Path) -> None:
     )
 
 
+# --- Tâche 4 : la version est étiquetée ------------------------------------------
+
+
+def test_la_version_est_notee_et_etiquetee() -> None:
+    exiger_workdir(WORKDIR, LAB_ID)
+    if not (WORKDIR / ".git").exists():
+        pytest.fail(
+            "Le répertoire de travail n'est pas un dépôt Git : `git init`, des commits, puis "
+            "une étiquette `git tag -a vX.Y.Z -m ...`.",
+            pytrace=False,
+        )
+    noms = git("tag", "--list", cwd=WORKDIR).stdout.split()
+    versions = [n for n in noms if SEMVER.match(n)]
+    assert versions, (
+        f"Aucune étiquette de la forme vX.Y.Z (lues : {noms or 'aucune'}). Une version livrée "
+        "se repère par son étiquette : `git tag -a v1.0.0 -m \"certcheck 1.0.0\"`."
+    )
+    etiquette = max(versions, key=lambda n: tuple(int(x) for x in SEMVER.match(n).groups()))
+    version = etiquette[1:]
+
+    def lire(nom: str) -> str:
+        res = git("show", f"{etiquette}:{nom}", cwd=WORKDIR)
+        return res.stdout if res.returncode == 0 else ""
+
+    changelog = lire("CHANGELOG.md")
+    assert re.search(rf"^## \[{re.escape(version)}\]", changelog, re.MULTILINE), (
+        f"Le CHANGELOG.md du commit étiqueté {etiquette} doit porter une section "
+        f"`## [{version}]` : c'est ce que lit celui qui se demande ce qui a changé."
+    )
+    pyproject = lire("pyproject.toml")
+    lue = str((_pyproject(pyproject, f"de {etiquette}").get("project") or {}).get("version", "")) if pyproject else ""
+    assert lue == version, (
+        f"Au commit étiqueté {etiquette}, pyproject.toml porte la version {lue!r}. L'étiquette "
+        "désigne le commit qui CONTIENT la version livrée : passez la version, committez, "
+        "puis étiquetez."
+    )
+
+
 # --- Tâche 5 : la revue de la pull request n°57 ---------------------------------
 
 CATEGORIES = {
-    "erreur-avalee", "secret-expose", "tls-desactive", "effet-de-bord-non-borne",
-    "dependance-non-epinglee", "test-absent", "non-idempotent", "injection-de-commande",
+    "erreur-avalee", "secret-expose", "tls-desactive", "injection-de-commande",
+    "dependance-non-epinglee", "test-absent",
 }
 LONGUEUR_MINIMALE = 25
 FAUX_POSITIFS_TOLERES = 2
-DEFAUTS_A_TROUVER = 4
+DEFAUTS_A_TROUVER = 3
 
 
 @dataclass(frozen=True)
@@ -496,8 +432,6 @@ def defauts() -> dict[str, list[Zone]]:
             _zone("tls-desactive", "certcheck.py", code, "ssl._create_unverified_context()"),
             _zone("tls-desactive", "certcheck.py", code, "context=CONTEXTE_TLS"),
         ],
-        "non-idempotent": [_zone("non-idempotent", "certcheck.py", code,
-                                 "def ticket_ouvert(", "for ticket in tickets if isinstance(tickets, list)")],
     }
 
 
@@ -548,7 +482,7 @@ def test_la_revue_de_la_pr_57_trouve_les_defauts(defauts: dict[str, list[Zone]])
 
     trouves = sorted(cat for cat, zones in defauts.items() if designe(zones))
     assert len(trouves) >= DEFAUTS_A_TROUVER, (
-        f"{len(trouves)} défaut(s) sur 5 désignés ({trouves}) ; il en faut au moins "
+        f"{len(trouves)} défaut(s) sur 4 désignés ({trouves}) ; il en faut au moins "
         f"{DEFAUTS_A_TROUVER}. Un défaut est trouvé quand un commentaire porte le bon fichier "
         "(chemin depuis pr/main), la bonne catégorie, et une ligne à deux lignes près, "
         "comptée dans le fichier APRÈS application du diff. Confrontez chaque affirmation "

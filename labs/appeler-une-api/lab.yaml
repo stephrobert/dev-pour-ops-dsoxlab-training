@@ -1,24 +1,22 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: appeler-une-api
-title: "Call an API without fragility: certcheck publishes its ticket"
+title: "Call an API with requests: certcheck opens its ticket"
 description: |
-  certcheck works, but its publication to the forge was written in a hurry:
-  the token travels in the URL, nothing bounds the wait, the first 503 is
-  fatal and every run opens a new ticket. Fix it so that it honours the
-  contract: Authorization header, a single ticket found across every page,
-  retries on 429 and 5xx, and a timeout on each request. Graded on the
-  requests received by a fake forge.
+  certcheck must open a ticket on the forge when certificates are due. Step
+  by step, with the requests library declared and pinned in the project:
+  the token in the Authorization header and never in the URL, a timeout on
+  each request, an HTTP error turned into exit code 3 with a clear message,
+  the ticket created with the right title, and no duplicate when it is
+  already open. Graded on the requests received by a fake forge.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 45m
+estimated_time: 30m
 skills:
   - rest-api
+  - requests
   - authentication
-  - pagination
-  - idempotence
-  - retries
   - timeouts
   - python
 distros:
@@ -28,9 +26,18 @@ runtime:
   type: shell
   workdir: challenge/work
   fixtures:
+    - .gitignore
+    - pyproject.toml
+    - uv.lock
     - CONTRAT.md
-    - certcheck.py
+    - src/certcheck/__init__.py
+    - src/certcheck/erreurs.py
+    - src/certcheck/certificats.py
+    - src/certcheck/inventaire.py
+    - src/certcheck/forge.py
+    - src/certcheck/cli.py
     - bin/certcheck
+    - forge_factice.py
     - inventaire.txt
     - certs/web-01.pem
     - certs/web-02.pem

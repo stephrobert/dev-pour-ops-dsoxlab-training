@@ -1,34 +1,30 @@
-# Challenge: certcheck 1.0.0, tagged and installable
+# Challenge: certcheck 1.0.0, versioned and installable
 
-5 tasks, 100 points, 40 minutes. Network access required (PyPI).
+5 tasks, 100 points, 25 minutes. Network access required (PyPI).
 
-### Task 1: a single-source version (20 pts)
+### Task 1: a single source for the version (20 pts)
 
 `pyproject.toml` carries version 1.0.0, `bin/certcheck --version` prints
-exactly `certcheck 1.0.0`, no `1.0.0` string is hard-coded under `src/`,
-and a copy whose `pyproject.toml` changes version prints the new one without
+exactly `certcheck 1.0.0`, no `1.0.0` string is hard-coded under `src/`, and
+a copy whose `pyproject.toml` changes version prints the new one without
 touching the code.
 
-### Task 2: a dated changelog (20 pts)
+### Task 2: the changelog (20 pts)
 
-`CHANGELOG.md` carries `## [1.0.0] - YYYY-MM-DD`, with at least one heading
-(Added, Changed, Fixed or Ajouté, Modifié, Corrigé) and one entry, below
-`[Unreleased]` and above earlier versions.
+`CHANGELOG.md` has a `## [1.0.0]` section with at least one `- ...` entry.
 
-### Task 3: an annotated tag on the right revision (20 pts)
+### Task 3: the v1.0.0 tag (20 pts)
 
-The working directory is a Git repository; `v1.0.0` is an annotated tag; at
-the tagged commit, `pyproject.toml` is 1.0.0 and `uv.lock` follows it; the
-working tree is clean.
+The working directory is a Git repository, and the `v1.0.0` tag (annotated
+or lightweight) points at a commit where `pyproject.toml` says 1.0.0.
 
-### Task 4: the built artefacts (20 pts)
+### Task 4: installation in a fresh environment (20 pts)
 
-`dist/` holds `certcheck-1.0.0-py3-none-any.whl` and
-`certcheck-1.0.0.tar.gz`; the wheel declares its version, its dependencies
-and the `certcheck` entry point.
+`pip install .` of the project in a fresh environment succeeds, and
+`certcheck --version` there prints `certcheck 1.0.0`.
 
-### Task 5: a clean install from the tag (20 pts)
+### Task 5: installation from the tag (20 pts)
 
-The repository cloned at `v1.0.0` builds, the wheel installs in a fresh
-environment, `certcheck --version` prints `certcheck 1.0.0` there, and a run
-on a random inventory returns the contract's result.
+The repository cloned at `v1.0.0` installs in a fresh environment,
+`certcheck --version` there prints `certcheck 1.0.0`, and a run on a
+randomly drawn inventory gives the contract's result.

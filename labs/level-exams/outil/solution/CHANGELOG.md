@@ -6,20 +6,21 @@ suivent le [versionnage sémantique](https://semver.org/lang/fr/).
 
 ## [1.0.0] - 2026-10-13
 
-Première version de l'outil qui remplace le script hérité `certcheck.sh`.
+Première version du projet Python qui remplace le script hérité
+`certcheck.sh`.
 
 ### Ajouté
 
-- Un contrat écrit (`CONTRAT.md`) : options, configuration par
-  l'environnement, sortie JSON, codes de sortie 0, 1, 2 et 3.
-- La publication idempotente d'un ticket sur la forge, jeton dans l'en-tête,
-  toutes les pages parcourues, délai maximal et reprise sur 429 et 5xx.
-- Une suite de tests en boîte noire (`./test.sh`), qui juge l'exécutable
-  désigné par `CERTCHECK_BIN`.
-- `make install PREFIX=<dossier>`.
+- Le paquet `certcheck` (src layout), installable : `pip install .` ou
+  `uv tool install .` crée la commande `certcheck`.
+- Les options `--inventory`, `--days`, `--format text|json`, `--version` et
+  `--help`, et le seuil réglable par `CERTCHECK_DAYS`.
+- Une suite de tests pytest en boîte noire (`tests/`), qui juge
+  l'exécutable désigné par `CERTCHECK_BIN` : `uv run pytest`.
 
 ### Corrigé
 
-- Un certificat absent ou illisible est une erreur (`status: error`, code 2),
-  et non plus un certificat « à 0 jour » signalé en silence.
-- Le jeton de la forge ne figure plus dans l'URL ni dans les journaux.
+- Un certificat absent ou illisible est une erreur (`status: error`, code 2,
+  message sur la sortie d'erreur), et non plus un certificat « à 0 jour »
+  signalé en silence.
+- Le code de sortie dit enfin s'il y a des certificats à renouveler (1).

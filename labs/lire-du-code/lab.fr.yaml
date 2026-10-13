@@ -1,8 +1,8 @@
 id: lire-du-code
-title: "Lire un code qu'on n'a pas écrit : le script hérité certcheck.sh"
+title: "Lire le code d'une application Python : le paquet certcheck hérité"
 description: |
-  Un script Bash hérité contrôle chaque nuit l'expiration des certificats,
-  et personne dans l'équipe ne l'a écrit. Trouvez ses commandes externes,
-  ses effets de bord et sa configuration, exécutez-le sans risque, nommez
-  ses vrais défauts, et retrouvez dans son historique Git le commit qui a
-  commencé à masquer les erreurs.
+  Un paquet Python hérité contrôle chaque nuit l'expiration des certificats,
+  et personne dans l'équipe ne l'a écrit. Trouvez son point d'entrée et les
+  modules qu'il charge, son sous-processus et son appel réseau, exécutez-le
+  sans risque, nommez ses vrais défauts, et retrouvez dans son historique Git
+  le commit qui a commencé à avaler les erreurs.

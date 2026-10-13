@@ -1,9 +1,10 @@
 id: appeler-une-api
-title: "Appeler une API sans fragilité : certcheck publie son ticket"
+title: "Appeler une API avec requests : certcheck ouvre son ticket"
 description: |
-  certcheck fonctionne, mais sa publication sur la forge a été écrite à la
-  hâte : le jeton voyage dans l'URL, rien ne borne l'attente, la première 503
-  est fatale et chaque exécution ouvre un nouveau ticket. Corrigez-la pour
-  qu'elle respecte le contrat : en-tête Authorization, un seul ticket cherché
-  dans toutes les pages, reprise sur 429 et 5xx, délai maximal sur chaque
-  requête. Noté sur les requêtes reçues par une forge factice.
+  certcheck doit ouvrir un ticket sur la forge quand des certificats sont à
+  renouveler. Pas à pas, avec la bibliothèque requests déclarée et épinglée
+  dans le projet : le jeton dans l'en-tête Authorization et jamais dans
+  l'URL, un délai maximal sur chaque requête, une erreur HTTP traduite en
+  code 3 avec un message clair, le ticket créé avec le bon titre, et pas de
+  doublon s'il est déjà ouvert. Noté sur les requêtes reçues par une forge
+  factice.

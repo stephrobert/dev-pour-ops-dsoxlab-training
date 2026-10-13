@@ -1,4 +1,4 @@
-# Python Training: verifiable labs
+# Development for Ops: verifiable labs
 
 **Language:** [English](./README.md) · [Français](./README.fr.md)
 
@@ -8,40 +8,52 @@
 [![SLSA 3](https://slsa.dev/images/gh-badge-level3.svg)](https://slsa.dev)
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](./LICENSE)
 
-The labs of the **Automation** track of the blog's
-[Python course](https://blog.stephane-robert.info/docs/developper/programmation/python/)
-(in French), played with [dsoxlab](https://github.com/stephrobert/dsoxlab).
-One tool, `security_check.py`, built lab after lab: read a scanner report,
-query the OSV database, parse a real Trivy report, return an exit code a
-pipeline can act on, and test it.
+The labs of the blog's
+[Développer pour les Ops](https://blog.stephane-robert.info/docs/developper/)
+course (in French), played with [dsoxlab](https://github.com/stephrobert/dsoxlab).
+The course teaches an ops engineer to develop the way a developer does, in
+Python. One common thread, `certcheck`, a TLS certificate expiry check: you
+read the code of an inherited Python package, structure a Python project
+(src layout, `pyproject.toml`, uv) that honours a contract, call an API,
+test with pytest, debug, review a change, lock the dependencies and ship an
+installable version. The final exam takes over an operations tool end to
+end.
 
-Each lab has a starting point (the previous lab's solution), a check that
-runs your code, a reference solution, and was proven both ways: 0 before
-the work, 100 after. Each lab's verdict is in `validation-labs.json`.
+Each lab has a starting point, a check that judges what a caller observes
+(outputs, exit codes, requests received by a fake forge, repository files),
+a reference solution, and was proven both ways: 0 before the work, 100
+after. Each lab's verdict is in `validation-labs.json`.
 
 ```bash
 mise install                                     # uv and Python
 export LAB_HOME=$PWD
 dsoxlab list-labs
-dsoxlab run   automatisation-lire-un-rapport
-dsoxlab check automatisation-lire-un-rapport
+dsoxlab run   lire-du-code
+dsoxlab check lire-du-code
 ```
 
-No VM: the tool runs on your machine, in its own uv project. Only the last
-lab needs Docker, for act.
+No VM: the tool runs on your machine, in its own uv project, with the
+system's openssl and Git. A few labs download packages from PyPI.
 
 <!-- LABS:START -->
-### Automation: a security tool, step by step
+### The common thread: from inherited code to shipped tool
 
 | Lab (id) | Title | Level | Certif | Runtime | Companion guide |
 |---|---|---|---|---|---|
-| `automatisation-lire-un-rapport` | Read a scanner report: count the vulnerabilities by severity | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/json/) (in French) |
-| `automatisation-interroger-osv` | Query the OSV API: what is known about each package of the report | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/requests/) (in French) |
-| `automatisation-rapport-trivy` | Read a real Trivy report: nested results, missing keys and duplicates | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/dictionnaire/) (in French) |
-| `automatisation-code-de-sortie` | An exit code a pipeline can act on: --fail-on with Click | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/click/) (in French) |
-| `automatisation-tester-son-outil` | Test your own tool: a pytest suite that catches four real bugs | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/programmation/python/tests/pytest/) (in French) |
-| `automatisation-dans-la-ci` | A security gate in the pipeline: security_check.py in GitHub Actions | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/pipeline-cicd/github/securite/lab/pipeline-ci/) (in French) |
-| `automatisation-lire-un-sbom` | Read an SBOM: cross a CycloneDX inventory with the OSV database | automatisation | - | shell | [guide](https://blog.stephane-robert.info/docs/securiser/supply-chain/sbom/) (in French) |
+| `lire-du-code` | Read the code of a Python application: the inherited certcheck package | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
+| `script-en-outil` | Structure a Python project as a tool: certcheck honours its contract | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) (in French) |
+| `appeler-une-api` | Call an API without fragility: certcheck publishes its ticket | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/api-rest/) (in French) |
+| `tester-une-automatisation` | Your first tests: pytest catches two real bugs | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) (in French) |
+| `deboguer` | Debug step by step: the certificate certcheck cannot read | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) (in French) |
+| `relire-une-automatisation` | Review an automation change: certcheck pull request #42 | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) (in French) |
+| `dependances-reproductibles` | Reproducible dependencies: certcheck installs identically elsewhere | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) (in French) |
+| `livrer-un-outil` | Shipping an internal tool: certcheck 1.0.0, tagged and installable | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
 
-_7 labs, table generated by `scripts/gen_catalog.py`._
+### Level exam
+
+| Lab (id) | Title | Level | Certif | Runtime | Companion guide |
+|---|---|---|---|---|---|
+| `level-exams-outil` | Exam: take over an operations tool | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/parcours/) (in French) |
+
+_9 labs, table generated by `scripts/gen_catalog.py`._
 <!-- LABS:END -->

@@ -20,8 +20,6 @@ qu'un hôte est décommissionné avant d'être retiré de l'inventaire.
 - Un hôte dont le certificat est absent est ignoré au lieu de faire échouer
   tout le contrôle (le test correspondant est mis à jour).
 - Les chemins de l'inventaire acceptent `~` et `$HOME`, comme dans un shell.
-- `ticket_ouvert` est simplifié : une seule requête au lieu d'une boucle, la
-  forge n'a jamais plus d'une poignée de tickets ouverts.
 - Version 0.5.0.
 
 ## Comment tester

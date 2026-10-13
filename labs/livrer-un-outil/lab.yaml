@@ -1,23 +1,23 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: livrer-un-outil
-title: "Shipping an internal tool: certcheck 1.0.0, tagged and installable"
+title: "Ship a tool: certcheck 1.0.0, versioned and installable"
 description: |
-  certcheck has reproducible dependencies; it now has to be shipped. Bring
-  it to version 1.0.0 with a single source for the version, date the
-  changelog, put the project under Git with an annotated v1.0.0 tag, build
-  the wheel and the sdist, and prove that a clean environment installs and
-  runs the tool from the tag alone. Needs network access to PyPI.
+  certcheck declares its dependencies; it now has to be shipped, without
+  publishing anything. Step by step: version 1.0.0 written once in
+  pyproject.toml and shown by --version, a CHANGELOG section for 1.0.0, a
+  Git tag v1.0.0, then proof that a fresh environment installs the tool,
+  from the working directory and from a clone of the tag. Needs network
+  access to PyPI.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 40m
+estimated_time: 25m
 skills:
   - versioning
   - changelog
   - git-tags
   - packaging
-  - uv
   - python
 distros:
   - any
