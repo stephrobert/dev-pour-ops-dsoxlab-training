@@ -43,3 +43,12 @@ sections:
       - tester-une-automatisation
       - deboguer
       - relire-une-automatisation
+
+  # Épreuve de fin du niveau o1 : une MESURE, pas un cours. Notée sur le
+  # contrat de l'outil, en boîte noire, dans le langage choisi par
+  # l'apprenant (Bash, Python ou Go), sans indice.
+  - id: level-exams
+    title: "Level exam"
+    description: "Take over an inherited operations tool: rewrite it to its contract in the language of your choice, cover the seeded bug with a test, ship a tagged and installable version, and review a colleague's pull request. Graded as a black box, without hints."
+    labs:
+      - level-exams/outil

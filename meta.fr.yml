@@ -12,3 +12,6 @@ sections:
   - id: fil-rouge
     title: "Le fil rouge : du script hérité à l'outil livré"
     description: "Lire un script hérité, en faire un outil à contrat, le tester, le déboguer, relire un changement, verrouiller ses dépendances et livrer une version."
+  - id: level-exams
+    title: "Épreuve de niveau"
+    description: "Reprendre un outil d'exploitation hérité : le réécrire selon son contrat dans le langage de votre choix, couvrir le bogue semé par un test, livrer une version étiquetée et installable, et relire la pull request d'un collègue. Noté en boîte noire, sans indice."

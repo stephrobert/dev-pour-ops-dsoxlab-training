@@ -138,6 +138,21 @@ def check(lab: str, journal) -> dict:
     }
 
 
+def labs_du_catalogue() -> list[Path]:
+    """Tout répertoire porteur d'un lab.yaml, à n'importe quelle profondeur.
+
+    Les épreuves de fin de niveau vivent dans une section, `labs/level-exams/<nom>/`,
+    comme dans le catalogue Terraform : un `iterdir` sur `labs/` ne les verrait pas.
+    """
+    return sorted(c.parent for c in LABS.rglob("lab.yaml") if "challenge" not in c.parts)
+
+
+def identifiant_du_lab(lab: Path) -> str:
+    """L'id du contrat, celui que prend `dsoxlab run` : `level-exams-outil`, pas `outil`."""
+    d = yaml.safe_load((lab / "lab.yaml").read_text(encoding="utf-8")) or {}
+    return str(d.get("id") or lab.name)
+
+
 def workdir(lab: Path) -> Path:
     d = yaml.safe_load((lab / "lab.yaml").read_text(encoding="utf-8"))
     rel = ((d.get("runtime") or {}).get("workdir")) or "challenge/work"
@@ -180,7 +195,7 @@ def ecarts(avant: dict, apres: dict) -> list[str]:
 
 
 def valider(lab: Path, rejeu: bool) -> dict:
-    ident = lab.name
+    ident = identifiant_du_lab(lab)
     CACHE.mkdir(parents=True, exist_ok=True)
     journal_path = CACHE / f"validation-{ident}.log"
     debut = time.time()
@@ -348,7 +363,7 @@ def relire() -> int:
         return 1
 
     verdicts = json.loads(RESULTATS.read_text(encoding="utf-8"))
-    labs = sorted(p.name for p in LABS.iterdir() if (p / "lab.yaml").is_file())
+    labs = sorted(identifiant_du_lab(p) for p in labs_du_catalogue())
 
     manquants = [nom for nom in labs if nom not in verdicts]
     if manquants:
@@ -402,20 +417,20 @@ def main() -> int:
                   file=sys.stderr)
             return 2
 
-    labs = sorted(p for p in LABS.iterdir() if (p / "lab.yaml").is_file())
+    labs = labs_du_catalogue()
     if args.lab:
-        inconnus = set(args.lab) - {p.name for p in labs}
+        inconnus = set(args.lab) - {identifiant_du_lab(p) for p in labs}
         if inconnus:
             print(f"lab(s) inconnu(s) : {', '.join(sorted(inconnus))}", file=sys.stderr)
             return 2
-        labs = [p for p in labs if p.name in args.lab]
+        labs = [p for p in labs if identifiant_du_lab(p) in args.lab]
 
     anciens = json.loads(RESULTATS.read_text(encoding="utf-8")) if RESULTATS.is_file() else {}
     rouges = 0
     for lab in labs:
-        print(f"\n{lab.name}", flush=True)
+        print(f"\n{identifiant_du_lab(lab)}", flush=True)
         r = valider(lab, rejeu=not args.sans_rejeu)
-        anciens[lab.name] = r
+        anciens[identifiant_du_lab(lab)] = r
         RESULTATS.write_text(json.dumps(anciens, ensure_ascii=False, indent=1, sort_keys=True) + "\n",
                              encoding="utf-8")
         if r["verdict"] != "VALIDE":

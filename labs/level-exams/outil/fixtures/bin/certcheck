@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Point d'entrée de l'outil, imposé par le contrat (CONTRAT.md) : c'est lui
+# que cron, un pipeline et les contrôles appellent.
+#
+# Il lance aujourd'hui le script hérité, qui ne respecte pas le contrat.
+exec bash "$(dirname "$0")/../certcheck.sh" "$@"

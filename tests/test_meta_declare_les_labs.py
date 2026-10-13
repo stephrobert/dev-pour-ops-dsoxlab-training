@@ -34,9 +34,28 @@ def _declares() -> list[str]:
     return declares
 
 
+def _visibles(dossier: Path) -> list[Path]:
+    return [d for d in dossier.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))]
+
+
 def _sur_disque() -> set[str]:
-    """Tout répertoire `labs/<id>/`, qu'il soit complet ou amputé."""
-    return {d.name for d in LABS.iterdir() if d.is_dir() and not d.name.startswith((".", "_"))}
+    """Tout répertoire de lab, qu'il soit complet ou amputé, par son chemin depuis `labs/`.
+
+    Un lab vit en `labs/<id>/`, ou dans une SECTION, `labs/<section>/<nom>/`,
+    comme les épreuves de fin de niveau (`labs/level-exams/outil/`) : c'est le
+    chemin que `meta.yml` déclare, comme dans le catalogue Terraform. Un
+    répertoire sans lab.yaml dont aucun sous-répertoire n'en porte un reste un
+    lab amputé ; s'il en contient, c'est une section, et ses sous-répertoires
+    sont les labs.
+    """
+    trouves = set()
+    for dossier in _visibles(LABS):
+        enfants = _visibles(dossier)
+        if not (dossier / "lab.yaml").is_file() and any((e / "lab.yaml").is_file() for e in enfants):
+            trouves |= {f"{dossier.name}/{e.name}" for e in enfants}
+        else:
+            trouves.add(dossier.name)
+    return trouves
 
 
 def test_chaque_lab_livre_est_declare_dans_le_parcours() -> None:
@@ -85,6 +104,8 @@ def test_l_id_du_contrat_est_le_nom_du_repertoire() -> None:
         if not contrat_chemin.is_file():
             continue
         contrat = yaml.safe_load(contrat_chemin.read_text(encoding="utf-8")) or {}
-        if contrat.get("id") != nom:
+        # Dans une section, l'id est le chemin aux barres remplacées par des
+        # tirets : `level-exams/outil` se joue par `dsoxlab run level-exams-outil`.
+        if contrat.get("id") != nom.replace("/", "-"):
             ecarts.append(f"{nom} : lab.yaml dit id={contrat.get('id')!r}")
     assert not ecarts, "\n".join(ecarts)

@@ -1,0 +1,9 @@
+id: level-exams-outil
+title: "Épreuve : reprendre un outil d'exploitation"
+description: |
+  Vous héritez de certcheck.sh, un script Bash qui compte un certificat
+  absent comme « 0 jour » et sort toujours en 0, de son contrat écrit, et
+  d'une pull request d'un collègue à relire. En Bash, en Python ou en Go,
+  livrez un outil qui respecte le contrat, sa propre suite de tests en boîte
+  noire, une version étiquetée et installable, et la revue. Noté sur le
+  contrat par des tests cachés, sans indice.

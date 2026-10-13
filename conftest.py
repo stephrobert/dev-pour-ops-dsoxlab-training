@@ -424,3 +424,45 @@ def exiger_outil(nom: str) -> str:
             pytrace=False,
         )
     return chemin
+
+
+# --- Une forge qui ne répond jamais ----------------------------------------------
+#
+# La forge factice répond toujours, même en panne (503). Le cas le plus sournois
+# en production est l'inverse : une forge qui accepte la connexion et ne répond
+# plus (processus figé, pare-feu qui laisse passer la poignée de main). Sans
+# délai maximal sur chaque requête, l'outil attend indéfiniment, et le cron de
+# la nuit suivante se lance par-dessus. Ce serveur accepte les connexions, les
+# garde ouvertes et n'écrit jamais rien.
+
+
+@contextlib.contextmanager
+def serveur_muet() -> Iterator[str]:
+    """L'URL d'un serveur qui accepte les connexions et ne répond jamais."""
+    import socket
+
+    ecoute = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ecoute.bind(("127.0.0.1", 0))
+    ecoute.listen(64)
+    ecoute.settimeout(0.2)
+    ouvertes: list[socket.socket] = []
+    arret = threading.Event()
+
+    def accepter() -> None:
+        while not arret.is_set():
+            try:
+                connexion, _ = ecoute.accept()
+            except OSError:
+                continue
+            ouvertes.append(connexion)  # gardée ouverte, jamais lue ni servie
+
+    fil = threading.Thread(target=accepter, daemon=True)
+    fil.start()
+    try:
+        yield f"http://127.0.0.1:{ecoute.getsockname()[1]}"
+    finally:
+        arret.set()
+        fil.join(timeout=2)
+        for connexion in ouvertes:
+            connexion.close()
+        ecoute.close()

