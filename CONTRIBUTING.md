@@ -83,8 +83,9 @@ labs/<lab>/
 Hints are written in clear in `challenge/hints.source.yaml` (not committed),
 then `uv run python scripts/ecrire_indices.py labs/<id>` encodes them.
 
-The last lab grades the learner's test suite against **mutants** generated
-by `scripts/generer_mutants.py` from `challenge/tests/reference/`.
+`tester-une-automatisation` grades the learner's test suite against
+**mutants**, and `deboguer` starts from a buggy version: both are generated
+by `scripts/generer_mutants.py` from `donnees/reference/certcheck.py`.
 
 ## Local checks before opening a PR
 

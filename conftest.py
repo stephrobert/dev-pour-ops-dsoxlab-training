@@ -32,6 +32,7 @@ import contextlib
 import json
 import os
 import random
+import re
 import shutil
 import stat
 import subprocess
@@ -372,6 +373,45 @@ def git(*args: str, cwd: Path) -> subprocess.CompletedProcess[str]:
 
 def rendre_executable(chemin: Path) -> None:
     chemin.chmod(chemin.stat().st_mode | stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH)
+
+
+# --- La suite de tests de l'apprenant ----------------------------------------------
+#
+# Deux labs notent la suite pytest que l'apprenant écrit dans SON projet uv
+# (tester-une-automatisation, deboguer). Elle se joue comme il la joue,
+# `uv run pytest` dans le répertoire du projet, mais dans une copie : on peut y
+# remplacer `certcheck.py` par une autre version (la référence, un mutant, la
+# version boguée d'origine) sans jamais toucher à son travail.
+
+
+@dataclass
+class Passage:
+    code: int
+    sortie: str
+    reussis: int
+    echoues: int
+
+    def resume(self) -> str:
+        return f"`uv run pytest` a rendu le code {self.code} :\n{self.sortie.strip()[-1500:]}"
+
+
+def jouer_suite_pytest(projet: Path, outil: Path | None = None) -> Passage:
+    """La suite pytest de `projet`, jouée par uv dans une copie ; `outil` remplace certcheck.py."""
+    uv = exiger_outil("uv")
+    with copie_temporaire(projet) as copie:
+        if outil is not None:
+            shutil.copy2(outil, copie / "certcheck.py")
+        res = executer([uv, "run", "--quiet", "--directory", str(copie),
+                        "pytest", "-q", "-p", "no:cacheprovider"], timeout=300)
+    sortie = res.stdout + res.stderr
+
+    def nombre(mot: str) -> int:
+        # La dernière occurrence : c'est la ligne de bilan, écrite en fin de sortie.
+        trouves = re.findall(rf"(\d+) {mot}\b", sortie)
+        return int(trouves[-1]) if trouves else 0
+
+    return Passage(res.returncode, sortie, nombre("passed"),
+                   nombre("failed") + nombre("errors?"))
 
 
 def exiger_outil(nom: str) -> str:

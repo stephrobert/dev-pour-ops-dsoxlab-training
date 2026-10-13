@@ -1,0 +1,8 @@
+id: tester-une-automatisation
+title: "Tester une automatisation : une suite qui attrape quatre vrais bogues"
+description: |
+  certcheck décide si le contrôle de la nuit passe au rouge et ouvre un
+  ticket sur la forge : il ne doit pas changer de comportement sans qu'on le
+  voie. Écrivez sa suite pytest, avec une horloge injectée et une forge
+  doublée. Elle est notée sur ce qu'elle attrape : verte sur l'outil juste,
+  rouge sur quatre mutants qui portent chacun un défaut réaliste.

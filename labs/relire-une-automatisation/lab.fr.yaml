@@ -1,0 +1,9 @@
+id: relire-une-automatisation
+title: "Relire une automatisation : la pull request n°42 de certcheck"
+description: |
+  Un collègue propose la pull request n°42 sur certcheck : purge des anciens
+  rapports et notification par webhook. Ses tests sont verts. Lisez le diff
+  tel qu'il serait fusionné, commentez chaque vrai défaut à la bonne ligne
+  avec une correction concrète, tranchez, puis ajoutez une configuration
+  pre-commit qui refuse les défauts mécaniques avant toute revue, chaque
+  hook épinglé sur une empreinte de commit.

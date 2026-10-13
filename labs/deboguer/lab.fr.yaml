@@ -1,0 +1,8 @@
+id: deboguer
+title: "Déboguer avec méthode : le certificat que certcheck ne sait pas lire"
+description: |
+  Un ticket signale que certcheck déclare vpn-01 illisible alors qu'openssl
+  lit très bien son certificat. Reproduisez le bogue par un test qui échoue,
+  réduisez-le à la plus petite entrée qui le déclenche, observez-le sous
+  pdb, corrigez-le sans casser le reste du contrat, et écrivez le journal de
+  débogage.

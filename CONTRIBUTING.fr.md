@@ -86,8 +86,9 @@ Les indices s'écrivent en clair dans `challenge/hints.source.yaml` (non
 versionné), puis `uv run python scripts/ecrire_indices.py labs/<id>` les
 encode.
 
-Le dernier lab juge la suite de tests de l'apprenant sur des **mutants**
-générés par `scripts/generer_mutants.py` depuis `challenge/tests/reference/`.
+`tester-une-automatisation` juge la suite de tests de l'apprenant sur des
+**mutants**, et `deboguer` part d'une version boguée : les deux sont générés
+par `scripts/generer_mutants.py` depuis `donnees/reference/certcheck.py`.
 
 ## Contrôles locaux avant une PR
 

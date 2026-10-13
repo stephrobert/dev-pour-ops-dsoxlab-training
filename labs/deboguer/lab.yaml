@@ -1,0 +1,45 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: deboguer
+title: "Debug with method: the certificate certcheck cannot read"
+description: |
+  A ticket says certcheck reports vpn-01 as unreadable while openssl reads
+  its certificate fine. Reproduce the bug with a failing test, reduce it to
+  the smallest input that triggers it, observe it under pdb, fix it without
+  breaking the rest of the contract, and write the debugging log.
+section: fil-rouge
+level: o1
+difficulty: intermediate
+lab_type: lab
+estimated_time: 45m
+skills:
+  - debugging
+  - python
+  - pdb
+  - pytest
+  - error-handling
+distros:
+  - any
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/
+runtime:
+  type: shell
+  workdir: challenge/work
+  # Le même projet que tester-une-automatisation, mais certcheck.py porte un
+  # bogue (généré par scripts/generer_mutants.py) et un ticket le signale.
+  fixtures:
+    - .gitignore
+    - pyproject.toml
+    - uv.lock
+    - certcheck.py
+    - bin/certcheck
+    - CONTRAT.md
+    - TICKET.md
+    - inventaire.txt
+    - certs/web-01.pem
+    - certs/web-02.pem
+    - certs/vpn-01.pem
+    - certs/mail-01.pem
+    - tests/test_certcheck.py
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

@@ -39,3 +39,6 @@ sections:
     labs:
       - lire-du-code
       - script-en-outil
+      - tester-une-automatisation
+      - deboguer
+      - relire-une-automatisation

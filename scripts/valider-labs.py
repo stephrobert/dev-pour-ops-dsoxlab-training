@@ -54,6 +54,7 @@ RACINE = Path(__file__).resolve().parent.parent
 LABS = RACINE / "labs"
 RESULTATS = RACINE / "validation-labs.json"
 CACHE = Path.home() / ".cache" / "dsoxlab" / RACINE.name
+BUNDLE_SOLUTION = "depot.bundle"
 
 
 class Echec(Exception):
@@ -274,9 +275,30 @@ def poser_solution(lab: Path, journal) -> None:
         raise Echec("le répertoire `solution/` est vide")
 
     for fichier in fichiers:
+        if fichier.relative_to(source) == Path(BUNDLE_SOLUTION):
+            continue
         destination = cible / fichier.relative_to(source)
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(fichier, destination)
+
+    # UN HISTORIQUE GIT NE SE COPIE PAS FICHIER PAR FICHIER. Les labs de
+    # livraison notent des étiquettes et des commits : leur solution est un
+    # dépôt, qu'on ne peut pas versionner tel quel (git refuse un `.git`
+    # imbriqué). Elle se livre donc en bundle, `solution/depot.bundle`, dont
+    # l'historique devient celui du répertoire de travail, étiquettes
+    # comprises, et dont l'arbre de la branche principale est extrait
+    # par-dessus les fichiers.
+    bundle = source / BUNDLE_SOLUTION
+    if bundle.is_file():
+        for args in (
+            ["init", "-q", "-b", "main"],
+            ["fetch", "-q", "--tags", str(bundle), "main:refs/remotes/solution/main"],
+            ["reset", "-q", "--hard", "solution/main"],
+        ):
+            res = subprocess.run(["git", *args], cwd=cible, capture_output=True, text=True, check=False)
+            if res.returncode != 0:
+                raise Echec(f"git {' '.join(args)} a échoué sur {BUNDLE_SOLUTION} : {res.stderr.strip()}")
+        journal.write(f"historique posé depuis {BUNDLE_SOLUTION}\n")
 
     journal.write(f"solution posée : {len(fichiers)} fichier(s)\n")
     for fichier in fichiers:

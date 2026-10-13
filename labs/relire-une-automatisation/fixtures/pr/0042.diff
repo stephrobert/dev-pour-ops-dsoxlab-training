@@ -1,0 +1,154 @@
+diff --git a/certcheck.py b/certcheck.py
+index d204df2..9062a00 100644
+--- a/certcheck.py
++++ b/certcheck.py
+@@ -28,7 +28,9 @@ import urllib.request
+ from datetime import UTC, date, datetime
+ from pathlib import Path
+ 
+-VERSION = "0.4.0"
++import maintenance
++
++VERSION = "0.5.0"
+ SEUIL_PAR_DEFAUT = 30
+ TITRE_TICKET = "certcheck : certificats à renouveler"
+ DELAI_RESEAU = 5  # secondes, pour chaque requête
+@@ -263,6 +265,10 @@ def analyseur() -> argparse.ArgumentParser:
+     p.add_argument("--publish", action="store_true",
+                    help="ouvre un ticket sur la forge (FORGE_URL, FORGE_TOKEN, FORGE_REPO)")
+     p.add_argument("--dry-run", action="store_true", help="avec --publish : montre le ticket sans rien envoyer")
++    p.add_argument("--purge-days", type=jours_positifs,
++                   help="supprime les rapports plus vieux que N jours ($CERTCHECK_REPORT_DIR)")
++    p.add_argument("--notify", action="store_true",
++                   help="poste le résumé des alertes sur le webhook ($CERTCHECK_WEBHOOK_URL)")
+     p.add_argument("--verbose", action="store_true", help="journal détaillé sur la sortie d'erreur")
+     p.add_argument("--version", action="version", version=f"certcheck {VERSION}")
+     return p
+@@ -280,6 +286,12 @@ def main(argv: list[str] | None = None) -> int:
+         print(en_json(resultats, seuil) if args.format == "json" else en_texte(resultats))
+         if args.publish:
+             publier(resultats, forge)
++        if args.notify:
++            webhook = os.environ.get("CERTCHECK_WEBHOOK_URL", "")
++            print(f"certcheck: notification envoyée à {webhook}", file=sys.stderr)
++            maintenance.notifier(webhook, resultats)
++        if args.purge_days is not None:
++            maintenance.purger_rapports(args.purge_days)
+     except ErreurUsage as exc:
+         print(f"certcheck: {exc}", file=sys.stderr)
+         return 2
+diff --git a/maintenance.py b/maintenance.py
+new file mode 100644
+index 0000000..586483d
+--- /dev/null
++++ b/maintenance.py
+@@ -0,0 +1,54 @@
++"""Maintenance de certcheck : purge des anciens rapports, notification de l'équipe.
++
++Les rapports nocturnes s'accumulent dans CERTCHECK_REPORT_DIR, un
++sous-dossier par nuit. La purge retire ceux qui ont dépassé l'âge donné, et
++la notification poste le résumé des alertes sur le webhook du chat d'équipe.
++"""
++from __future__ import annotations
++
++import logging
++import os
++import shutil
++import time
++
++import requests
++import urllib3
++
++log = logging.getLogger("certcheck")
++
++UNE_JOURNEE = 86400
++
++
++def purger_rapports(jours: int) -> int:
++    """Supprime les rapports de plus de `jours` jours ; rend le nombre de rapports supprimés."""
++    dossier = os.environ.get("CERTCHECK_REPORT_DIR", "") + "/"
++    limite = time.time() - jours * UNE_JOURNEE
++    supprimes = 0
++    for nom in sorted(os.listdir(dossier)):
++        chemin = os.path.join(dossier, nom)
++        if os.path.getmtime(chemin) < limite:
++            shutil.rmtree(chemin, ignore_errors=True)
++            supprimes += 1
++    log.info("%d rapport(s) purgé(s) dans %s", supprimes, dossier)
++    return supprimes
++
++
++def resume(resultats: list[dict]) -> str:
++    """Le texte du message : une ligne par certificat à renouveler."""
++    return "\n".join(
++        f"{r['host']} : {r['status']}, {r['days_left']} jours ({r['not_after']})"
++        for r in resultats
++        if r["status"] in ("warning", "expired")
++    )
++
++
++def notifier(url: str, resultats: list[dict]) -> None:
++    """Poste le résumé des certificats à renouveler sur le webhook de l'équipe."""
++    texte = resume(resultats)
++    if not texte:
++        return
++    urllib3.disable_warnings()
++    try:
++        requests.post(url, json={"text": texte}, timeout=10, verify=False)
++    except Exception:
++        pass
+diff --git a/pyproject.toml b/pyproject.toml
+index 0deeba3..7acea1b 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,11 +1,13 @@
+ [project]
+ name = "certcheck"
+-version = "0.4.0"
++version = "0.5.0"
+ description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
+ requires-python = ">=3.12"
+ # Règle de l'équipe : toute dépendance s'épingle à une version exacte (==).
+ # Une montée de version est un commit à part, relu comme du code.
+-dependencies = []
++dependencies = [
++    "requests>=2.32",
++]
+ 
+ [dependency-groups]
+ dev = [
+diff --git a/tests/test_maintenance.py b/tests/test_maintenance.py
+new file mode 100644
+index 0000000..87f2b1c
+--- /dev/null
++++ b/tests/test_maintenance.py
+@@ -0,0 +1,29 @@
++"""Tests de la purge des rapports."""
++
++import os
++from pathlib import Path
++
++import pytest
++
++import maintenance
++
++
++def test_la_purge_retire_les_vieux_rapports(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
++    vieux = tmp_path / "2026-01-04"
++    vieux.mkdir()
++    os.utime(vieux, (0, 0))
++    recent = tmp_path / "2026-10-12"
++    recent.mkdir()
++    monkeypatch.setenv("CERTCHECK_REPORT_DIR", str(tmp_path))
++
++    assert maintenance.purger_rapports(30) == 1
++    assert recent.exists()
++    assert not vieux.exists()
++
++
++def test_le_resume_ne_cite_que_les_alertes() -> None:
++    resultats = [
++        {"host": "web-01", "status": "ok", "days_left": 400, "not_after": "2027-11-17"},
++        {"host": "web-02", "status": "expired", "days_left": -3, "not_after": "2026-10-10"},
++    ]
++    assert maintenance.resume(resultats) == "web-02 : expired, -3 jours (2026-10-10)"

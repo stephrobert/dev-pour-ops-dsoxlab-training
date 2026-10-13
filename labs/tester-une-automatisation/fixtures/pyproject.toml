@@ -1,0 +1,24 @@
+[project]
+name = "certcheck"
+version = "0.4.0"
+description = "Signale les certificats TLS d'un parc qui arrivent à expiration"
+requires-python = ">=3.12"
+# L'outil n'utilise que la bibliothèque standard et openssl.
+dependencies = []
+
+[dependency-groups]
+# Les outils du développeur, pas ceux de l'outil : `uv run pytest` les installe
+# dans .venv, la production n'en a pas besoin. Version exacte, verrouillée dans
+# uv.lock.
+dev = [
+    "pytest==9.1.1",
+]
+
+[tool.uv]
+# certcheck est un script et son lanceur bin/certcheck, pas un paquet à publier.
+package = false
+
+[tool.pytest.ini_options]
+# Les tests importent certcheck depuis la racine du projet.
+pythonpath = ["."]
+testpaths = ["tests"]

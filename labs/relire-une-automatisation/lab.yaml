@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: relire-une-automatisation
+title: "Review an automation change: certcheck pull request #42"
+description: |
+  A colleague proposes pull request #42 on certcheck: purging old reports
+  and notifying a webhook. Its tests are green. Read the diff as it would be
+  merged, comment each real defect at the right line with a concrete fix,
+  decide, then add a pre-commit configuration that refuses the mechanical
+  defects before any review, every hook pinned on a commit hash.
+section: fil-rouge
+level: o1
+difficulty: intermediate
+lab_type: lab
+estimated_time: 40m
+skills:
+  - code-review
+  - python
+  - secrets
+  - tls
+  - dependency-pinning
+  - pre-commit
+distros:
+  - any
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - certcheck.py
+    - pyproject.toml
+    - tests/test_certcheck.py
+    - pr/DESCRIPTION.md
+    - pr/0042.diff
+    - revue.yaml
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false
