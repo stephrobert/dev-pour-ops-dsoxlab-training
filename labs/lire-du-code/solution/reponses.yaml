@@ -1,0 +1,7 @@
+commandes_externes: [openssl, cut, date, curl, dirname]
+fichier_ecrit: "certcheck-rapport.txt"
+variable_appel_reseau: "FORGE_TOKEN"
+code_de_sortie: 0
+hote_mal_signale: "web-03"
+defauts: [erreur-avalee, code-de-sortie-muet, jeton-dans-l-url, ticket-en-double]
+commit_erreur_avalee: "7bb871c"

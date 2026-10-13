@@ -1,0 +1,7 @@
+# Parc surveille par certcheck.sh
+# hote        certificat collecte sur l hote
+web-01 certs/web-01.pem
+web-02 certs/web-02.pem
+web-03 certs/web-03.pem
+vpn-01 certs/vpn-01.pem
+mail-01 certs/mail-01.pem

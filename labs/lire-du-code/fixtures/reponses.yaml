@@ -1,0 +1,38 @@
+# Vos réponses sur certcheck.sh, le script hérité de ce dossier.
+# Remplacez chaque valeur. Les clés ne changent pas : le contrôle les lit.
+#
+# Lisez avant d'exécuter, puis exécutez SANS RISQUE : sans FORGE_TOKEN dans
+# l'environnement, le script n'appelle pas la forge.
+
+# 1. Les commandes EXTERNES que le script appelle : les programmes cherchés
+#    dans le PATH, pas les commandes internes de Bash (echo, read, case...).
+#    Une liste, par exemple [grep, sed].
+commandes_externes: []
+
+# 2. Les effets de bord.
+#    a) Le fichier que le script écrit, tel que son nom figure dans le script.
+fichier_ecrit: ""
+#    b) La variable d'environnement dont la présence déclenche l'appel réseau.
+variable_appel_reseau: ""
+
+# 3. Ce que l'exécution montre, sur l'inventaire fourni :
+#      bash certcheck.sh inventaire.txt; echo "code : $?"
+#    a) Le code de sortie du script (un entier).
+code_de_sortie: null
+#    b) L'hôte signalé « à renouveler » alors que son certificat n'existe pas.
+hote_mal_signale: ""
+
+# 4. Les défauts RÉELS du script, et seulement eux, choisis dans cette liste :
+#      erreur-avalee              une erreur est masquée et le traitement continue
+#      code-de-sortie-muet        le code de sortie ne dit pas s'il y a des alertes
+#      jeton-dans-l-url           le secret circule dans l'URL et finit dans un journal
+#      injection-de-commande      une donnée de l'inventaire est exécutée par le shell
+#      seuil-exclusif             un certificat qui expire exactement au seuil n'alerte pas
+#      fichier-temporaire-predictible   le script écrit dans /tmp sous un nom fixe
+#      ticket-en-double           chaque exécution ouvre un nouveau ticket
+defauts: []
+
+# 5. L'empreinte (7 caractères au moins) du commit qui a introduit l'erreur
+#    avalée. L'historique est dans historique.bundle :
+#      git clone historique.bundle historique
+commit_erreur_avalee: ""

@@ -1,0 +1,14 @@
+repo:
+  title: "Développer pour les Ops : les labs vérifiables"
+  description: |
+    La méthode du développeur appliquée au code d'automatisation, en Bash,
+    Python ou Go. Un seul script hérité, certcheck, que vous lisez,
+    transformez en outil, testez, déboguez, faites relire, rendez
+    reproductible et livrez. Chaque lab est noté sur ce qu'un appelant
+    observe : sorties, codes de sortie, requêtes reçues par une forge
+    factice, fichiers du dépôt.
+
+sections:
+  - id: fil-rouge
+    title: "Le fil rouge : du script hérité à l'outil livré"
+    description: "Lire un script hérité, en faire un outil à contrat, le tester, le déboguer, relire un changement, verrouiller ses dépendances et livrer une version."

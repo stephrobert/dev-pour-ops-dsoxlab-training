@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: lire-du-code
+title: "Read code you did not write: the inherited certcheck.sh script"
+description: |
+  An inherited Bash script checks certificate expiry every night, and
+  nobody on the team wrote it. Find its external commands, its side effects
+  and its configuration, run it without risk, name its real defects, and
+  find in its Git history the commit that started hiding errors.
+section: fil-rouge
+level: o1
+difficulty: intermediate
+lab_type: lab
+estimated_time: 30m
+skills:
+  - code-reading
+  - bash
+  - git-history
+  - side-effects
+distros:
+  - any
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - certcheck.sh
+    - inventaire.txt
+    - certs/web-01.pem
+    - certs/web-02.pem
+    - certs/vpn-01.pem
+    - certs/mail-01.pem
+    - historique.bundle
+    - reponses.yaml
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

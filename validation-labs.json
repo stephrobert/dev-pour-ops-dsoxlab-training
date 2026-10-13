@@ -1,0 +1,49 @@
+{
+ "lire-du-code": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_l_execution_sans_risque_est_observee",
+    "test_le_commit_de_l_erreur_avalee_est_retrouve",
+    "test_les_commandes_externes_sont_toutes_nommees",
+    "test_les_defauts_reels_sont_nommes",
+    "test_les_effets_de_bord_sont_identifies"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "date": "2026-10-13",
+  "duree_s": 2,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-lire-du-code.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_l_execution_sans_risque_est_observee",
+    "test_le_commit_de_l_erreur_avalee_est_retrouve",
+    "test_les_commandes_externes_sont_toutes_nommees",
+    "test_les_defauts_reels_sont_nommes",
+    "test_les_effets_de_bord_sont_identifies"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ }
+}

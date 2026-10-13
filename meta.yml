@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/meta.schema.json
+#
+# Catalogue dev-pour-ops-dsoxlab-training, décrit par le contrat v1 de dsoxlab.
+#
+# Les labs de la formation « Développer pour les Ops » du blog. Un FIL ROUGE :
+# certcheck, un contrôle d'expiration de certificats hérité en Bash, que
+# l'apprenant lit, transforme en outil, teste, débogue, fait relire, rend
+# reproductible et livre. L'ordre ci-dessous est celui du jeu.
+#
+# L'outil livré au bout de ce fil rouge est le dépôt dont la formation
+# « Introduction aux pipelines CI/CD » construit la chaîne, sur la forge
+# locale de son propre catalogue (cicd-dsoxlab-training).
+#
+# tests/test_meta_declare_les_labs.py refuse un lab sur disque absent d'ici,
+# et un lab déclaré ici absent du disque.
+schema_version: 1
+
+repo:
+  id: dev-pour-ops-dsoxlab-training
+  category: development
+  title: "Development for Ops: verifiable labs"
+  blog_url: "https://blog.stephane-robert.info/docs/developper/"
+  issues_url: "https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/issues"
+  description: |
+    The developer's method applied to automation code, in Bash, Python or
+    Go. One inherited script, certcheck, that you read, turn into a tool,
+    test, debug, get reviewed, make reproducible and ship. Each lab is graded
+    on what a caller observes: outputs, exit codes, requests received by a
+    fake forge, files in the repository.
+
+# PAS de bloc `infra:` : tous les labs sont de type `shell`. L'outil se joue
+# sur le poste de l'apprenant. Prérequis : les outils de mise.toml
+# (`mise install`), plus Bash, openssl et Git du système.
+
+sections:
+  - id: fil-rouge
+    title: "The common thread: from inherited script to shipped tool"
+    description: "Read an inherited script, turn it into a tool with a contract, test it, debug it, review a change, lock its dependencies and ship a version."
+    labs:
+      - lire-du-code
