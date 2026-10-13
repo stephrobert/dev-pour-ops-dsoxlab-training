@@ -201,6 +201,12 @@ def valider(lab: Path, rejeu: bool) -> dict:
     debut = time.time()
     resultat: dict = {
         "date": datetime.now(tz=UTC).date().isoformat(),
+        # Le commit du catalogue au moment du jeu : un verdict rejoué après une
+        # modification du lab change donc toujours son entrée, et l'outil qui
+        # date l'attestation (generer-catalogue-labs.py du blog) la retrouve,
+        # au lieu de remonter à un verdict plus ancien au contenu identique.
+        "commit": subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=RACINE,
+                                 capture_output=True, text=True, check=False).stdout.strip(),
         "uv": version_outil("uv"),
         "python": version_outil("python"),
         # Le chemin du journal est enregistré RELATIF au cache de l'utilisateur :
