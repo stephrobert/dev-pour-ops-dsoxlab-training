@@ -18,6 +18,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 16,
   "ecarts": [],
@@ -65,6 +66,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 8,
   "ecarts": [],
@@ -112,6 +114,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 4,
   "ecarts": [],
@@ -159,6 +162,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 9,
   "ecarts": [],
@@ -206,6 +210,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 3,
   "ecarts": [],
@@ -253,6 +258,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 4,
   "ecarts": [],
@@ -300,8 +306,9 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
-  "duree_s": 3,
+  "duree_s": 2,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
@@ -347,6 +354,7 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
   "duree_s": 5,
   "ecarts": [],
@@ -394,8 +402,9 @@
    "score": 0,
    "total": 5
   },
+  "commit": "d37b26a",
   "date": "2026-10-13",
-  "duree_s": 5,
+  "duree_s": 4,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
