@@ -1,0 +1,5 @@
+# Produits par uv et par Python : ils se recréent, ils ne se versionnent pas.
+.venv/
+dist/
+__pycache__/
+*.pyc

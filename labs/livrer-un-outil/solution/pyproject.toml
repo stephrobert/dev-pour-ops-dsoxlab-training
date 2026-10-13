@@ -1,0 +1,17 @@
+[project]
+name = "certcheck"
+version = "1.0.0"
+requires-python = ">=3.12"
+description = "Signale les certificats TLS d'un parc qui arrivent à expiration."
+readme = "README.md"
+dependencies = [
+    "cryptography>=42",
+    "requests>=2.32",
+]
+
+[project.scripts]
+certcheck = "certcheck.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.12.21,<0.13"]
+build-backend = "uv_build"

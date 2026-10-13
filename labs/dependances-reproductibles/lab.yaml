@@ -1,0 +1,44 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: dependances-reproductibles
+title: "Reproducible dependencies: certcheck installs identically elsewhere"
+description: |
+  A colleague moved certcheck to the cryptography and requests libraries,
+  packaged it, and left its dependencies in an unpinned requirements.txt:
+  "works on my machine". Declare the dependencies in pyproject.toml, lock
+  them in uv.lock, pin the interpreter, and prove that a clean copy
+  installs with uv sync --frozen and returns the expected result. Needs
+  network access to PyPI.
+section: fil-rouge
+level: o1
+difficulty: intermediate
+lab_type: lab
+estimated_time: 40m
+skills:
+  - dependencies
+  - lockfile
+  - reproducibility
+  - uv
+  - python
+distros:
+  - any
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - CONTRAT.md
+    - README.md
+    - pyproject.toml
+    - requirements.txt
+    - src/certcheck/__init__.py
+    - src/certcheck/cli.py
+    - bin/certcheck
+    - inventaire.txt
+    - certs/web-01.pem
+    - certs/web-02.pem
+    - certs/vpn-01.pem
+    - certs/mail-01.pem
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

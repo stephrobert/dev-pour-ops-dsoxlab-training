@@ -1,0 +1,9 @@
+id: dependances-reproductibles
+title: "Dépendances reproductibles : certcheck s'installe à l'identique ailleurs"
+description: |
+  Un collègue a fait passer certcheck aux bibliothèques cryptography et
+  requests, l'a mis en paquet, et a laissé ses dépendances dans un
+  requirements.txt non épinglé : « ça marche sur mon poste ». Déclarez les
+  dépendances dans pyproject.toml, verrouillez-les dans uv.lock, fixez
+  l'interpréteur, et prouvez qu'une copie propre s'installe par uv sync
+  --frozen et rend le résultat attendu. Demande un accès réseau à PyPI.

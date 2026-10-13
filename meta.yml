@@ -43,6 +43,8 @@ sections:
       - tester-une-automatisation
       - deboguer
       - relire-une-automatisation
+      - dependances-reproductibles
+      - livrer-un-outil
 
   # Épreuve de fin du niveau o1 : une MESURE, pas un cours. Notée sur le
   # contrat de l'outil, en boîte noire, dans le langage choisi par
