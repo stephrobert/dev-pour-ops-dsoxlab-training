@@ -54,8 +54,10 @@ l'exception. Pour voir la valeur au moment de l'erreur, deux moyens :
   `CERTCHECK_NOW=2026-10-13 bin/certcheck`. Le programme s'arrête dans pdb,
   une fois par certificat : `p brut` affiche une variable, `c` continue
   jusqu'au certificat suivant (vpn-01 est le troisième), `n` exécute la
-  ligne suivante. Pour finir, `c` jusqu'au bout : `q` lève une exception
-  que le `except Exception` du code avale, et le programme continue.
+  ligne suivante. Pour finir, `c` jusqu'au bout. Avec Python 3.14, `q`
+  demande confirmation puis arrête le programme ; avec une version plus
+  ancienne, l'exception qu'il lève peut être avalée par le `except
+  Exception` du code, et le programme continue : préférez `c`.
 
 Comparez avec un autre certificat : `openssl x509 -enddate -noout -in
 certs/vpn-01.pem | cat -A` rend les espaces visibles.

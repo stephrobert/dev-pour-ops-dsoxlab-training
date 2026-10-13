@@ -53,8 +53,10 @@ exception. To see the value at the moment of the error, two ways:
   `CERTCHECK_NOW=2026-10-13 bin/certcheck`. The program stops in pdb, once
   per certificate: `p brut` prints a variable, `c` continues to the next
   certificate (vpn-01 is the third), `n` runs the next line. To finish,
-  `c` until the end: `q` raises an exception that the code's
-  `except Exception` swallows, and the program carries on.
+  `c` until the end. With Python 3.14, `q` asks for confirmation then
+  stops the program; with an older version, the exception it raises can be
+  swallowed by the code's `except Exception`, and the program carries on:
+  prefer `c`.
 
 Compare with another certificate: `openssl x509 -enddate -noout -in
 certs/vpn-01.pem | cat -A` makes spaces visible.
