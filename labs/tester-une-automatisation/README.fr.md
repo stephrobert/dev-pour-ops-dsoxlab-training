@@ -1,16 +1,16 @@
 # Premiers tests
 
-Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon « Tester
-une automatisation ». certcheck respecte son contrat ; il faut maintenant
-qu'il continue à le respecter quand quelqu'un le retouche. Vous écrivez ses
-**premiers tests pytest**, pas à pas, et la suite est notée sur les bogues
-qu'elle attrape.
+Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon « Premiers
+tests Python avec pytest : le geste de base ». certcheck respecte son
+contrat ; il faut maintenant qu'il continue à le respecter quand quelqu'un le
+retouche. Vous écrivez ses **premiers tests pytest**, pas à pas, et la suite
+est notée sur les bogues qu'elle attrape.
 
 | | |
 |---|---|
 | Cible | votre poste : Python et uv (`mise install`), openssl |
 | Durée | environ 25 minutes |
-| Leçon jumelée | [Tester une automatisation](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
+| Leçon jumelée | [Premiers tests Python avec pytest : le geste de base](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
 | Précédent | `appeler-une-api` |
 | Suite | `deboguer` |
 

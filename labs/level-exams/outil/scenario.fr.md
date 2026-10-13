@@ -7,7 +7,9 @@ l'outil. Le script tourne chaque nuit depuis le cron du serveur
 d'exploitation. Il sort toujours en 0, et il a compté pendant des semaines un
 certificat introuvable comme expirant « dans 0 jour » : personne ne s'en est
 aperçu. L'équipe a écrit ce qu'elle attend de l'outil dans `CONTRAT.md`, et
-a décidé de le remplacer par un projet Python.
+a décidé de le remplacer par un projet Python, dont le squelette est déjà en
+place : `pyproject.toml`, `uv.lock`, le paquet `src/certcheck/` et ses
+fonctions à écrire, et `bin/certcheck`, qui le lance.
 
 Le même jour, Inès vous demande de relire sa pull request n°57 sur la
 variante Python que l'équipe maintenait en parallèle : ses tests passent,

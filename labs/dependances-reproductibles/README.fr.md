@@ -1,18 +1,18 @@
 # Dépendances : certcheck s'installe aussi ailleurs
 
 Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon
-« Dépendances reproductibles ». certcheck est devenu un paquet Python qui
-importe `requests` et `cryptography`, mais son auteur les a installées à la
-main : rien ne garantit qu'il s'installe ailleurs. Vous déclarez ses
-dépendances, épinglez leurs versions, notez la version de Python, et le
-prouvez dans un environnement neuf.
+« Dépendances Python : déclarer, épingler, installer ailleurs ». certcheck est
+devenu un paquet Python qui importe `requests` et `cryptography`, mais son
+auteur les a installées à la main : rien ne garantit qu'il s'installe
+ailleurs. Vous déclarez ses dépendances, épinglez leurs versions, notez la
+version de Python, et le prouvez dans un environnement neuf.
 
 | | |
 |---|---|
 | Cible | votre poste : uv et Python (`mise install` à la racine du catalogue) |
 | Durée | environ 25 minutes |
 | Réseau | **requis** : les paquets se téléchargent depuis PyPI |
-| Leçon jumelée | [Dépendances reproductibles](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
+| Leçon jumelée | [Dépendances Python : déclarer, épingler, installer ailleurs](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
 | Suite | `livrer-un-outil` |
 
 ```bash

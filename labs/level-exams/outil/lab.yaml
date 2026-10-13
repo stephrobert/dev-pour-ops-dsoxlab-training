@@ -4,11 +4,12 @@ title: "Exam: take over an operations tool"
 description: |
   You inherit certcheck.sh, a Bash script that counts a missing certificate
   as "0 days" and always exits 0, its written contract, and a colleague's
-  pull request to review. Replace it with a Python project that honours the
-  contract, its own pytest suite that catches the inherited bug, an
-  installable package, a version recorded in the CHANGELOG and tagged in
-  Git, and the review. Graded on the contract with hidden tests, without
-  hints.
+  pull request to review. Replace it with the Python project whose skeleton
+  is provided (pyproject.toml, uv.lock, a package under src/ with functions
+  to write): an implementation that honours the contract, its own pytest
+  suite that catches the inherited bug, an installable package, a version
+  recorded in the CHANGELOG and tagged in Git, and the review. Graded on the
+  contract with hidden tests, without hints.
 section: level-exams
 level: o1
 difficulty: intermediate
@@ -25,17 +26,23 @@ skills:
   - code-review
 distros:
   - any
-doc_url: https://blog.stephane-robert.info/docs/developper/parcours/
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/
 runtime:
   type: shell
   workdir: challenge/work
-  # Le point de départ : le script hérité et son lanceur, le contrat, un
+  # Le point de départ : le script hérité, le squelette du projet Python
+  # (pyproject.toml, uv.lock, le paquet sous src/ et son lanceur), le contrat, un
   # inventaire, la pull request n°57 à relire (le projet pr/main et son diff),
   # et le fichier de la revue, revue.yaml.
   fixtures:
     - .gitignore
     - CONTRAT.md
     - certcheck.sh
+    - pyproject.toml
+    - uv.lock
+    - src/certcheck/__init__.py
+    - src/certcheck/certificats.py
+    - src/certcheck/cli.py
     - bin/certcheck
     - inventaire.txt
     - certs/web-01.pem

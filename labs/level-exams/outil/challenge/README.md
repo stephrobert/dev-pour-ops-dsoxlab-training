@@ -9,7 +9,14 @@ who takes the tool over after you would, and the contract checks are
 
 ## What you receive
 
-- `certcheck.sh`, the inherited script, and `bin/certcheck`, which runs it;
+- `certcheck.sh`, the inherited script, to read only: nothing runs it any
+  more;
+- the skeleton of the Python project that replaces it: `pyproject.toml` (the
+  `certcheck` command in `[project.scripts]`, the `[build-system]`, and
+  pytest 9.1.1 in the `[dependency-groups]` development group), `uv.lock`,
+  which locks those versions, the `src/certcheck/` package whose functions
+  to write raise `NotImplementedError`, and `bin/certcheck`, which already
+  runs that package through `uv run --project`;
 - `CONTRAT.md`, what the tool must do, seen from outside (in French);
 - `inventaire.txt` and `certs/`, a small fleet to try things on;
 - `pr/`, Inès's pull request #57: its description, its diff, and the
@@ -18,15 +25,19 @@ who takes the tool over after you would, and the contract checks are
 
 ## What you deliver, at the root of the working directory
 
+The skeleton gives the project its shape; grading is about what you make
+of it. A row marked "provided" must stay correct until delivery, a row
+marked "to write" is entirely yours.
+
 | File | Role |
 |---|---|
-| `pyproject.toml` | the project: its version, and the `certcheck` command in `[project.scripts]` |
-| `src/certcheck/` | the tool's Python package, compliant with `CONTRAT.md` |
-| `bin/certcheck` | the launcher, which runs your package, for instance `exec uv run --quiet --project "$(dirname "$0")/.." certcheck "$@"` |
-| `tests/` | your pytest tests, which run the executable named by `CERTCHECK_BIN` (default: `bin/certcheck`) |
-| `uv.lock` | or a dependency file with pinned versions (`==`): pytest at least |
-| `CHANGELOG.md` | a `## [X.Y.Z]` section for the shipped version |
-| `revue.yaml` | your review of PR #57, in the form its header describes |
+| `pyproject.toml` | provided: carry the shipped version there, keep the `certcheck` command in `[project.scripts]` |
+| `src/certcheck/` | provided, to complete: the tool's Python package, compliant with `CONTRAT.md` |
+| `bin/certcheck` | provided: the launcher, which runs your package through `uv run --project` |
+| `tests/` | to write: your pytest tests, which run the executable named by `CERTCHECK_BIN` (default: `bin/certcheck`) |
+| `uv.lock` | provided: the pinned (`==`) development dependencies, pytest at least; `uv run` keeps it up to date |
+| `CHANGELOG.md` | to write: a `## [X.Y.Z]` section for the shipped version |
+| `revue.yaml` | to fill in: your review of PR #57, in the form its header describes |
 
 The working directory becomes a Git repository, and the shipped version
 carries a `vX.Y.Z` tag (annotated or not).
@@ -55,7 +66,10 @@ code 1).
 package under `src/`, and the development dependencies are pinned. The
 project is installed (`pip install .`) into a fresh environment: the
 `certcheck --version` command there prints the `pyproject.toml` version, and
-the installed tool passes a smoke test.
+the installed tool passes a smoke test. The skeleton already installs: what
+earns the points is `--version` and the smoke test, which go through your
+code, and the printed version must follow the `pyproject.toml` one when you
+change it.
 
 ### Task 4: the version is recorded and tagged (20 pts)
 

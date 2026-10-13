@@ -1,18 +1,18 @@
 # Read the code of a Python application
 
 First lab of the common thread of the **Development for Ops** course, paired
-with the lesson "Lire et contribuer au code d'une application existante".
+with the lesson "Lire le code d'une application Python qu'on n'a pas écrite".
 The starting point is the most common situation for a developer joining a
-team: an application running in production, that nobody around them wrote,
-and that they are asked to take over. Before touching it, you **read** it:
-the entry point the package declares, the modules it loads, side effects,
+team: an application running in production, that nobody around them wrote, and
+that they are asked to take over. Before touching it, you **read** it: the
+entry point the package declares, the modules it loads, side effects,
 configuration, history.
 
 | | |
 |---|---|
 | Target | your machine: uv and Python (`mise install`), openssl and Git, no VM |
 | Duration | about 30 minutes |
-| Paired lesson | [Lire et contribuer au code d'une application existante](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
+| Paired lesson | [Lire le code d'une application Python qu'on n'a pas écrite](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
 | Next | `script-en-outil` structures a Python project that honours a contract |
 
 ```bash

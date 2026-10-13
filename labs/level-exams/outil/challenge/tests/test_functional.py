@@ -378,10 +378,14 @@ def test_la_version_est_notee_et_etiquetee() -> None:
 
 # --- Tâche 5 : la revue de la pull request n°57 ---------------------------------
 
+# La liste fermée de revue.yaml, aux noms du lab relire-une-automatisation.
 CATEGORIES = {
-    "erreur-avalee", "secret-expose", "tls-desactive", "injection-de-commande",
-    "dependance-non-epinglee", "test-absent",
+    "erreur-avalee", "secret-affiche", "chemin-dangereux", "tls-desactive",
+    "injection-de-commande", "dependance-non-epinglee", "test-absent",
 }
+# Les anciens noms restent acceptés : une revue juste ne perd pas de points
+# pour un synonyme.
+SYNONYMES = {"secret-expose": "secret-affiche"}
 LONGUEUR_MINIMALE = 25
 FAUX_POSITIFS_TOLERES = 2
 DEFAUTS_A_TROUVER = 3
@@ -424,9 +428,9 @@ def defauts() -> dict[str, list[Zone]]:
             _zone("erreur-avalee", "certcheck.py", code, 'log.debug("%s ignoré : %s", hote, exc)'),
             _zone("erreur-avalee", "tests/test_certcheck.py", tests, "def test_un_hote_decommissionne_est_ignore"),
         ],
-        "secret-expose": [
-            _zone("secret-expose", "certcheck.py", code, 'log.debug("%s %s, en-têtes : %s", methode, url, entetes)'),
-            _zone("secret-expose", "certcheck.py", code, "logging.DEBUG if args.verbose"),
+        "secret-affiche": [
+            _zone("secret-affiche", "certcheck.py", code, 'log.debug("%s %s, en-têtes : %s", methode, url, entetes)'),
+            _zone("secret-affiche", "certcheck.py", code, "logging.DEBUG if args.verbose"),
         ],
         "tls-desactive": [
             _zone("tls-desactive", "certcheck.py", code, "ssl._create_unverified_context()"),
@@ -440,6 +444,11 @@ def _chemin(valeur: object) -> str:
     for prefixe in ("./", "a/", "b/", "pr/main/"):
         chemin = chemin.removeprefix(prefixe)
     return chemin
+
+
+def _categorie(valeur: object) -> str:
+    categorie = str(valeur or "").strip().lower()
+    return SYNONYMES.get(categorie, categorie)
 
 
 def _ligne(valeur: object) -> int:
@@ -465,7 +474,7 @@ def test_la_revue_de_la_pr_57_trouve_les_defauts(defauts: dict[str, list[Zone]])
         )
         commentaires.append((
             _chemin(element.get("fichier")), _ligne(element.get("ligne")),
-            str(element.get("categorie") or "").strip().lower(),
+            _categorie(element.get("categorie")),
             str(element.get("commentaire") or "").strip(), str(element.get("proposition") or "").strip(),
         ))
     inconnues = sorted({c[2] for c in commentaires} - CATEGORIES)

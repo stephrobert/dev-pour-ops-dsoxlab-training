@@ -1,18 +1,18 @@
 # Appeler une API avec requests
 
-Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon
-« Automatiser par une API REST ». certcheck sait déjà contrôler un parc ; il
-doit maintenant **ouvrir un ticket** sur la forge quand des certificats sont
-à renouveler. Vous écrivez cet appel avec la bibliothèque `requests`, pas à
-pas : déclarer la dépendance, passer le jeton au bon endroit, borner
-l'attente, traiter les erreurs, ne pas créer de doublon.
+Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon « Appeler
+une API REST avec Python et requests ». certcheck sait déjà contrôler un
+parc ; il doit maintenant **ouvrir un ticket** sur la forge quand des
+certificats sont à renouveler. Vous écrivez cet appel avec la bibliothèque
+`requests`, pas à pas : déclarer la dépendance, passer le jeton au bon
+endroit, borner l'attente, traiter les erreurs, ne pas créer de doublon.
 
 | | |
 |---|---|
 | Cible | votre poste : Python et uv (`mise install`), openssl |
 | Durée | environ 30 minutes |
 | Réseau | requis une fois : uv télécharge `requests` depuis PyPI |
-| Leçon jumelée | [Automatiser par une API REST](https://blog.stephane-robert.info/docs/developper/api-rest/) |
+| Leçon jumelée | [Appeler une API REST avec Python et requests](https://blog.stephane-robert.info/docs/developper/api-rest/) |
 | Précédent | `script-en-outil` |
 
 ```bash

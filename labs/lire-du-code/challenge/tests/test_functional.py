@@ -32,7 +32,11 @@ FIXTURES = Path(__file__).resolve().parents[2] / "fixtures"
 PAQUET = FIXTURES / "src" / "certcheck"
 JOUR = "2026-06-01"
 
-DEFAUTS_REELS = {"erreur-avalee", "jeton-dans-l-url", "appel-reseau-sans-delai", "ticket-en-double"}
+# Les noms de la leçon : erreur avalée, secret exposé, appel réseau sans délai,
+# action répétée à chaque exécution, injection de commande.
+DEFAUTS_REELS = {"erreur-avalee", "secret-expose", "appel-reseau-sans-delai", "action-repetee"}
+# Les anciens noms restent acceptés : ils désignent les mêmes défauts.
+SYNONYMES = {"jeton-dans-l-url": "secret-expose", "ticket-en-double": "action-repetee"}
 DEFAUTS_PROPOSES = DEFAUTS_REELS | {
     "code-de-sortie-muet", "injection-de-commande", "seuil-exclusif",
     "fichier-temporaire-predictible", "dependance-non-epinglee",
@@ -178,7 +182,8 @@ def test_l_execution_sans_risque_est_observee(reponses: dict) -> None:
 
 
 def test_les_defauts_reels_sont_nommes(reponses: dict) -> None:
-    donnees = {_texte(v).lower() for v in reponses.get("defauts") or [] if _texte(v)}
+    lus = {_texte(v).lower() for v in reponses.get("defauts") or [] if _texte(v)}
+    donnees = {SYNONYMES.get(d, d) for d in lus}
     inconnus = sorted(donnees - DEFAUTS_PROPOSES)
     assert not inconnus, f"defauts : {inconnus} ne font pas partie de la liste proposée."
     oublies = len(DEFAUTS_REELS - donnees)

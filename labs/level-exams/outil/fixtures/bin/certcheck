@@ -2,5 +2,9 @@
 # Point d'entrée de l'outil, imposé par le contrat (CONTRAT.md) : c'est lui
 # que cron, un pipeline et les contrôles appellent.
 #
-# Il lance aujourd'hui le script hérité, qui ne respecte pas le contrat.
-exec bash "$(dirname "$0")/../certcheck.sh" "$@"
+# Il lance déjà le paquet Python du projet (src/certcheck/), dans
+# l'environnement que uv construit depuis pyproject.toml et uv.lock.
+# --project, et non --directory : le dossier courant reste celui de
+# l'appelant, et un chemin relatif garde son sens. Le script hérité,
+# certcheck.sh, n'est plus appelé : il reste là pour être lu.
+exec uv run --quiet --project "$(dirname "$0")/.." certcheck "$@"

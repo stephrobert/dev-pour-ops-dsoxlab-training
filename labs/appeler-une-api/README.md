@@ -1,10 +1,10 @@
 # Call an API with requests
 
-Common-thread lab of **Development for Ops**, paired with the lesson
-"Automatiser par une API REST". certcheck can already check a fleet; it must
-now **open a ticket** on the forge when certificates are due. You write that
-call with the `requests` library, step by step: declare the dependency, put
-the token in the right place, bound the wait, handle errors, avoid
+Common-thread lab of **Development for Ops**, paired with the lesson "Appeler
+une API REST avec Python et requests". certcheck can already check a fleet; it
+must now **open a ticket** on the forge when certificates are due. You write
+that call with the `requests` library, step by step: declare the dependency,
+put the token in the right place, bound the wait, handle errors, avoid
 duplicates.
 
 | | |
@@ -12,7 +12,7 @@ duplicates.
 | Target | your machine: Python and uv (`mise install`), openssl |
 | Duration | about 30 minutes |
 | Network | needed once: uv downloads `requests` from PyPI |
-| Paired lesson | [Automatiser par une API REST](https://blog.stephane-robert.info/docs/developper/api-rest/) (in French) |
+| Paired lesson | [Appeler une API REST avec Python et requests](https://blog.stephane-robert.info/docs/developper/api-rest/) (in French) |
 | Previous | `script-en-outil` |
 
 ```bash

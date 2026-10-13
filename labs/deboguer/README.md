@@ -1,16 +1,17 @@
 # Debug step by step
 
-Common-thread lab of **Development for Ops**, paired with the lesson
-"Déboguer". A ticket came in: certcheck reports a certificate as unreadable
-while openssl reads it without trouble. You handle it in order rather than
-by trial and error: **reproduce** with a test, **look** at the faulty value,
-**fix**, and keep a short record of what you learned.
+Common-thread lab of **Development for Ops**, paired with the lesson "Déboguer
+un programme Python pas à pas, avec pdb". A ticket came in: certcheck reports
+a certificate as unreadable while openssl reads it without trouble. You handle
+it in order rather than by trial and error: **reproduce** with a test,
+**look** at the faulty value, **fix**, and keep a short record of what you
+learned.
 
 | | |
 |---|---|
 | Target | your machine: Python and uv (`mise install`), openssl |
 | Duration | about 30 minutes |
-| Paired lesson | [Déboguer](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) (in French) |
+| Paired lesson | [Déboguer un programme Python pas à pas, avec pdb](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) (in French) |
 | Previous | `tester-une-automatisation` |
 
 ```bash

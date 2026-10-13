@@ -32,10 +32,14 @@ hote_mal_classe: ""
 # 4. Les défauts RÉELS du code, et seulement eux, choisis dans cette liste :
 #      erreur-avalee              une erreur est masquée et le traitement continue
 #      code-de-sortie-muet        le code de sortie ne dit pas s'il y a des alertes
-#      jeton-dans-l-url           le secret circule dans l'URL et finit dans un journal
-#      appel-reseau-sans-delai    une requête réseau peut attendre indéfiniment
-#      ticket-en-double           chaque exécution ouvre un nouveau ticket
-#      injection-de-commande      une donnée de l'inventaire est interprétée par un shell
+#      secret-expose              un secret (jeton, mot de passe) circule dans une
+#                                 URL ou finit dans un journal
+#      appel-reseau-sans-delai    une requête réseau sans délai maximal peut
+#                                 attendre indéfiniment
+#      action-repetee             chaque exécution refait une création (ticket,
+#                                 fichier, message) sans vérifier qu'elle existe
+#      injection-de-commande      une commande shell construite avec une donnée
+#                                 de l'inventaire : un `;` en exécute une autre
 #      seuil-exclusif             un certificat qui expire exactement au seuil n'alerte pas
 #      fichier-temporaire-predictible   l'outil écrit dans /tmp sous un nom fixe
 #      dependance-non-epinglee    une dépendance est déclarée sans être verrouillée

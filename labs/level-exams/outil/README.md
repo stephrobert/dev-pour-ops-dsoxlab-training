@@ -11,6 +11,7 @@ from reading inherited code to shipping a version of a Python project.
 | Passing score | 70 points out of 100 |
 | Hints | none |
 | Course | [Développer pour les Ops](https://blog.stephane-robert.info/docs/developper/parcours/) (in French) |
+| Paired lesson | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
 
 | Task | What is checked |
 |---|---|

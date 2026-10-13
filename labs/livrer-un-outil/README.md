@@ -1,17 +1,17 @@
 # Ship a tool
 
-Common-thread lab of **Development for Ops**, paired with the lesson
-"Livrer un outil". certcheck installs elsewhere; it now has to become a
-**release**: a number written in one place, a changelog, a Git tag, and the
-proof that it installs in a fresh environment. Nothing is published: the
-release stays in the repository.
+Common-thread lab of **Development for Ops**, paired with the lesson "Livrer
+un outil Python : version, étiquette, installation". certcheck installs
+elsewhere; it now has to become a **release**: a number written in one place,
+a changelog, a Git tag, and the proof that it installs in a fresh environment.
+Nothing is published: the release stays in the repository.
 
 | | |
 |---|---|
 | Target | your machine: uv, Python (`mise install`) and Git |
 | Duration | about 25 minutes |
 | Network | **required**: the fresh installation downloads dependencies from PyPI |
-| Paired lesson | [Livrer un outil](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
+| Paired lesson | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
 | Previous | `dependances-reproductibles` |
 
 ```bash

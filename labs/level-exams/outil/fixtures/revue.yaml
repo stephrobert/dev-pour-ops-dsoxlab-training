@@ -17,8 +17,10 @@
 # Catégories admises. Toutes ne sont pas forcément présentes dans ce diff :
 #   erreur-avalee              une erreur est attrapée et ignorée, ou effacée
 #                              du résultat
-#   secret-expose              un secret (jeton, mot de passe) finit dans un
+#   secret-affiche             un secret (jeton, mot de passe) finit dans un
 #                              journal, une sortie ou un message
+#   chemin-dangereux           une suppression ou une écriture dont le dossier
+#                              cible n'est pas vérifié
 #   tls-desactive              la vérification du certificat du serveur est coupée
 #   injection-de-commande      une donnée externe est interprétée par un shell
 #   dependance-non-epinglee    une dépendance déclarée sans version exacte, alors

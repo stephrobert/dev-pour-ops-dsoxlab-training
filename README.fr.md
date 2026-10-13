@@ -43,18 +43,18 @@ openssl et Git du système. Quelques labs téléchargent des paquets depuis PyPI
 |---|---|---|---|---|---|
 | `lire-du-code` | Lire le code d'une application Python : le paquet certcheck hérité | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
 | `script-en-outil` | Structurer un projet Python en outil : certcheck respecte son contrat | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
-| `appeler-une-api` | Appeler une API sans fragilité : certcheck publie son ticket | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/api-rest/) |
+| `appeler-une-api` | Appeler une API avec requests : certcheck ouvre son ticket | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/api-rest/) |
 | `tester-une-automatisation` | Premiers tests : pytest attrape deux vrais bogues | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
 | `deboguer` | Déboguer pas à pas : le certificat que certcheck ne sait pas lire | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) |
-| `relire-une-automatisation` | Relire une automatisation : la pull request n°42 de certcheck | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
-| `dependances-reproductibles` | Dépendances reproductibles : certcheck s'installe à l'identique ailleurs | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
-| `livrer-un-outil` | Livrer un outil interne : certcheck 1.0.0, étiqueté et installable | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
+| `relire-une-automatisation` | Relire une pull request : quatre défauts dans la n°42 de certcheck | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
+| `dependances-reproductibles` | Dépendances : certcheck s'installe aussi ailleurs | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
+| `livrer-un-outil` | Livrer un outil : certcheck 1.0.0, versionné et installable | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 
 ### Épreuve de niveau
 
 | Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
 |---|---|---|---|---|---|
-| `level-exams-outil` | Épreuve : reprendre un outil d'exploitation | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/parcours/) |
+| `level-exams-outil` | Épreuve : reprendre un outil d'exploitation | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 
 _9 labs, table générée par `scripts/gen_catalog.py`._
 <!-- LABS:END -->

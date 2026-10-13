@@ -1,15 +1,15 @@
 # First tests
 
-Common-thread lab of **Development for Ops**, paired with the lesson "Tester
-une automatisation". certcheck honours its contract; it must now keep
-honouring it when someone edits it. You write its **first pytest tests**,
-step by step, and the suite is graded on the bugs it catches.
+Common-thread lab of **Development for Ops**, paired with the lesson "Premiers
+tests Python avec pytest : le geste de base". certcheck honours its contract;
+it must now keep honouring it when someone edits it. You write its **first
+pytest tests**, step by step, and the suite is graded on the bugs it catches.
 
 | | |
 |---|---|
 | Target | your machine: Python and uv (`mise install`), openssl |
 | Duration | about 25 minutes |
-| Paired lesson | [Tester une automatisation](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) (in French) |
+| Paired lesson | [Premiers tests Python avec pytest : le geste de base](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) (in French) |
 | Previous | `appeler-une-api` |
 | Next | `deboguer` |
 

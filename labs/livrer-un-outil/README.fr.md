@@ -1,17 +1,18 @@
 # Livrer un outil
 
-Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon
-« Livrer un outil ». certcheck s'installe ailleurs ; il reste à en faire une
-**version** : un numéro écrit à un seul endroit, un journal des changements,
-une étiquette Git, et la preuve qu'on l'installe dans un environnement neuf.
-Rien n'est publié : la livraison reste dans le dépôt.
+Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon « Livrer un
+outil Python : version, étiquette, installation ». certcheck s'installe
+ailleurs ; il reste à en faire une **version** : un numéro écrit à un seul
+endroit, un journal des changements, une étiquette Git, et la preuve qu'on
+l'installe dans un environnement neuf. Rien n'est publié : la livraison reste
+dans le dépôt.
 
 | | |
 |---|---|
 | Cible | votre poste : uv, Python (`mise install`) et Git |
 | Durée | environ 25 minutes |
 | Réseau | **requis** : l'installation neuve télécharge les dépendances depuis PyPI |
-| Leçon jumelée | [Livrer un outil](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
+| Leçon jumelée | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 | Précédent | `dependances-reproductibles` |
 
 ```bash

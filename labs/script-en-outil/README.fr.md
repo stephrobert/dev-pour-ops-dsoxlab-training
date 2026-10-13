@@ -1,19 +1,20 @@
 # Structurer un projet Python en outil
 
 Deuxième lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon
-« Structurer un projet Python en outil ». Le script Bash hérité est remplacé
-par un **projet Python** comme un développeur le structure : un paquet sous
-`src/certcheck/`, un `pyproject.toml` qui déclare la commande `certcheck`,
-un `uv.lock`, et un contrat court respecté : une interface qu'on découvre
-par `--help`, des codes de sortie qu'un planificateur sait lire, une sortie
-JSON, un seuil réglable par l'environnement et des erreurs sur la sortie
-d'erreur. Le squelette est fourni : on complète des fonctions guidées.
+« Structurer un projet Python en outil en ligne de commande ». Le script Bash
+hérité est remplacé par un **projet Python** comme un développeur le
+structure : un paquet sous `src/certcheck/`, un `pyproject.toml` qui déclare
+la commande `certcheck`, un `uv.lock`, et un contrat court respecté : une
+interface qu'on découvre par `--help`, des codes de sortie qu'un planificateur
+sait lire, une sortie JSON, un seuil réglable par l'environnement et des
+erreurs sur la sortie d'erreur. Le squelette est fourni : on complète des
+fonctions guidées.
 
 | | |
 |---|---|
 | Cible | votre poste : uv et Python (`mise install`), openssl, aucune VM |
 | Durée | environ 30 minutes |
-| Leçon jumelée | [Structurer un projet Python en outil](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
+| Leçon jumelée | [Structurer un projet Python en outil en ligne de commande](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
 | Précédent | `lire-du-code` |
 | Suite | `appeler-une-api` part de la solution de référence |
 

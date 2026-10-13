@@ -5,5 +5,5 @@ fonction_appel_reseau: "ouvrir_ticket"
 variable_appel_reseau: "FORGE_TOKEN"
 code_de_sortie: 1
 hote_mal_classe: "web-03"
-defauts: [erreur-avalee, jeton-dans-l-url, appel-reseau-sans-delai, ticket-en-double]
+defauts: [erreur-avalee, secret-expose, appel-reseau-sans-delai, action-repetee]
 commit_erreur_avalee: "ebe3fef"

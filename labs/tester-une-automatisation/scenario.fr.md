@@ -56,8 +56,10 @@ qui ne regarde que des `expired` laisse passer un oubli sur les `warning`.
 ### 4. Un fichier temporaire ou une date fixée
 
 Ajoutez un paramètre `tmp_path` à un test : pytest lui donne un dossier
-vide, propre à ce test, qu'il efface ensuite. Écrivez-y un faux certificat
-et vérifiez qu'il est en `error` :
+vide, propre à ce test, sous `/tmp/pytest-of-<utilisateur>/`. Il ne l'efface
+pas tout de suite : il garde les dossiers des trois dernières exécutions,
+pour qu'on puisse inspecter ce qu'un test a écrit, et supprime les plus
+anciens. Écrivez-y un faux certificat et vérifiez qu'il est en `error` :
 
 ```python
 def test_un_certificat_illisible_est_en_erreur(tmp_path):

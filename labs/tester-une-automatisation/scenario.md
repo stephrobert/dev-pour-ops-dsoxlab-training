@@ -54,7 +54,9 @@ that only looks at `expired` misses a slip on `warning`.
 ### 4. A temporary file or a fixed date
 
 Add a `tmp_path` parameter to a test: pytest gives it an empty folder, owned
-by that test, and deletes it afterwards. Write a fake certificate in it and
+by that test, under `/tmp/pytest-of-<user>/`. It does not delete it right
+away: it keeps the folders of the last three runs, so that you can inspect
+what a test wrote, and removes older ones. Write a fake certificate in it and
 check that it is `error`:
 
 ```python

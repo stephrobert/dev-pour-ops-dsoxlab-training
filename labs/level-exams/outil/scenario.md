@@ -7,7 +7,9 @@ tool over. The script runs every night from the operations server's cron. It
 always exits 0, and for weeks it counted a certificate that could not be
 found as expiring "in 0 days": nobody noticed. The team wrote down what it
 expects from the tool in `CONTRAT.md`, and decided to replace it with a
-Python project.
+Python project, whose skeleton is already in place: `pyproject.toml`,
+`uv.lock`, the `src/certcheck/` package with its functions to write, and
+`bin/certcheck`, which runs it.
 
 On the same day, Inès asks you to review her pull request #57 on the Python
 variant the team had been maintaining on the side: her tests pass, and she

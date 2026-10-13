@@ -1,18 +1,18 @@
 # Lire le code d'une application Python
 
-Premier lab du fil rouge de la formation **Développer pour les Ops**, jumelé
-à la leçon « Lire et contribuer au code d'une application existante ». Le
-point de départ est la situation la plus courante d'un développeur qui
-arrive dans une équipe : une application qui tourne en production, que
-personne autour de lui n'a écrite, et qu'on lui demande de reprendre. Avant
-d'y toucher, on la **lit** : point d'entrée déclaré par le paquet, modules
+Premier lab du fil rouge de la formation **Développer pour les Ops**, jumelé à
+la leçon « Lire le code d'une application Python qu'on n'a pas écrite ». Le
+point de départ est la situation la plus courante d'un développeur qui arrive
+dans une équipe : une application qui tourne en production, que personne
+autour de lui n'a écrite, et qu'on lui demande de reprendre. Avant d'y
+toucher, on la **lit** : point d'entrée déclaré par le paquet, modules
 chargés, effets de bord, configuration, historique.
 
 | | |
 |---|---|
 | Cible | votre poste : uv et Python (`mise install`), openssl et Git, aucune VM |
 | Durée | environ 30 minutes |
-| Leçon jumelée | [Lire et contribuer au code d'une application existante](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
+| Leçon jumelée | [Lire le code d'une application Python qu'on n'a pas écrite](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
 | Suite | `script-en-outil` structure un projet Python qui respecte un contrat |
 
 ```bash

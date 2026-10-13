@@ -10,7 +10,13 @@ dates tirés au hasard.
 
 ## Ce que vous recevez
 
-- `certcheck.sh`, le script hérité, et `bin/certcheck`, qui le lance ;
+- `certcheck.sh`, le script hérité, à lire seulement : plus rien ne le lance ;
+- le squelette du projet Python qui le remplace : `pyproject.toml` (la
+  commande `certcheck` dans `[project.scripts]`, le `[build-system]`, et
+  pytest 9.1.1 dans le groupe de développement `[dependency-groups]`),
+  `uv.lock` qui verrouille ces versions, le paquet `src/certcheck/` dont les
+  fonctions à écrire lèvent `NotImplementedError`, et `bin/certcheck`, qui
+  lance déjà ce paquet par `uv run --project` ;
 - `CONTRAT.md`, ce que l'outil doit faire, vu de l'extérieur ;
 - `inventaire.txt` et `certs/`, un petit parc pour essayer ;
 - `pr/`, la pull request n°57 d'Inès : sa description, son diff, et le
@@ -19,15 +25,19 @@ dates tirés au hasard.
 
 ## Ce que vous livrez, à la racine du répertoire de travail
 
+Le squelette fournit la forme du projet ; la notation porte sur ce que vous
+en faites. Une ligne du tableau marquée « fourni » reste à garder juste
+jusqu'à la livraison, une ligne marquée « à écrire » est entièrement à vous.
+
 | Fichier | Rôle |
 |---|---|
-| `pyproject.toml` | le projet : sa version, et la commande `certcheck` dans `[project.scripts]` |
-| `src/certcheck/` | le paquet Python de l'outil, conforme à `CONTRAT.md` |
-| `bin/certcheck` | le lanceur, qui exécute votre paquet, par exemple `exec uv run --quiet --project "$(dirname "$0")/.." certcheck "$@"` |
-| `tests/` | vos tests pytest, qui lancent l'exécutable désigné par `CERTCHECK_BIN` (défaut : `bin/certcheck`) |
-| `uv.lock` | ou un fichier de dépendances aux versions épinglées (`==`) : pytest au moins |
-| `CHANGELOG.md` | une section `## [X.Y.Z]` pour la version livrée |
-| `revue.yaml` | votre revue de la PR n°57, dans la forme décrite par son en-tête |
+| `pyproject.toml` | fourni : la version livrée est à y porter, la commande `certcheck` à garder dans `[project.scripts]` |
+| `src/certcheck/` | fourni, à compléter : le paquet Python de l'outil, conforme à `CONTRAT.md` |
+| `bin/certcheck` | fourni : le lanceur, qui exécute votre paquet par `uv run --project` |
+| `tests/` | à écrire : vos tests pytest, qui lancent l'exécutable désigné par `CERTCHECK_BIN` (défaut : `bin/certcheck`) |
+| `uv.lock` | fourni : les dépendances de développement épinglées (`==`), pytest au moins ; `uv run` le tient à jour |
+| `CHANGELOG.md` | à écrire : une section `## [X.Y.Z]` pour la version livrée |
+| `revue.yaml` | à remplir : votre revue de la PR n°57, dans la forme décrite par son en-tête |
 
 Le répertoire de travail devient un dépôt Git, et la version livrée porte une
 étiquette `vX.Y.Z` (annotée ou non).
@@ -54,7 +64,10 @@ script hérité (un certificat absent compté `warning` à 0 jour, code 1).
 sous `src/`, et les dépendances de développement sont épinglées. Le projet
 est installé (`pip install .`) dans un environnement neuf : la commande
 `certcheck --version` y affiche la version de `pyproject.toml`, et l'outil
-installé passe un contrôle de fumée.
+installé passe un contrôle de fumée. Le squelette s'installe déjà : ce sont
+`--version` et le contrôle de fumée, qui passent par votre code, qui font la
+note, et la version affichée doit suivre celle de `pyproject.toml` quand vous
+la changez.
 
 ### Tâche 4 : la version est notée et étiquetée (20 pts)
 

@@ -1,18 +1,18 @@
 # Review a pull request
 
 Lab of the common thread of **Development for Ops**, paired with the lesson
-"Relire une automatisation". This time you do not write the code: you
-**review** it. A colleague proposes a pull request on certcheck, its tests
-pass, and it is up to you to say whether it can be merged. A useful review
-points at a precise defect, at a precise line, and proposes a fix the author
-can apply. You then hand the mechanical defects over to a machine: the ruff
-linter.
+"Relire une pull request : checklist, commentaire, verdict". This time you do
+not write the code: you **review** it. A colleague proposes a pull request on
+certcheck, its tests pass, and it is up to you to say whether it can be
+merged. A useful review points at a precise defect, at a precise line, and
+proposes a fix the author can apply. You then hand the mechanical defects over
+to a machine: the ruff linter.
 
 | | |
 |---|---|
 | Target | your machine: uv (`mise install`), Git and an editor, no VM |
 | Duration | about 25 minutes |
-| Paired lesson | [Relire une automatisation](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) (in French) |
+| Paired lesson | [Relire une pull request : checklist, commentaire, verdict](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) (in French) |
 
 ```bash
 dsoxlab run   relire-une-automatisation

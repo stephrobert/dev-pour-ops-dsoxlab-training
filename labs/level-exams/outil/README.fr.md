@@ -12,6 +12,7 @@ version d'un projet Python.
 | Seuil de réussite | 70 points sur 100 |
 | Indices | aucun |
 | Parcours | [Développer pour les Ops](https://blog.stephane-robert.info/docs/developper/parcours/) |
+| Leçon jumelée | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 
 | Tâche | Ce qui est vérifié |
 |---|---|

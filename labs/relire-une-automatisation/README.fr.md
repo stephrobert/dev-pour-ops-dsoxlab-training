@@ -1,18 +1,18 @@
 # Relire une pull request
 
 Lab du fil rouge de **Développer pour les Ops**, jumelé à la leçon « Relire
-une automatisation ». Cette fois, vous n'écrivez pas le code : vous le
-**relisez**. Un collègue propose une pull request sur certcheck, ses tests
-passent, et c'est à vous de dire si elle peut être fusionnée. Une revue utile
-désigne un défaut précis, à une ligne précise, et propose une correction que
-l'auteur peut appliquer. Vous confiez ensuite les défauts mécaniques à une
-machine : le linter ruff.
+une pull request : checklist, commentaire, verdict ». Cette fois, vous
+n'écrivez pas le code : vous le **relisez**. Un collègue propose une pull
+request sur certcheck, ses tests passent, et c'est à vous de dire si elle peut
+être fusionnée. Une revue utile désigne un défaut précis, à une ligne précise,
+et propose une correction que l'auteur peut appliquer. Vous confiez ensuite
+les défauts mécaniques à une machine : le linter ruff.
 
 | | |
 |---|---|
 | Cible | votre poste : uv (`mise install`), Git et un éditeur, aucune VM |
 | Durée | environ 25 minutes |
-| Leçon jumelée | [Relire une automatisation](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
+| Leçon jumelée | [Relire une pull request : checklist, commentaire, verdict](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
 
 ```bash
 dsoxlab run   relire-une-automatisation

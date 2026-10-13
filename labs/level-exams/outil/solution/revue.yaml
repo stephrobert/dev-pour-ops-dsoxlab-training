@@ -11,7 +11,7 @@ commentaires:
     proposition: "Garder l'entrée en status error et le code 2 ; si un hôte est décommissionné, le retirer de l'inventaire. Rétablir le test test_un_certificat_absent_rend_error."
   - fichier: certcheck.py
     ligne: 161
-    categorie: secret-expose
+    categorie: secret-affiche
     commentaire: "Avec --verbose, désormais au niveau DEBUG, cette ligne écrit les en-têtes de chaque requête, donc Authorization: token <jeton>, sur la sortie d'erreur : le jeton de la forge finit dans le courriel du cron."
     proposition: "Ne journaliser que la méthode et l'URL, jamais les en-têtes ; si besoin, une copie des en-têtes où Authorization est remplacé par « *** »."
   - fichier: certcheck.py

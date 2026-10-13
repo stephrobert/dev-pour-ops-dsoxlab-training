@@ -3,8 +3,9 @@ title: "Épreuve : reprendre un outil d'exploitation"
 description: |
   Vous héritez de certcheck.sh, un script Bash qui compte un certificat
   absent comme « 0 jour » et sort toujours en 0, de son contrat écrit, et
-  d'une pull request d'un collègue à relire. Remplacez-le par un projet
-  Python qui respecte le contrat, sa propre suite pytest qui attrape le
-  bogue hérité, un paquet installable, une version notée dans le CHANGELOG
-  et étiquetée dans Git, et la revue. Noté sur le contrat par des tests
-  cachés, sans indice.
+  d'une pull request d'un collègue à relire. Remplacez-le par le projet
+  Python dont le squelette est fourni (pyproject.toml, uv.lock, un paquet
+  sous src/ aux fonctions à écrire) : une implémentation qui respecte le
+  contrat, sa propre suite pytest qui attrape le bogue hérité, un paquet
+  installable, une version notée dans le CHANGELOG et étiquetée dans Git, et
+  la revue. Noté sur le contrat par des tests cachés, sans indice.
