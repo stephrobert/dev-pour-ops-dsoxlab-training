@@ -1,18 +1,17 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: script-en-outil
-title: "Structure a Python project as a tool: certcheck honours its contract"
+title: "Understand a Python tool, then modify it: certcheck and its contract"
 description: |
-  The inherited Bash script always exits 0, hides errors and has no help.
-  Replace it with a Python project to complete: a package in src layout,
-  declared in pyproject.toml and run by uv, that honours a short written
-  contract: help and version, actionable exit codes, a JSON output, a
-  threshold configurable through the environment and errors on stderr.
-  Graded as a black box, through bin/certcheck.
+  certcheck has become a Python project: a package in src layout, declared in
+  pyproject.toml, run by bin/certcheck. Find where the command is declared,
+  where the decision lives, which file cron runs and which exit codes it
+  returns, then close two gaps with its contract: read the threshold from
+  CERTCHECK_DAYS, and write errors on stderr.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 30m
+estimated_time: 20m
 skills:
   - python
   - packaging
@@ -27,7 +26,6 @@ runtime:
   workdir: challenge/work
   fixtures:
     - CONTRAT.md
-    - certcheck.sh
     - pyproject.toml
     - uv.lock
     - src/certcheck/__init__.py
@@ -39,6 +37,7 @@ runtime:
     - certs/web-02.pem
     - certs/vpn-01.pem
     - certs/mail-01.pem
+    - reponses.yaml
 validation:
   functional: true
   security: false

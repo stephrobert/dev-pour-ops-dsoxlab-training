@@ -1,8 +1,8 @@
 id: lire-du-code
-title: "Lire le code d'une application Python : le paquet certcheck hérité"
+title: "Lire et modifier un petit script Python : le certcheck hérité"
 description: |
-  Un paquet Python hérité contrôle chaque nuit l'expiration des certificats,
-  et personne dans l'équipe ne l'a écrit. Trouvez son point d'entrée et les
-  modules qu'il charge, son sous-processus et son appel réseau, exécutez-le
-  sans risque, nommez ses vrais défauts, et retrouvez dans son historique Git
-  le commit qui a commencé à avaler les erreurs.
+  Un petit script Python hérité contrôle chaque nuit l'expiration des
+  certificats, et personne dans l'équipe ne l'a écrit. Dites ce qu'il fait,
+  trouvez ses entrées et la fonction qui décide, lisez ce qu'il affiche et son
+  code de sortie, puis faites deux modifications simples : un seuil inclusif
+  et un statut pour les certificats expirés.

@@ -1,0 +1,3 @@
+test_en_echec: "test_le_seuil_est_inclusif"
+valeur_attendue: "warning"
+valeur_obtenue: "ok"

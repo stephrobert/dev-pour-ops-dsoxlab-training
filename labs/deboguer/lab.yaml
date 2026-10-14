@@ -11,7 +11,7 @@ section: fil-rouge
 level: o1
 difficulty: beginner
 lab_type: lab
-estimated_time: 30m
+estimated_time: 25m
 skills:
   - debugging
   - python

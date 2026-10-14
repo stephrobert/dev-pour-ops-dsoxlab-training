@@ -32,7 +32,7 @@ vpn-01 is `error`, while openssl prints its expiry date.
 
 ### 2. Reproduce with a test, BEFORE fixing
 
-Add to `tests/test_certcheck.py` a test that asks for vpn-01's date:
+`tests/test_certcheck.py` already holds, commented out at the end, a test that asks for vpn-01's date. Uncomment it:
 
 ```python
 def test_un_jour_a_un_chiffre_se_lit():

@@ -1,23 +1,21 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: lire-du-code
-title: "Read the code of a Python application: the inherited certcheck package"
+title: "Read and modify a small Python script: the inherited certcheck"
 description: |
-  An inherited Python package checks certificate expiry every night, and
-  nobody on the team wrote it. Find its entry point and the modules it
-  loads, its subprocess and its network call, run it without risk, name its
-  real defects, and find in its Git history the commit that started
-  swallowing errors.
+  A small inherited Python script checks certificate expiry every night, and
+  nobody on the team wrote it. Say what it does, find its inputs and the
+  function that decides, read what it prints and its exit code, then make two
+  simple changes: an inclusive threshold, and an expired status.
 section: fil-rouge
 level: o1
-difficulty: intermediate
+difficulty: beginner
 lab_type: lab
-estimated_time: 30m
+estimated_time: 25m
 skills:
   - code-reading
   - python
-  - packaging
-  - git-history
-  - side-effects
+  - exit-codes
+  - first-change
 distros:
   - any
 doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/
@@ -25,18 +23,13 @@ runtime:
   type: shell
   workdir: challenge/work
   fixtures:
-    - pyproject.toml
-    - uv.lock
-    - src/certcheck/__init__.py
-    - src/certcheck/cli.py
-    - src/certcheck/certificats.py
-    - src/certcheck/forge.py
+    - certcheck.py
     - inventaire.txt
     - certs/web-01.pem
     - certs/web-02.pem
     - certs/vpn-01.pem
-    - certs/mail-01.pem
-    - historique.bundle
+    - certs/api-01.pem
+    - certs/api-02.pem
     - reponses.yaml
 validation:
   functional: true

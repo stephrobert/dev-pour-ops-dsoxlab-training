@@ -1,32 +1,36 @@
-# The application nobody wrote
+# The script nobody wrote
 
 ## Situation
 
-Every night, the `certcheck` command checks the expiry of the fleet's TLS
-certificates. It is a Python package: Julien structured it in 2024, Karim
-extended it, and both have moved to other teams. Last month a certificate
-expired without any alert going out: the code is now yours.
+Every night, cron runs `certcheck.py` to check the expiry of the fleet's TLS
+certificates. Julien wrote it two years ago, then moved to another team. Last
+month, a host's certificate expired although the previous night's report said
+`ok`. The script is now yours.
 
-The working directory holds the project (`pyproject.toml`, `uv.lock`, the
-package under `src/certcheck/`), the inventory it reads, the certificates
-collected on the hosts (`certs/`), and its Git history as a bundle
-(`historique.bundle`).
+The working directory holds the script (`certcheck.py`, about sixty lines),
+the inventory it reads (`inventaire.txt`) and the certificates collected on
+the hosts (`certs/`).
 
 ## Goal
 
-Understand what the application does **before** changing it, and prove it
-in `reponses.yaml`: its entry point and the modules it loads, its side
-effects, what running it shows, its real defects, and the commit that
-started swallowing errors.
+First **understand** the script as you received it, and write it down in
+`reponses.yaml`: its role, its inputs, the function that decides, what it
+prints and its exit code. Only then **modify** it:
+
+1. a certificate that expires **exactly** at the threshold must become
+   `warning`;
+2. a certificate that has **already expired** must show `expired`, not
+   `warning`.
 
 ## Hints
 
-- A command installed by a Python package does not necessarily start in a
-  `main` function: `pyproject.toml` declares it in `[project.scripts]`, in
-  the form `module:function`.
-- Read from the entry point to the functions it calls, opening each
-  imported module. An import can hide inside a function.
-- Running it safely: without `FORGE_TOKEN`, certcheck does not call the
-  forge, and `CERTCHECK_NOW` sets today's date.
-- `git log -S '<string>'` finds the commits that added or removed a string;
-  `git blame` tells who wrote each current line.
+- Read from the bottom up: `if __name__ == "__main__"` calls `main()`, and
+  `main()` calls the other functions.
+- `python3 certcheck.py --help` lists the options without running anything
+  else.
+- The script only **reads**: it runs `openssl` on each certificate and prints
+  one line per host. Running it changes nothing.
+- `CERTCHECK_NOW=2026-10-31 python3 certcheck.py` replays the check as if it
+  were 31 October 2026; `echo "code: $?"` then prints its exit code.
+- A condition changes with one character: `<` and `<=` do not say the same
+  thing at the boundary.

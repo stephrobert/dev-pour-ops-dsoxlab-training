@@ -1,0 +1,26 @@
+# Vos réponses sur le projet certcheck de ce dossier.
+# Remplacez chaque valeur. Les clés ne changent pas : le contrôle les lit.
+#
+# Répondez aux questions 1 à 3 AVANT de modifier le code : elles portent sur
+# le projet tel que vous l'avez reçu.
+
+# 1. Comment la commande existe.
+#    a) Le fichier du projet qui déclare la commande `certcheck`.
+fichier_declaration: ""
+#    b) Ce qu'il déclare : la fonction lancée, sous la forme module:fonction.
+commande_declaree: ""
+
+# 2. Où est quoi.
+#    a) Le fichier (chemin depuis ce dossier) qui contient la fonction `statut`,
+#       celle qui décide du verdict d'un certificat.
+module_decision: ""
+#    b) Le fichier (chemin depuis ce dossier) que cron ou un pipeline lance.
+lanceur: ""
+
+# 3. Les codes de sortie observés (des entiers), en lançant :
+#    a) CERTCHECK_NOW=2026-06-01 bin/certcheck ; echo $?
+code_inventaire_fourni: null
+#    b) bin/certcheck --format xml ; echo $?
+code_usage_incorrect: null
+#    c) bin/certcheck --inventory absent.txt ; echo $?
+code_inventaire_absent: null

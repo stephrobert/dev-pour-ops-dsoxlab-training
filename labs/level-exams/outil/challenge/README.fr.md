@@ -1,4 +1,4 @@
-# Épreuve : reprendre un outil d'exploitation
+# Défi : reprendre un outil d'exploitation
 
 5 tâches, 100 points, 60 minutes. Seuil de réussite : 70 points.
 

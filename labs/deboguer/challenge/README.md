@@ -1,6 +1,6 @@
 # Challenge: the certificate certcheck cannot read
 
-5 tasks, 100 points, 30 minutes.
+5 tasks, 100 points, 25 minutes.
 
 The ticket is in `TICKET.md`. Your suite runs with `uv run pytest`, the tool
 with `bin/certcheck`, and the debugging log goes in `DEBUG.md`, at the root

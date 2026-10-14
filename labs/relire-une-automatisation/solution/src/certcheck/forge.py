@@ -49,8 +49,7 @@ def ticket_ouvert(base: str, depot: str, jeton: str) -> int | None:
     """Le numéro du ticket déjà ouvert par certcheck, en parcourant TOUTES les pages."""
     page = 1
     while True:
-        query = urllib.parse.urlencode({"state": "open", "type": "issues",
-                                        "limit": TAILLE_PAGE, "page": page})
+        query = urllib.parse.urlencode({"state": "open", "type": "issues", "limit": TAILLE_PAGE, "page": page})
         tickets, _ = requete("GET", f"{base}/api/v1/repos/{depot}/issues?{query}", jeton)
         if not isinstance(tickets, list) or not tickets:
             return None
@@ -79,8 +78,7 @@ def publier(resultats: list[dict], forge: tuple[str, str, str] | None) -> None:
     if not alertes:
         log.info("aucun certificat à renouveler : rien à publier")
         return
-    corps = "\n".join(f"- {r['host']} : {r['status']}, {r['days_left']} jours ({r['not_after']})"
-                      for r in alertes)
+    corps = "\n".join(f"- {r['host']} : {r['status']}, {r['days_left']} jours ({r['not_after']})" for r in alertes)
     if forge is None:
         print(f"[simulation] ticket « {TITRE_TICKET} » :\n{corps}", file=sys.stderr)
         return
@@ -89,6 +87,5 @@ def publier(resultats: list[dict], forge: tuple[str, str, str] | None) -> None:
     if numero is not None:
         log.info("ticket déjà ouvert : #%s, rien de plus à faire", numero)
         return
-    ticket, _ = requete("POST", f"{base}/api/v1/repos/{depot}/issues", jeton,
-                        {"title": TITRE_TICKET, "body": corps})
+    ticket, _ = requete("POST", f"{base}/api/v1/repos/{depot}/issues", jeton, {"title": TITRE_TICKET, "body": corps})
     log.info("ticket ouvert : #%s", ticket.get("number") if isinstance(ticket, dict) else "?")

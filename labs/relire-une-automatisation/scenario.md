@@ -60,6 +60,10 @@ Run `uv run ruff check .`: it reports defects in the base code. Read each
 line (rule code, file, line), then `uv run ruff check --fix .` fixes those
 marked `[*]`. Run again: `All checks passed!`.
 
+**Formatting** is settled the same way, with no debate: `uv run ruff format
+--check .` lists the files whose layout departs from the configuration, and
+`uv run ruff format .` rewrites them. Check again: nothing left to reformat.
+
 ### 5. Check
 
 `dsoxlab check relire-une-automatisation`.

@@ -2,15 +2,16 @@
 #
 # Catalogue dev-pour-ops-dsoxlab-training, décrit par le contrat v1 de dsoxlab.
 #
-# Les labs de la formation « Développer pour les Ops » du blog : développer
-# comme un développeur, en Python. Un FIL ROUGE : certcheck, un contrôle
-# d'expiration de certificats que l'apprenant lit (paquet Python hérité),
-# structure en projet Python, teste, débogue, fait relire, rend reproductible
-# et livre. L'ordre ci-dessous est celui du jeu.
+# Les labs de la formation « Développer pour les Ops » du blog : une
+# initiation au développement pour un Ops qui ne connaît pas Python. Un FIL
+# ROUGE : certcheck, un contrôle d'expiration de certificats que l'apprenant
+# lit et modifie (petit script, puis projet Python), dont il installe les
+# dépendances, lance et corrige les tests, et qu'il fait relire. L'ordre
+# ci-dessous est celui du jeu. La CI de certcheck se joue sur la forge du
+# catalogue cicd-dsoxlab-training (lab ci-certcheck).
 #
-# L'outil livré au bout de ce fil rouge est le dépôt dont la formation
-# « Introduction aux pipelines CI/CD » construit la chaîne, sur la forge
-# locale de son propre catalogue (cicd-dsoxlab-training).
+# Recentrage validé par Stéphane le 2026-10-13 : cœur de six labs courts,
+# deux labs et un défi facultatifs, épreuve « intervenir » en shell.
 #
 # tests/test_meta_declare_les_labs.py refuse un lab sur disque absent d'ici,
 # et un lab déclaré ici absent du disque.
@@ -23,12 +24,11 @@ repo:
   blog_url: "https://blog.stephane-robert.info/docs/developper/"
   issues_url: "https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/issues"
   description: |
-    Develop the way a developer does, in Python. One common thread,
-    certcheck: you read an inherited Python package, structure a Python
-    project that honours a contract, test it, debug it, get it reviewed, make
-    it reproducible and ship it. Each lab is graded on what a caller
-    observes: outputs, exit codes, requests received by a fake forge, files
-    in the repository.
+    A first step into development for Ops, in Python. One common thread,
+    certcheck: you read and modify a small inherited script, find your way
+    around the Python project it became, install its dependencies, run and
+    fix its tests, debug it and get it reviewed. Each lab is graded on what a
+    caller observes: outputs, exit codes, files in the repository.
 
 # PAS de bloc `infra:` : tous les labs sont de type `shell`. L'outil se joue
 # sur le poste de l'apprenant. Prérequis : les outils de mise.toml
@@ -36,22 +36,29 @@ repo:
 
 sections:
   - id: fil-rouge
-    title: "The common thread: from inherited code to shipped tool"
-    description: "Read the code of an inherited Python package, structure a Python project with a contract, test it, debug it, review a change, lock its dependencies and ship a version."
+    title: "The common thread: read, modify, test and review a small tool"
+    description: "Read and modify a small inherited Python script, find your way around the Python project it became, install its dependencies, use its tests, debug it and review a change."
     labs:
       - lire-du-code
       - script-en-outil
-      - appeler-une-api
+      - dependances-reproductibles
       - tester-une-automatisation
       - deboguer
       - relire-une-automatisation
-      - dependances-reproductibles
-      - livrer-un-outil
 
-  # Épreuve de fin du niveau o1 : une MESURE, pas un cours. Un projet Python,
-  # noté sur le contrat de l'outil, en boîte noire, sans indice.
+  # Facultatifs : hors du cœur de l'initiation, pour aller plus loin.
+  - id: approfondir
+    title: "Going further"
+    description: "Optional: call an API, ship an installable versioned release, and the challenge of taking over a whole tool."
+    labs:
+      - appeler-une-api
+      - livrer-un-outil
+      - level-exams/outil
+
+  # Épreuve de fin du niveau o1 : une MESURE, pas un cours. Une intervention
+  # limitée sur un petit projet Python, notée en boîte noire, sans indice.
   - id: level-exams
     title: "Level exam"
-    description: "Take over an inherited operations tool: replace it with a Python project that honours its contract, catch the seeded bug with pytest tests, ship a tagged and installable version, and review a colleague's pull request. Graded as a black box, without hints."
+    description: "Step in on a small operations tool: read it, read its CI log and history, make a limited fix, and get tests, quality checks and CI steps back to green. Graded as a black box, without hints."
     labs:
-      - level-exams/outil
+      - level-exams/intervenir

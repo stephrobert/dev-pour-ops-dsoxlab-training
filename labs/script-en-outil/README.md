@@ -1,34 +1,32 @@
-# Structure a Python project as a tool
+# Understand a Python tool, then modify it
 
-Second lab of the **Development for Ops** common thread, paired with the
-lesson "Structurer un projet Python en outil en ligne de commande". The
-inherited Bash script is replaced by a **Python project** structured the way a
+Second lab of the common thread of **Development for Ops**, paired with the
+lesson "Structure a Python project as a command-line tool". The small script
+from the previous lab has become a **Python project**, structured the way a
 developer does it: a package under `src/certcheck/`, a `pyproject.toml` that
-declares the `certcheck` command, a `uv.lock`, and a short contract honoured:
-an interface discovered through `--help`, exit codes a scheduler can read, a
-JSON output, a threshold set through the environment and errors on standard
-error. The skeleton is provided: you complete guided functions.
+declares the `certcheck` command, a `uv.lock`, a `bin/certcheck` launcher and
+a written contract. You first find your way around it, then close two gaps
+with the contract: the threshold read from the environment, and errors
+written on standard error.
 
 | | |
 |---|---|
-| Target | your machine: uv and Python (`mise install`), openssl, no VM |
-| Duration | about 30 minutes |
-| Paired lesson | [Structurer un projet Python en outil en ligne de commande](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) (in French) |
+| Target | your workstation: uv and Python (`mise install`), openssl, no VM |
+| Duration | about 20 minutes |
+| Paired lesson | [Structure a Python project as a command-line tool](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) (in French) |
 | Previous | `lire-du-code` |
-| Next | `appeler-une-api` starts from the reference solution |
+| Next | `dependances-reproductibles` |
 
 ```bash
 dsoxlab run   script-en-outil
 cd labs/script-en-outil/challenge/work
-less CONTRAT.md pyproject.toml src/certcheck/certificats.py src/certcheck/cli.py
-# write the functions that raise NotImplementedError, then:
-CERTCHECK_NOW=2031-02-20 bin/certcheck --format json; echo "code: $?"
+less CONTRAT.md pyproject.toml src/certcheck/cli.py
+CERTCHECK_NOW=2026-06-01 bin/certcheck; echo "code: $?"
 dsoxlab check script-en-outil
 ```
 
-The check verifies that `bin/certcheck` does run the project's package, then
-stops reading your code: it runs `bin/certcheck` as cron would, with
-inventories and dates drawn at random.
+The check reads the delivered project again to recompute your answers, then
+runs `bin/certcheck` the way cron would, without reading your code.
 
 Validated by `scripts/valider-labs.py`: 0 before the work, 100 after the
-trainer's solution, replayable. The verdict is in `validation-labs.json`.
+instructor's solution, replayable. The verdict is in `validation-labs.json`.

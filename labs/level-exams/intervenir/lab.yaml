@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: level-exams-intervenir
+title: "Exam: step in on a small operations tool"
+description: |
+  A small Python operations tool, a recent change that introduced a defect,
+  and a red CI run. Clone the repository, read the code and say what it does,
+  read the CI log and the history to find the failing step and the faulty
+  commit, make a limited fix, then get the tests, the quality checks and the
+  CI steps back to green. Graded as a black box, without hints.
+section: level-exams
+level: o1
+difficulty: beginner
+lab_type: capstone
+exam_passing_score: 70
+estimated_time: 45m
+skills:
+  - code-reading
+  - python
+  - testing
+  - linting
+  - ci
+  - git-history
+distros:
+  - any
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/
+runtime:
+  type: shell
+  workdir: challenge/work
+  # Le point de départ : le dépôt de l'outil en bundle (cinq commits, dont un
+  # fautif), le journal du dernier run de CI, le ticket, et reponses.yaml.
+  fixtures:
+    - depot.bundle
+    - ci/run-12.log
+    - TICKET.md
+    - reponses.yaml
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

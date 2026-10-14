@@ -7,8 +7,7 @@ Contrat : CONTRAT.md. Codes de sortie :
 
 Le paquet est découpé par responsabilité : certificats.py lit l'inventaire
 et décide du statut de chaque certificat, cli.py traduit tout cela en
-arguments, sorties et codes de sortie. Les fonctions à écrire lèvent
-NotImplementedError : leur docstring dit ce qu'elles doivent faire.
+arguments, sorties et codes de sortie.
 """
 
 __version__ = "0.4.0"

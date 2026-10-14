@@ -1,0 +1,31 @@
+Run n°12 de la pipeline ci, job integrer, déclenché par un push sur main
+Commit 53fb077 « README : où lire le résultat de la CI »
+
+== Étape « Récupérer le code » : réussie
+== Étape « Préparer Python » : réussie
+== Étape « Installer les dépendances » : réussie
+== Étape « Qualité » : échec, code de sortie 1
+  $ uv run ruff check .
+  F401 [*] `sys` imported but unused
+    --> src/certcheck/certificats.py:8:8
+     |
+   6 | import os
+   7 | import subprocess
+   8 | import sys
+     |        ^^^
+   9 | from datetime import UTC, date, datetime
+  10 | from pathlib import Path
+     |
+  help: Remove unused import: `sys`
+    |
+  7 | import subprocess
+    - import sys
+  8 | from datetime import UTC, date, datetime
+    |
+  
+  Found 1 error.
+  [*] 1 fixable with `--fix`.
+== Étape « Tests » : non exécutée
+== Étape « Construire le paquet » : non exécutée
+
+Job failed

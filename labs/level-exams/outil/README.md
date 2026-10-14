@@ -1,8 +1,10 @@
-# Exam: take over an operations tool
+# Challenge: take over an operations tool
 
-This exam closes the **Development for Ops** course. It is not a lesson: it
-measures, on a new situation, the basic moves the common thread worked on,
-from reading inherited code to shipping a version of a Python project.
+**Optional** challenge of the **Development for Ops** course, beyond the
+introduction: the level exam is `level-exams-intervenir`. This challenge
+measures, on a new situation, what is expected from an Ops who ships an
+internal tool to other teams: from reading inherited code to shipping a
+version of a Python project.
 
 | | |
 |---|---|

@@ -1,6 +1,6 @@
 # Challenge : le certificat que certcheck ne sait pas lire
 
-5 tâches, 100 points, 30 minutes.
+5 tâches, 100 points, 25 minutes.
 
 Le ticket est dans `TICKET.md`. Votre suite se lance par `uv run pytest`,
 l'outil par `bin/certcheck`, et le journal de débogage s'écrit dans

@@ -1,5 +1,5 @@
 id: level-exams-outil
-title: "Épreuve : reprendre un outil d'exploitation"
+title: "Défi : reprendre un outil d'exploitation"
 description: |
   Vous héritez de certcheck.sh, un script Bash qui compte un certificat
   absent comme « 0 jour » et sort toujours en 0, de son contrat écrit, et

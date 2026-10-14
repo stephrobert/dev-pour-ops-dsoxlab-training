@@ -258,7 +258,7 @@ def test_une_configuration_ruff_est_versionnee() -> None:
     )
 
 
-def test_ruff_check_passe_sur_le_code_de_base() -> None:
+def test_ruff_check_et_format_passent_sur_le_code_de_base() -> None:
     exiger_workdir(WORKDIR, LAB_ID)
     uv = exiger_outil("uv")
     fichier, _ = _config_ruff()
@@ -267,6 +267,8 @@ def test_ruff_check_passe_sur_le_code_de_base() -> None:
         res = executer([uv, "run", "--quiet", "--directory", str(copie), "ruff", "check", "."], timeout=300)
         import_inutile = executer([uv, "run", "--quiet", "--directory", str(copie), "ruff", "check",
                                    "--isolated", "--select", "F401", "src"], timeout=300)
+        formatage = executer([uv, "run", "--quiet", "--directory", str(copie), "ruff", "format",
+                              "--check", "."], timeout=300)
     assert res.returncode == 0, (
         "`uv run ruff check .` signale encore des défauts dans le code de base. Lisez "
         "chaque ligne : le code de la règle, le fichier, la ligne. `ruff check --fix` "
@@ -276,4 +278,10 @@ def test_ruff_check_passe_sur_le_code_de_base() -> None:
         "Un import inutilisé (F401) reste dans src/ : la configuration ne doit pas "
         "faire taire une règle pour faire passer ruff, le défaut se corrige dans le "
         "code.\n" + (import_inutile.stdout + import_inutile.stderr).strip()[-800:]
+    )
+    assert formatage.returncode == 0, (
+        "`uv run ruff format --check .` signale des fichiers à reformater. Le formatage "
+        "ne se discute pas en revue : `uv run ruff format .` l'applique, avec la "
+        "longueur de ligne de votre configuration, puis relancez le contrôle.\n"
+        + (formatage.stdout + formatage.stderr).strip()[-1200:]
     )

@@ -1,51 +1,33 @@
-# Vos réponses sur certcheck, le paquet Python hérité de ce dossier.
+# Vos réponses sur certcheck.py, le script hérité de ce dossier.
 # Remplacez chaque valeur. Les clés ne changent pas : le contrôle les lit.
 #
-# Lisez avant d'exécuter, puis exécutez SANS RISQUE : sans FORGE_TOKEN dans
-# l'environnement, certcheck n'appelle pas la forge.
+# Répondez aux questions 1 à 3 AVANT de modifier le script : elles portent sur
+# le script tel que vous l'avez reçu.
 
-# 1. Le point d'entrée et les modules qu'il charge.
-#    a) La fonction que lance la commande `certcheck`, sous la forme
-#       module:fonction, telle que pyproject.toml la déclare.
-point_d_entree: ""
-#    b) Les modules du paquet (les fichiers de src/certcheck/, sauf
-#       __init__.py) que le module du point d'entrée importe, où que soit
-#       l'import dans le fichier. Une liste, par exemple [certcheck.exemple].
-modules_internes: []
+# 1. Ce que fait le script.
+#    a) Son rôle, choisi dans cette liste :
+#         verifier-expiration       signaler les certificats qui vont expirer
+#         renouveler-certificats    demander de nouveaux certificats
+#         deployer-certificats      copier les certificats sur les hôtes
+#         sauvegarder-certificats   archiver les certificats du parc
+role: ""
+#    b) Le programme externe que le script lance pour lire un certificat.
+programme_externe: ""
 
-# 2. Les effets de bord.
-#    a) Le programme externe que certcheck lance en sous-processus.
-sous_processus: ""
-#    b) La fonction qui envoie une requête sur le réseau (son nom seul).
-fonction_appel_reseau: ""
-#    c) La variable d'environnement dont la présence déclenche cet appel.
-variable_appel_reseau: ""
+# 2. Ses entrées.
+#    a) L'option de la ligne de commande qui donne le seuil d'alerte.
+option_seuil: ""
+#    b) La variable d'environnement qui remplace la date du jour.
+variable_date: ""
+#    c) La fonction qui décide du verdict d'un certificat (son nom seul).
+fonction_verdict: ""
 
-# 3. Ce que l'exécution montre, sur l'inventaire fourni, au 1er juin 2026 :
-#      CERTCHECK_NOW=2026-06-01 uv run certcheck --inventory inventaire.txt
+# 3. Ce que l'exécution montre, au 31 octobre 2026 :
+#      CERTCHECK_NOW=2026-10-31 python3 certcheck.py
 #      echo "code : $?"
 #    a) Le code de sortie (un entier).
 code_de_sortie: null
-#    b) L'hôte classé `ok` alors que son certificat n'existe pas.
-hote_mal_classe: ""
-
-# 4. Les défauts RÉELS du code, et seulement eux, choisis dans cette liste :
-#      erreur-avalee              une erreur est masquée et le traitement continue
-#      code-de-sortie-muet        le code de sortie ne dit pas s'il y a des alertes
-#      secret-expose              un secret (jeton, mot de passe) circule dans une
-#                                 URL ou finit dans un journal
-#      appel-reseau-sans-delai    une requête réseau sans délai maximal peut
-#                                 attendre indéfiniment
-#      action-repetee             chaque exécution refait une création (ticket,
-#                                 fichier, message) sans vérifier qu'elle existe
-#      injection-de-commande      une commande shell construite avec une donnée
-#                                 de l'inventaire : un `;` en exécute une autre
-#      seuil-exclusif             un certificat qui expire exactement au seuil n'alerte pas
-#      fichier-temporaire-predictible   l'outil écrit dans /tmp sous un nom fixe
-#      dependance-non-epinglee    une dépendance est déclarée sans être verrouillée
-defauts: []
-
-# 5. L'empreinte (7 caractères au moins) du commit qui a introduit l'erreur
-#    avalée. L'historique est dans historique.bundle :
-#      git clone historique.bundle historique
-commit_erreur_avalee: ""
+#    b) Les hôtes affichés en `warning`. Une liste, par exemple [web-09, db-07].
+hotes_en_alerte: []
+#    c) L'hôte dont le certificat expire dans exactement 30 jours, le seuil.
+hote_au_seuil: ""

@@ -1,36 +1,34 @@
-# A project with a contract
+# A tool with a contract
 
 ## Situation
 
-The Bash script `certcheck.sh` still checks certificates on an old server:
-it always exits 0, reports a missing certificate as "0 days", and has
-neither help nor machine-readable output. The team wrote what it expects
-from its replacement in `CONTRAT.md`, and laid out the skeleton of the
-Python project that must replace it.
+The small script from the previous lab has become a **Python project**: a
+colleague split it the way a developer does. The `src/certcheck/` package
+holds two modules (`certificats.py` reads the inventory and decides the
+status, `cli.py` handles the interface), `pyproject.toml` declares the
+`certcheck` command, `uv.lock` pins the environment, and the `bin/certcheck`
+launcher runs it all through `uv run`. The team wrote what the tool must do
+in `CONTRAT.md`.
 
-The skeleton is structured the way a developer would do it: the
-`src/certcheck/` package, split into two modules (`certificats.py` reads the
-inventory and decides the status, `cli.py` handles the interface), a
-`pyproject.toml` that declares the `certcheck` command in
-`[project.scripts]`, a `uv.lock`, and the `bin/certcheck` launcher, which
-runs it through `uv run`. Part of the code is written; the other functions
-are there, with their docstring and examples, but raise
-`NotImplementedError`.
+Two tickets are open: the tool ignores the `CERTCHECK_DAYS` variable the
+contract promises, and when the inventory is missing, its error message goes
+to standard output, where a program expects the result.
 
 ## Goal
 
-`bin/certcheck` honours the contract: help and version, usage errors as
-code 2, codes 0, 1 and 2 depending on the certificates, a JSON output, a
-threshold set through `CERTCHECK_DAYS`, and errors on standard error. The
-Bash script stays as the former implementation, to read, not to call.
+First **find your way** around the project and write it down in
+`reponses.yaml`: which file declares the command, what it declares, where the
+decision lives, which file cron runs, and which exit codes the tool returns.
+Then **close the two gaps** with the contract, without rewriting anything
+else.
 
 ## Hints
 
-- `uv run certcheck --help` runs the command the project declares, in its
-  environment; `bin/certcheck` does the same from any directory.
-- As long as a function raises `NotImplementedError`, the command prints a
-  Python traceback: its last line tells which function to write.
-- `CERTCHECK_NOW=YYYY-MM-DD` sets today's date: without it, no alert can be
-  tested with fixed-date certificates.
-- `print(..., file=sys.stderr)` writes to standard error; standard output
-  carries only the result.
+- `uv run certcheck --help` and `bin/certcheck --help` run the same thing:
+  the command `pyproject.toml` declares in `[project.scripts]`.
+- `CERTCHECK_NOW=2026-06-01 bin/certcheck; echo $?` replays the check on a
+  fixed date and prints its exit code; `CONTRAT.md` says what it means.
+- The threshold is decided in a single function of `cli.py`, and
+  `os.environ.get` reads an environment variable.
+- `print(..., file=sys.stderr)` writes on standard error; standard output
+  only carries the result.

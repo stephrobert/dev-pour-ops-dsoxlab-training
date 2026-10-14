@@ -66,12 +66,12 @@
    "score": 0,
    "total": 5
   },
-  "commit": "d37b26a",
+  "commit": "94fb66b",
   "date": "2026-10-13",
-  "duree_s": 8,
+  "duree_s": 7,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -143,6 +143,54 @@
   "uv": "0.12.21",
   "verdict": "VALIDE"
  },
+ "level-exams-intervenir": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "score": 100,
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_l_outil_est_compris",
+    "test_la_ci_et_l_historique_sont_lus",
+    "test_la_qualite_et_la_ci_passent",
+    "test_le_defaut_est_corrige",
+    "test_les_tests_sont_verts_et_complets"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "commit": "94fb66b",
+  "date": "2026-10-14",
+  "duree_s": 4,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-level-exams-intervenir.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_l_outil_est_compris",
+    "test_la_ci_et_l_historique_sont_lus",
+    "test_la_qualite_et_la_ci_passent",
+    "test_le_defaut_est_corrige",
+    "test_les_tests_sont_verts_et_complets"
+   ],
+   "passed": 0,
+   "score": 0,
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
  "level-exams-outil": {
   "apres": {
    "echecs": [],
@@ -200,22 +248,22 @@
   },
   "avant": {
    "echecs": [
-    "test_l_execution_sans_risque_est_observee",
-    "test_le_commit_de_l_erreur_avalee_est_retrouve",
-    "test_le_point_d_entree_et_ses_modules_sont_nommes",
-    "test_les_defauts_reels_sont_nommes",
-    "test_les_effets_de_bord_sont_identifies"
+    "test_ce_que_montre_l_execution",
+    "test_le_role_du_script",
+    "test_le_seuil_est_inclusif",
+    "test_les_entrees_du_script",
+    "test_un_certificat_expire_est_signale"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
-  "commit": "d37b26a",
+  "commit": "94fb66b",
   "date": "2026-10-13",
   "duree_s": 3,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -226,11 +274,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_l_execution_sans_risque_est_observee",
-    "test_le_commit_de_l_erreur_avalee_est_retrouve",
-    "test_le_point_d_entree_et_ses_modules_sont_nommes",
-    "test_les_defauts_reels_sont_nommes",
-    "test_les_effets_de_bord_sont_identifies"
+    "test_ce_que_montre_l_execution",
+    "test_le_role_du_script",
+    "test_le_seuil_est_inclusif",
+    "test_les_entrees_du_script",
+    "test_un_certificat_expire_est_signale"
    ],
    "passed": 0,
    "score": 0,
@@ -299,19 +347,19 @@
     "test_au_moins_trois_defauts_sont_trouves",
     "test_chaque_commentaire_propose_une_correction",
     "test_le_verdict_demande_des_changements",
-    "test_ruff_check_passe_sur_le_code_de_base",
+    "test_ruff_check_et_format_passent_sur_le_code_de_base",
     "test_une_configuration_ruff_est_versionnee"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
-  "commit": "d37b26a",
+  "commit": "94fb66b",
   "date": "2026-10-13",
   "duree_s": 2,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -325,7 +373,7 @@
     "test_au_moins_trois_defauts_sont_trouves",
     "test_chaque_commentaire_propose_une_correction",
     "test_le_verdict_demande_des_changements",
-    "test_ruff_check_passe_sur_le_code_de_base",
+    "test_ruff_check_et_format_passent_sur_le_code_de_base",
     "test_une_configuration_ruff_est_versionnee"
    ],
    "passed": 0,
@@ -344,22 +392,22 @@
   },
   "avant": {
    "echecs": [
-    "test_l_interface_est_previsible",
-    "test_la_sortie_json_est_exploitable",
+    "test_la_commande_est_declaree_par_le_projet",
     "test_le_seuil_vient_de_l_environnement",
-    "test_les_codes_de_sortie_suivent_le_contrat",
-    "test_les_erreurs_vont_sur_la_sortie_d_erreur"
+    "test_les_codes_de_sortie_observes",
+    "test_les_erreurs_vont_sur_la_sortie_d_erreur",
+    "test_ou_est_quoi"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
-  "commit": "d37b26a",
+  "commit": "94fb66b",
   "date": "2026-10-13",
-  "duree_s": 5,
+  "duree_s": 4,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -370,11 +418,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_l_interface_est_previsible",
-    "test_la_sortie_json_est_exploitable",
+    "test_la_commande_est_declaree_par_le_projet",
     "test_le_seuil_vient_de_l_environnement",
-    "test_les_codes_de_sortie_suivent_le_contrat",
-    "test_les_erreurs_vont_sur_la_sortie_d_erreur"
+    "test_les_codes_de_sortie_observes",
+    "test_les_erreurs_vont_sur_la_sortie_d_erreur",
+    "test_ou_est_quoi"
    ],
    "passed": 0,
    "score": 0,
@@ -392,22 +440,22 @@
   },
   "avant": {
    "echecs": [
-    "test_la_suite_attrape_un_code_zero_malgre_une_alerte",
-    "test_la_suite_attrape_un_seuil_exclusif",
-    "test_la_suite_compte_au_moins_trois_tests",
-    "test_la_suite_passe_sur_l_outil_juste",
-    "test_un_test_isole_un_fichier_ou_la_date"
+    "test_l_assertion_est_lue",
+    "test_la_suite_est_verte_et_complete",
+    "test_le_defaut_est_corrige",
+    "test_le_test_en_echec_est_nomme",
+    "test_un_test_ajoute_attrape_un_nouveau_defaut"
    ],
    "passed": 0,
    "score": 0,
    "total": 5
   },
-  "commit": "d37b26a",
+  "commit": "94fb66b",
   "date": "2026-10-13",
-  "duree_s": 4,
+  "duree_s": 6,
   "ecarts": [],
   "etapes": [
-   "état photographié, répertoire de travail absent, 26 conteneur(s) Docker présents",
+   "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
    "avant le travail : 0/5",
    "après la solution : 5/5",
    "après clean et run : 0/5",
@@ -418,11 +466,11 @@
   "raisons": [],
   "rejeu": {
    "echecs": [
-    "test_la_suite_attrape_un_code_zero_malgre_une_alerte",
-    "test_la_suite_attrape_un_seuil_exclusif",
-    "test_la_suite_compte_au_moins_trois_tests",
-    "test_la_suite_passe_sur_l_outil_juste",
-    "test_un_test_isole_un_fichier_ou_la_date"
+    "test_l_assertion_est_lue",
+    "test_la_suite_est_verte_et_complete",
+    "test_le_defaut_est_corrige",
+    "test_le_test_en_echec_est_nomme",
+    "test_un_test_ajoute_attrape_un_nouveau_defaut"
    ],
    "passed": 0,
    "score": 0,

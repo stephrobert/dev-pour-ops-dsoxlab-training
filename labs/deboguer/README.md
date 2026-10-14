@@ -10,7 +10,7 @@ learned.
 | | |
 |---|---|
 | Target | your machine: Python and uv (`mise install`), openssl |
-| Duration | about 30 minutes |
+| Duration | about 25 minutes |
 | Paired lesson | [Déboguer un programme Python pas à pas, avec pdb](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) (in French) |
 | Previous | `tester-une-automatisation` |
 

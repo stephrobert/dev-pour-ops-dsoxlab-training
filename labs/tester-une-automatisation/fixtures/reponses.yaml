@@ -1,0 +1,14 @@
+# Vos réponses sur la suite de tests reçue.
+# Remplacez chaque valeur. Les clés ne changent pas : le contrôle les lit.
+#
+# Lancez `uv run pytest -v` AVANT de modifier quoi que ce soit, et lisez la
+# sortie : ces réponses portent sur le projet tel que vous l'avez reçu.
+
+# 1. Le nom du test qui échoue (la fonction, par exemple test_quelque_chose).
+test_en_echec: ""
+
+# 2. La ligne `E   assert ...` de pytest compare deux valeurs.
+#    a) La valeur que le test attendait.
+valeur_attendue: ""
+#    b) La valeur que le code a rendue.
+valeur_obtenue: ""

@@ -1,9 +1,10 @@
-# Épreuve : reprendre un outil d'exploitation
+# Défi : reprendre un outil d'exploitation
 
-Cette épreuve clôt la formation **Développer pour les Ops**. Ce n'est pas un
-cours : elle mesure, sur une situation neuve, les gestes de base que le fil
-rouge a travaillés, de la lecture d'un code hérité à la livraison d'une
-version d'un projet Python.
+Défi **facultatif** de la formation **Développer pour les Ops**, au-delà de
+l'initiation : l'épreuve du niveau est `level-exams-intervenir`. Ce défi
+mesure, sur une situation neuve, ce qu'on attend d'un Ops qui livre un outil
+interne aux autres équipes : de la lecture d'un code hérité à la livraison
+d'une version d'un projet Python.
 
 | | |
 |---|---|

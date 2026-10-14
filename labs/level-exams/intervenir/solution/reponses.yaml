@@ -1,0 +1,6 @@
+role: "verifier-expiration"
+commande_declaree: "certcheck.cli:main"
+hote_mal_classe: "api-02"
+etape_en_echec: "Qualité"
+commande_locale: "uv run ruff check ."
+commit_fautif: "9a8d13e"

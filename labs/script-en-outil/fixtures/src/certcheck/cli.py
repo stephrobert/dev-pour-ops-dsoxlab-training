@@ -8,26 +8,25 @@ code de sortie du processus.
 from __future__ import annotations
 
 import argparse
-import json  # noqa: F401  (pour en_json)
-import logging  # noqa: F401  (pour main)
-import os  # noqa: F401  (pour seuil_depuis)
-import sys  # noqa: F401  (pour main : sys.stderr)
+import json
+import logging
+import os
+import sys
 from pathlib import Path
 
-from certcheck import __version__  # noqa: F401  (pour --version)
-from certcheck.certificats import ErreurUsage, analyser, aujourd_hui, lire_inventaire  # noqa: F401
+from certcheck import __version__
+from certcheck.certificats import ErreurUsage, analyser, aujourd_hui, lire_inventaire
 
 SEUIL_PAR_DEFAUT = 30
 
 
 def code_de_sortie(resultats: list[dict]) -> int:
-    """Le code de sortie du contrat, calculé sur TOUS les statuts.
-
-        un statut "error"                     -> 2  (l'emporte sur tout)
-        sinon un "warning" ou un "expired"    -> 1
-        sinon (que des "ok")                  -> 0
-    """
-    raise NotImplementedError("code_de_sortie : à écrire")
+    statuts = {r["status"] for r in resultats}
+    if "error" in statuts:
+        return 2
+    if statuts & {"warning", "expired"}:
+        return 1
+    return 0
 
 
 def en_texte(resultats: list[dict]) -> str:
@@ -36,26 +35,18 @@ def en_texte(resultats: list[dict]) -> str:
 
 
 def en_json(resultats: list[dict], seuil: int) -> str:
-    """UN SEUL document JSON, de cette forme (voir CONTRAT.md) :
-
-        {"threshold_days": 30, "certificates": [ ...les dictionnaires d'analyser... ]}
-
-    `json.dumps(..., ensure_ascii=False, indent=2)` fait l'affaire.
-    """
-    raise NotImplementedError("en_json : à écrire")
+    return json.dumps({"threshold_days": seuil, "certificates": resultats}, ensure_ascii=False, indent=2)
 
 
 def seuil_depuis(argument: int | None) -> int:
-    """Le seuil : --days s'il est donné, sinon CERTCHECK_DAYS, sinon SEUIL_PAR_DEFAUT.
+    """Le seuil : --days s'il est donné, sinon SEUIL_PAR_DEFAUT.
 
-        seuil_depuis(10)                            -> 10  (l'option l'emporte)
-        seuil_depuis(None), CERTCHECK_DAYS="45"     -> 45
-        seuil_depuis(None), sans CERTCHECK_DAYS     -> 30
-        seuil_depuis(None), CERTCHECK_DAYS="dix"    -> lève ErreurUsage
-
-    La variable se lit par `os.environ.get("CERTCHECK_DAYS")`.
+    CONTRAT.md demande aussi la variable CERTCHECK_DAYS, entre les deux : elle
+    n'est pas encore lue (ticket n°218).
     """
-    raise NotImplementedError("seuil_depuis : à écrire")
+    if argument is not None:
+        return argument
+    return SEUIL_PAR_DEFAUT
 
 
 def jours_positifs(valeur: str) -> int:
@@ -66,8 +57,6 @@ def jours_positifs(valeur: str) -> int:
 
 
 def analyseur() -> argparse.ArgumentParser:
-    """Les options du contrat. argparse écrit --help sur la sortie standard, et sort en 2,
-    message sur la sortie d'erreur, sur une option inconnue ou une valeur refusée."""
     p = argparse.ArgumentParser(
         prog="certcheck",
         description="Signale les certificats TLS d'un parc qui arrivent à expiration.",
@@ -79,24 +68,18 @@ def analyseur() -> argparse.ArgumentParser:
     p.add_argument("--days", type=jours_positifs, metavar="N",
                    help=f"seuil d'alerte en jours (défaut : $CERTCHECK_DAYS, sinon {SEUIL_PAR_DEFAUT})")
     p.add_argument("--format", choices=("text", "json"), default="text", help="format de la sortie standard")
-    # À AJOUTER : l'option --version, qui affiche « certcheck X.Y.Z » et sort en 0.
-    # argparse le fait seul : action="version", version=f"certcheck {__version__}".
+    p.add_argument("--version", action="version", version=f"certcheck {__version__}")
     return p
 
 
 def main(argv: list[str] | None = None) -> int:
-    """Le point d'entrée : rend le code de sortie du contrat.
-
-    Dans l'ordre :
-    1. `args = analyseur().parse_args(argv)` ;
-    2. `logging.basicConfig(level=logging.WARNING, stream=sys.stderr)` : les
-       messages de log partent sur la sortie d'erreur ;
-    3. le seuil (`seuil_depuis(args.days)`), puis l'analyse :
-       `analyser(lire_inventaire(args.inventory), seuil, aujourd_hui())` ;
-    4. si ErreurUsage est levée en 3 : `print(f"certcheck: {exc}",
-       file=sys.stderr)` et rendre 2, sans rien écrire sur la sortie standard ;
-    5. écrire `en_json(...)` ou `en_texte(...)` selon `args.format`, avec
-       `print`, sur la sortie standard ;
-    6. rendre `code_de_sortie(resultats)`.
-    """
-    raise NotImplementedError("main : à écrire")
+    args = analyseur().parse_args(argv)  # usage incorrect : argparse écrit sur stderr et sort en 2
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(message)s", stream=sys.stderr)
+    try:
+        seuil = seuil_depuis(args.days)
+        resultats = analyser(lire_inventaire(args.inventory), seuil, aujourd_hui())
+    except ErreurUsage as exc:
+        print(f"certcheck: {exc}")
+        return 2
+    print(en_json(resultats, seuil) if args.format == "json" else en_texte(resultats))
+    return code_de_sortie(resultats)

@@ -9,6 +9,33 @@ Ce dépôt est un **catalogue de contenu**, pas une bibliothèque : il n'est pas
 versionné et ne publie aucune release. Les entrées ci-dessous datent les
 modifications du catalogue, et l'unité qui compte est le lab.
 
+## [Non publié] - 2026-10-14
+
+### Modifié
+
+- **Recentrage en initiation** (formation Développer pour les Ops, validé le
+  2026-10-13) : `lire-du-code` fait lire puis modifier un petit script unique ;
+  `script-en-outil` fait se repérer dans le projet Python et combler deux
+  écarts au contrat, au lieu de l'écrire ; `tester-une-automatisation` part
+  d'une suite rouge à lire et corriger, puis d'un test à ajouter ; `deboguer`
+  fournit le test de reproduction en commentaire ; `relire-une-automatisation`
+  exige aussi `ruff format --check`.
+- **Sections** : le fil rouge garde six labs ; `appeler-une-api`,
+  `livrer-un-outil` et l'ancienne épreuve, devenue le défi
+  `level-exams-outil`, passent dans la section facultative `approfondir`.
+
+### Ajouté
+
+- **L'épreuve `level-exams-intervenir`** : un dépôt de cinq commits dont un
+  fautif, un journal de CI rouge, une correction limitée, tests, qualité et
+  étapes de CI rejoués. Générée par `scripts/generer_depot_intervenir.py`
+  depuis `donnees/intervenir/`.
+
+### Retiré
+
+- `scripts/generer_historique.sh` et `scripts/generer_historique_paquet.py`,
+  qui fabriquaient l'historique du paquet de l'ancien `lire-du-code`.
+
 ## [0.1.0] - 2026-10-09
 
 ### Ajouté

@@ -29,7 +29,8 @@ point at no real defect.
 The project carries a ruff configuration: a `[tool.ruff]` section in
 `pyproject.toml`, or a `ruff.toml` file.
 
-### Task 5: ruff check passes on the base code (20 pts)
+### Task 5: ruff check and ruff format pass on the base code (20 pts)
 
-`uv run ruff check .` reports nothing any more, and the base code's unused
-import was removed from the code, not hidden by the configuration.
+`uv run ruff check .` reports nothing any more, the base code's unused import
+was removed from the code, not hidden by the configuration, and
+`uv run ruff format --check .` finds no file left to reformat.

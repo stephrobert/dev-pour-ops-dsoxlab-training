@@ -1,32 +1,31 @@
-# Read the code of a Python application
+# Read and modify a small Python script
 
 First lab of the common thread of the **Development for Ops** course, paired
-with the lesson "Lire le code d'une application Python qu'on n'a pas écrite".
-The starting point is the most common situation for a developer joining a
-team: an application running in production, that nobody around them wrote, and
-that they are asked to take over. Before touching it, you **read** it: the
-entry point the package declares, the modules it loads, side effects,
-configuration, history.
+with the lesson "Read and modify Python code you did not write". The starting
+point is the most common situation for an Ops: a script that runs every
+night, that nobody around them wrote, and that they are asked to fix. Before
+touching it, you **read** it: its role, its inputs, the function that decides,
+what it prints and its exit code. Only then do you change a condition.
 
 | | |
 |---|---|
-| Target | your machine: uv and Python (`mise install`), openssl and Git, no VM |
-| Duration | about 30 minutes |
-| Paired lesson | [Lire le code d'une application Python qu'on n'a pas écrite](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
-| Next | `script-en-outil` structures a Python project that honours a contract |
+| Target | your workstation: Python 3 and openssl, no VM |
+| Duration | about 25 minutes |
+| Paired lesson | [Read and modify Python code you did not write](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
+| Next | `script-en-outil` shows the same tool turned into a Python project |
 
 ```bash
 dsoxlab run   lire-du-code
 cd labs/lire-du-code/challenge/work
-less pyproject.toml src/certcheck/cli.py
-CERTCHECK_NOW=2026-06-01 uv run certcheck --inventory inventaire.txt; echo "code: $?"
-git clone historique.bundle historique
+less certcheck.py
+python3 certcheck.py --help
+CERTCHECK_NOW=2026-10-31 python3 certcheck.py; echo "code: $?"
 dsoxlab check lire-du-code
 ```
 
-Answers go into `reponses.yaml` (French keys, kept as they are). The check
-takes nothing on trust: it rereads the code, replays the package and the
-history to recompute each answer.
+Answers go into `reponses.yaml`. The check takes nothing on trust: it replays
+the script you received to recompute each answer, then runs your version on
+random inventories and dates.
 
 Validated by `scripts/valider-labs.py`: 0 before the work, 100 after the
-trainer's solution, replayable. The verdict is in `validation-labs.json`.
+instructor's solution, replayable. The verdict is in `validation-labs.json`.

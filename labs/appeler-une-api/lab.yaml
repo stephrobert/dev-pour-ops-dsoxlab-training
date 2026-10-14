@@ -8,7 +8,7 @@ description: |
   each request, an HTTP error turned into exit code 3 with a clear message,
   the ticket created with the right title, and no duplicate when it is
   already open. Graded on the requests received by a fake forge.
-section: fil-rouge
+section: approfondir
 level: o1
 difficulty: beginner
 lab_type: lab

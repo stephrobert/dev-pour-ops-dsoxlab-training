@@ -1,32 +1,34 @@
-# L'application que personne n'a écrite
+# Le script que personne n'a écrit
 
 ## Situation
 
-Chaque nuit, la commande `certcheck` contrôle l'expiration des certificats
-TLS du parc. C'est un paquet Python : Julien l'a structuré en 2024, Karim
-l'a complété, et tous deux ont changé d'équipe. Le mois dernier, un
-certificat a expiré sans qu'aucune alerte ne parte : on vous confie le code.
+Chaque nuit, cron lance `certcheck.py` pour contrôler l'expiration des
+certificats TLS du parc. Julien l'a écrit il y a deux ans, puis il a changé
+d'équipe. Le mois dernier, le certificat d'un hôte a expiré alors que le
+rapport de la veille le disait `ok`. On vous confie le script.
 
-Le répertoire de travail contient le projet (`pyproject.toml`, `uv.lock`,
-le paquet sous `src/certcheck/`), l'inventaire qu'il lit, les certificats
-collectés sur les hôtes (`certs/`), et son historique Git sous forme de
-bundle (`historique.bundle`).
+Le répertoire de travail contient le script (`certcheck.py`, une soixantaine de
+lignes), l'inventaire qu'il lit (`inventaire.txt`) et les certificats collectés
+sur les hôtes (`certs/`).
 
 ## Objectif
 
-Comprendre ce que fait l'application **avant** de la modifier, et le prouver
-dans `reponses.yaml` : son point d'entrée et les modules qu'il charge, ses
-effets de bord, ce que son exécution montre, ses défauts réels, et le commit
-qui a commencé à avaler les erreurs.
+D'abord **comprendre** le script tel que vous l'avez reçu, et le noter dans
+`reponses.yaml` : son rôle, ses entrées, la fonction qui décide, ce qu'il
+affiche et son code de sortie. Ensuite seulement, le **modifier** :
+
+1. un certificat qui expire **exactement** au seuil doit passer en `warning` ;
+2. un certificat **déjà expiré** doit afficher `expired`, et non `warning`.
 
 ## Repères
 
-- Une commande installée par un paquet Python ne commence pas forcément
-  dans une fonction `main` : `pyproject.toml` la déclare dans
-  `[project.scripts]`, sous la forme `module:fonction`.
-- Lisez du point d'entrée vers les fonctions qu'il appelle, en ouvrant
-  chaque module importé. Un import peut se cacher dans une fonction.
-- Exécuter sans risque : sans `FORGE_TOKEN`, certcheck n'appelle pas la
-  forge, et `CERTCHECK_NOW` fixe la date du jour.
-- `git log -S '<chaîne>'` trouve les commits qui ont ajouté ou retiré une
-  chaîne ; `git blame` dit qui a écrit chaque ligne actuelle.
+- Lisez du bas vers le haut : `if __name__ == "__main__"` appelle `main()`,
+  et `main()` appelle les autres fonctions.
+- `python3 certcheck.py --help` liste les options sans rien exécuter d'autre.
+- Le script ne fait que **lire** : il lance `openssl` sur chaque certificat et
+  affiche une ligne par hôte. Le lancer ne modifie rien.
+- `CERTCHECK_NOW=2026-10-31 python3 certcheck.py` rejoue le contrôle comme si
+  l'on était le 31 octobre 2026 ; `echo "code : $?"` affiche ensuite son code
+  de sortie.
+- Une condition se change d'un caractère : `<` et `<=` ne disent pas la même
+  chose à la frontière.

@@ -1,41 +1,38 @@
-# Challenge: certcheck honours its contract
+# Challenge: understand certcheck, then modify it
 
-5 tasks, 100 points, 30 minutes.
+5 tasks, 100 points, 20 minutes.
 
-Your tool is the project's Python package `src/certcheck/`, called
-through `bin/certcheck`, and only through it. The contract is in
-`CONTRAT.md` (in French).
+The `challenge/work` directory holds the certcheck Python project and its
+contract, `CONTRAT.md`. Tasks 1 to 3 go into `reponses.yaml` and are about the
+project **as you received it**; tasks 4 and 5 are done in
+`src/certcheck/cli.py`.
 
-### Task 1: a Python project and a predictable interface (20 pts)
+### Task 1: the command is declared by the project (20 pts)
 
-`pyproject.toml` declares the `certcheck` command in `[project.scripts]`,
-pointing to a function of the `src/certcheck/` package, and `bin/certcheck`
-runs that package: `uv run certcheck --version` and
-`bin/certcheck --version` give the same answer. `--help` exits 0 and names
-every option; `--version` prints `certcheck X.Y.Z`; an unknown option,
-`--days abc` or `--format xml` exit 2 with a message on standard error and
-nothing on standard output.
+`fichier_declaration` names the file that declares the `certcheck` command,
+and `commande_declaree` copies what it declares, in the `module:function`
+form.
 
-### Task 2: actionable exit codes (20 pts)
+### Task 2: where things are (20 pts)
 
-0, 1 or 2 depending on the certificates, on random inventories; a missing
-certificate or a missing inventory return 2.
+`module_decision` gives the file that holds the `statut` function, and
+`lanceur` the file cron or a pipeline runs, paths from the working directory.
 
-### Task 3: a usable JSON output (20 pts)
+### Task 3: the observed exit codes (20 pts)
 
-`--format json` returns a single document, with correct `days_left`,
-`status` and `not_after` for every host, inclusive threshold;
-`--format text` carries the host and its status on each line.
+The three codes in `reponses.yaml` are those observed when running the given
+commands on the project you received.
 
 ### Task 4: the threshold comes from the environment (20 pts)
 
-`CERTCHECK_DAYS` sets the threshold, `--days` wins over the variable, an
-invalid value returns 2, and the inventory accepts tabs and comments, run
-from another directory.
+`CERTCHECK_DAYS` sets the threshold when `--days` is absent, `--days` wins
+over the variable, and a value that is not a positive integer returns 2, with
+a message on standard error.
 
 ### Task 5: errors go to standard error (20 pts)
 
-A missing certificate appears in the JSON as `error`, and its host is named
-on standard error, without polluting the document; a missing inventory
-returns 2, with a one-line message on standard error, no Python traceback
-and nothing on standard output.
+A missing inventory returns 2, with a one-line message on standard error, no
+Python traceback and nothing on standard output. A missing certificate stays
+in the JSON as `error`, and its host is named on standard error.
+
+To get graded: `dsoxlab check script-en-outil`.

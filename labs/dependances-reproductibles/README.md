@@ -13,7 +13,7 @@ prove it in a fresh environment.
 | Duration | about 25 minutes |
 | Network | **required**: packages are downloaded from PyPI |
 | Paired lesson | [Dépendances Python : déclarer, épingler, installer ailleurs](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) (in French) |
-| Next | `livrer-un-outil` |
+| Next | `tester-une-automatisation` |
 
 ```bash
 dsoxlab run   dependances-reproductibles

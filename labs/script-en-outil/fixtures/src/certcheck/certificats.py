@@ -1,9 +1,4 @@
-"""L'inventaire et ses certificats : lecture, date d'expiration, statut.
-
-Les fonctions déjà écrites montrent la forme attendue. Celles qui lèvent
-NotImplementedError sont à compléter : leur docstring dit ce qu'elles
-rendent, avec des exemples.
-"""
+"""L'inventaire et ses certificats : lecture, date d'expiration, statut."""
 
 from __future__ import annotations
 
@@ -21,25 +16,22 @@ class ErreurUsage(Exception):
 
 
 def lire_inventaire(chemin: Path) -> list[tuple[str, Path]]:
-    """Les couples (hôte, certificat) de l'inventaire, dans l'ordre du fichier.
-
-    Règles :
-    - les champs sont séparés par des espaces OU des tabulations : `ligne.split()`
-      sans argument accepte les deux ;
-    - les lignes vides et celles qui commencent par `#` sont ignorées ;
-    - un chemin de certificat relatif se résout depuis le DOSSIER de
-      l'inventaire : `chemin.parent / certificat` ;
-    - un inventaire absent lève ErreurUsage (attrapez OSError autour de
-      `chemin.read_text(...)`), avec un message qui nomme le fichier.
-
-    Exemple, pour /parc/inventaire.txt contenant :
-
-        # hôte   certificat
-        web-01   certs/web-01.pem
-
-    la fonction rend [("web-01", Path("/parc/certs/web-01.pem"))].
-    """
-    raise NotImplementedError("lire_inventaire : à écrire")
+    """Les couples (hôte, certificat) de l'inventaire, dans l'ordre du fichier."""
+    try:
+        texte = chemin.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise ErreurUsage(f"inventaire illisible : {chemin} ({exc.strerror})") from exc
+    entrees = []
+    for numero, ligne in enumerate(texte.splitlines(), 1):
+        ligne = ligne.strip()
+        if not ligne or ligne.startswith("#"):
+            continue
+        champs = ligne.split()
+        if len(champs) != 2:
+            raise ErreurUsage(f"{chemin}, ligne {numero} : « <hôte> <certificat> » attendu")
+        hote, certificat = champs
+        entrees.append((hote, chemin.parent / certificat))
+    return entrees
 
 
 def date_expiration(certificat: Path) -> date:
@@ -66,32 +58,23 @@ def aujourd_hui() -> date:
 
 
 def statut(jours: int, seuil: int) -> str:
-    """Le statut d'un certificat qui expire dans `jours` jours.
-
-    Le seuil est INCLUSIF :
-
-        statut(-1, 30)  -> "expired"   (déjà expiré)
-        statut(0, 30)   -> "warning"
-        statut(30, 30)  -> "warning"   (exactement au seuil)
-        statut(31, 30)  -> "ok"
-    """
-    raise NotImplementedError("statut : à écrire")
+    if jours < 0:
+        return "expired"
+    if jours <= seuil:
+        return "warning"
+    return "ok"
 
 
 def analyser(entrees: list[tuple[str, Path]], seuil: int, jour: date) -> list[dict]:
-    """Un dictionnaire par hôte, dans l'ordre de l'inventaire.
-
-    Pour chaque (hôte, certificat) : `date_expiration`, puis le nombre de
-    jours `(fin - jour).days`, puis `statut`. Exemple d'élément :
-
-        {"host": "web-01", "not_after": "2045-06-15", "days_left": 6954, "status": "ok"}
-
-    Un certificat absent ou illisible (date_expiration lève ValueError) ne
-    doit JAMAIS disparaître ni passer pour valide : il donne
-
-        {"host": "web-03", "not_after": None, "days_left": None, "status": "error"}
-
-    et un message sur la sortie d'erreur, par exemple
-    `log.error("%s : %s", hote, exc)`.
-    """
-    raise NotImplementedError("analyser : à écrire")
+    resultats = []
+    for hote, certificat in entrees:
+        try:
+            fin = date_expiration(certificat)
+        except ValueError as exc:
+            log.error("%s : %s", hote, exc)
+            resultats.append({"host": hote, "not_after": None, "days_left": None, "status": "error"})
+            continue
+        jours = (fin - jour).days
+        resultats.append({"host": hote, "not_after": fin.isoformat(), "days_left": jours,
+                          "status": statut(jours, seuil)})
+    return resultats

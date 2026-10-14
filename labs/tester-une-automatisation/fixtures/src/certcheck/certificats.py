@@ -39,7 +39,7 @@ def aujourd_hui() -> date:
 def statut(jours: int, seuil: int) -> str:
     if jours < 0:
         return "expired"
-    if jours <= seuil:
+    if jours < seuil:
         return "warning"
     return "ok"
 

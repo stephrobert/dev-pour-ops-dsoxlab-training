@@ -1,9 +1,7 @@
 id: tester-une-automatisation
-title: "Premiers tests : pytest attrape deux vrais bogues"
+title: "Se servir des tests : un test rouge, lu, corrigé, et un test de plus"
 description: |
-  certcheck décide si le contrôle de la nuit passe au rouge : il ne doit pas
-  changer de comportement sans qu'on le voie. Écrivez vos premiers tests
-  pytest, pas à pas : une date fixée, la frontière du seuil, le code de
-  sortie, un fichier temporaire. La suite est notée sur ce qu'elle attrape :
-  verte sur l'outil juste, rouge sur deux versions qui portent chacune un
-  bogue réaliste.
+  certcheck a quatre tests, et l'un d'eux est rouge. Lancez la suite, lisez
+  quel test échoue et ce que son assertion compare, corrigez le code (pas le
+  test), relancez jusqu'au vert, puis ajoutez un test en copiant un modèle :
+  il doit attraper un nouveau défaut que les quatre tests laissent passer.

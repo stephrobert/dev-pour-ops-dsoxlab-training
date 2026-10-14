@@ -1,9 +1,8 @@
-point_d_entree: "certcheck.cli:lancer"
-modules_internes: [certcheck.certificats, certcheck.forge]
-sous_processus: "openssl"
-fonction_appel_reseau: "ouvrir_ticket"
-variable_appel_reseau: "FORGE_TOKEN"
+role: "verifier-expiration"
+programme_externe: "openssl"
+option_seuil: "--days"
+variable_date: "CERTCHECK_NOW"
+fonction_verdict: "statut"
 code_de_sortie: 1
-hote_mal_classe: "web-03"
-defauts: [erreur-avalee, secret-expose, appel-reseau-sans-delai, action-repetee]
-commit_erreur_avalee: "ebe3fef"
+hotes_en_alerte: [web-02, api-01]
+hote_au_seuil: "api-02"

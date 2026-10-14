@@ -1,50 +1,44 @@
-"""Du script à l'outil : cinq contrôles, vingt points chacun.
+"""Comprendre un outil, puis le modifier : cinq contrôles, vingt points chacun.
 
-## Un projet Python, jugé en boîte noire
+## Les trois premiers contrôles lisent `reponses.yaml`
 
-L'outil est un projet Python : le paquet `src/certcheck/`, déclaré dans
-`pyproject.toml` par `[project.scripts]`, et lancé par `bin/certcheck` à
-travers `uv run`. La première tâche vérifie cette structure en l'exécutant :
-la commande déclarée par le projet et `bin/certcheck` doivent répondre la
-même chose. Ensuite, les contrôles lancent `bin/certcheck`, rien d'autre :
-seul compte ce qu'un appelant observe : sortie standard, sortie d'erreur et
-code de sortie. C'est exactement la position de cron ou d'un pipeline, qui ne lisent
-jamais le code.
+Ils notent ce que l'apprenant a compris du projet AVANT d'y toucher : le
+fichier qui déclare la commande, ce qu'il déclare, où vit la décision, quel
+fichier cron lance, et les codes de sortie observés. Rien n'est écrit en dur :
+la commande déclarée se relit dans le `pyproject.toml` livré, et les codes se
+recalculent en lançant le projet livré (`fixtures/`) dans une copie.
 
-## Ce qui est attendu se calcule
+## Les deux derniers jugent la modification, en boîte noire
 
-Inventaires, seuils et dates du jour sont tirés au hasard (graine affichée en
-cas d'échec), et le résultat attendu est recalculé ici depuis les dates
-d'expiration connues des certificats. Un outil qui imprimerait un résultat
-en dur échoue.
+On lance `bin/certcheck` comme cron ou un pipeline, et seul compte ce qu'un
+appelant observe : sortie standard, sortie d'erreur et code de sortie.
 """
 
 from __future__ import annotations
 
-import ast
+import shutil
+import tempfile
 import tomllib
-from datetime import date, timedelta
+from datetime import timedelta
+from functools import cache
 from pathlib import Path
 
 import pytest
 
 from conftest import (
     EXPIRATIONS,
-    attendus,
-    code_attendu,
     ecrire_inventaire,
     exiger_executable,
-    exiger_outil,
     exiger_workdir,
     lancer,
     lire_json_sortie,
-    tirage,
+    lire_yaml,
     workdir_lab,
 )
 
 WORKDIR = workdir_lab(__file__)
 LAB_ID = "script-en-outil"
-OPTIONS = ("--inventory", "--days", "--format", "--version")
+LIVRE = Path(__file__).resolve().parents[2] / "fixtures"
 
 
 @pytest.fixture(scope="module")
@@ -53,139 +47,64 @@ def outil() -> Path:
     return exiger_executable(WORKDIR)
 
 
-def _scenario(graine: int | None = None) -> tuple[list[str], date, int, int]:
-    rnd = tirage(graine)
-    graine = rnd.randrange(10**6) if graine is None else graine
-    rnd = tirage(graine)
-    hotes = rnd.sample(sorted(EXPIRATIONS), rnd.randint(3, 7))
-    jour = date(2026, 6, 1) + timedelta(days=rnd.randint(0, 900))
-    seuil = rnd.choice([7, 15, 30, 45, 90])
-    return hotes, jour, seuil, graine
+def reponses() -> dict:
+    exiger_workdir(WORKDIR, LAB_ID)
+    return lire_yaml(WORKDIR / "reponses.yaml")
 
 
-def _exiger_le_paquet(outil: Path, tmp_path: Path) -> None:
-    """bin/certcheck lance le paquet Python du projet, déclaré dans pyproject.toml."""
-    pyproject = WORKDIR / "pyproject.toml"
-    assert pyproject.is_file(), "pyproject.toml est absent : le projet n'est plus un projet Python."
-    try:
-        scripts = tomllib.loads(pyproject.read_text(encoding="utf-8")).get("project", {}).get("scripts", {})
-    except tomllib.TOMLDecodeError as exc:
-        pytest.fail(f"pyproject.toml n'est pas un TOML valide : {exc}", pytrace=False)
-    cible = str(scripts.get("certcheck", ""))
-    module, _, fonction = cible.partition(":")
-    assert module and fonction, (
-        "pyproject.toml ne déclare pas la commande `certcheck` dans [project.scripts], "
-        f"sous la forme module:fonction (lu : {cible!r}). C'est cette déclaration qui "
-        "crée la commande dans l'environnement du projet."
+def chemin(valeur: object) -> str:
+    return str(valeur or "").strip().strip("`").removeprefix("./").strip()
+
+
+@cache
+def codes_livres() -> dict[str, int]:
+    """Les codes de sortie du projet tel qu'il a été livré, mesurés dans une copie."""
+    with tempfile.TemporaryDirectory(prefix="lab-outil-") as tmp:
+        copie = Path(tmp) / "projet"
+        shutil.copytree(LIVRE, copie, ignore=shutil.ignore_patterns(".venv", "__pycache__", "reponses.yaml"))
+        outil = copie / "bin" / "certcheck"
+        env = {"CERTCHECK_NOW": "2026-06-01"}
+        return {
+            "code_inventaire_fourni": lancer(outil, cwd=copie, env=env).code,
+            "code_usage_incorrect": lancer(outil, "--format", "xml", cwd=copie, env=env).code,
+            "code_inventaire_absent": lancer(outil, "--inventory", "absent.txt", cwd=copie, env=env).code,
+        }
+
+
+def test_la_commande_est_declaree_par_le_projet() -> None:
+    r = reponses()
+    assert chemin(r.get("fichier_declaration")) == "pyproject.toml", (
+        f"`fichier_declaration` vaut {r.get('fichier_declaration')!r}. Une commande "
+        "installée par un projet Python se déclare dans un fichier de configuration du "
+        "projet, sous une table [project.scripts]."
     )
-    assert (WORKDIR / "src" / "certcheck" / "__init__.py").is_file(), (
-        "src/certcheck/__init__.py est absent : le code de l'outil vit dans le paquet "
-        "src/certcheck/ (src layout), pas dans un script à la racine."
-    )
-    fichier = WORKDIR / "src" / Path(*module.split(".")).with_suffix(".py")
-    definies = set()
-    if fichier.is_file():
-        definies = {n.name for n in ast.walk(ast.parse(fichier.read_text(encoding="utf-8")))
-                    if isinstance(n, ast.FunctionDef)}
-    assert fonction in definies, (
-        f"[project.scripts] désigne {cible}, mais {fichier.relative_to(WORKDIR)} ne définit "
-        f"pas de fonction {fonction}."
-    )
-    uv = exiger_outil("uv")
-    par_uv = lancer(Path(uv), "run", "--quiet", "--project", str(WORKDIR), "certcheck", "--version",
-                    cwd=tmp_path)
-    par_bin = lancer(outil, "--version", cwd=tmp_path)
-    assert par_uv.code == 0 and par_bin.code == 0 and par_uv.sortie == par_bin.sortie, (
-        "bin/certcheck ne lance pas le paquet du projet : `uv run certcheck --version` et "
-        "`bin/certcheck --version` doivent sortir en 0 et répondre la même chose. Le "
-        "lanceur fourni (`uv run --quiet --project ... certcheck`) suffit ; il échoue tant "
-        f"que les fonctions lèvent NotImplementedError.\n  {par_uv.resume()}\n  {par_bin.resume()}"
+    declaree = tomllib.loads((LIVRE / "pyproject.toml").read_text(encoding="utf-8"))["project"]["scripts"]["certcheck"]
+    assert chemin(r.get("commande_declaree")) == declaree, (
+        f"`commande_declaree` vaut {r.get('commande_declaree')!r} : recopiez la valeur de "
+        "`certcheck = ...` dans [project.scripts], sous la forme module:fonction."
     )
 
 
-def test_l_interface_est_previsible(outil: Path, tmp_path: Path) -> None:
-    _exiger_le_paquet(outil, tmp_path)
-    aide = lancer(outil, "--help", cwd=tmp_path)
-    assert aide.code == 0, f"--help doit sortir en 0.\n  {aide.resume()}"
-    absentes = [o for o in OPTIONS if o not in aide.sortie]
-    assert not absentes, (
-        f"L'aide ne cite pas {absentes} : un outil se découvre par --help, sur la "
-        f"sortie standard.\n  {aide.resume()}"
+def test_ou_est_quoi() -> None:
+    r = reponses()
+    module = chemin(r.get("module_decision"))
+    assert module == "src/certcheck/certificats.py", (
+        f"`module_decision` vaut {module!r}. Le code vit sous src/certcheck/ ; "
+        "`grep -n \"def statut\" -r src` dit dans quel fichier."
     )
-    version = lancer(outil, "--version", cwd=tmp_path)
-    assert version.code == 0 and version.sortie.strip().startswith("certcheck "), (
-        f"--version doit afficher « certcheck X.Y.Z » et sortir en 0.\n  {version.resume()}"
-    )
-    for args in (["--option-inconnue"], ["--days", "abc"], ["--format", "xml"]):
-        res = lancer(outil, *args, cwd=tmp_path)
-        assert res.code == 2 and not res.sortie.strip() and res.erreurs.strip(), (
-            f"`certcheck {' '.join(args)}` est un usage incorrect : code 2, un message "
-            "sur la sortie d'erreur, rien sur la sortie standard (un appelant qui lit "
-            f"la sortie standard ne doit pas y trouver de prose).\n  {res.resume()}"
-        )
-
-
-def test_les_codes_de_sortie_suivent_le_contrat(outil: Path, tmp_path: Path) -> None:
-    for i in range(3):
-        hotes, jour, seuil, graine = _scenario()
-        dossier = tmp_path / f"parc-{i}"
-        inventaire = ecrire_inventaire(dossier, hotes)
-        attendu = code_attendu([s for _, s in attendus(hotes, jour, seuil).values()])
-        res = lancer(outil, "--inventory", str(inventaire), "--days", str(seuil),
-                     cwd=dossier, env={"CERTCHECK_NOW": jour.isoformat()})
-        assert res.code == attendu, (
-            f"Code {res.code}, attendu {attendu} (graine {graine}, aujourd'hui {jour}, "
-            f"seuil {seuil}). 0 : tout est valide ; 1 : au moins un certificat à "
-            f"renouveler ou expiré.\n  {res.resume()}"
-        )
-    # Tout est valide : 0.
-    dossier = tmp_path / "sain"
-    inventaire = ecrire_inventaire(dossier, ["web-01", "mail-01", "dns-01"])
-    res = lancer(outil, "--inventory", str(inventaire), cwd=dossier, env={"CERTCHECK_NOW": "2026-06-01"})
-    assert res.code == 0, f"Trois certificats valides au-delà du seuil : code 0 attendu.\n  {res.resume()}"
-    # Un certificat absent : l'entrée est inexploitable, 2, même s'il y a des alertes.
-    dossier = tmp_path / "troue"
-    inventaire = ecrire_inventaire(dossier, ["web-02", "web-01"], absents=["web-03"])
-    res = lancer(outil, "--inventory", str(inventaire), cwd=dossier, env={"CERTCHECK_NOW": "2026-06-01"})
-    assert res.code == 2, (
-        "Le certificat de web-03 n'existe pas : l'entrée est inexploitable, code 2, "
-        "jamais un « 0 jour » silencieux comme le script hérité, et jamais 1, qui "
-        f"ferait croire à une simple alerte.\n  {res.resume()}"
-    )
-    res = lancer(outil, "--inventory", str(tmp_path / "absent.txt"), cwd=tmp_path)
-    assert res.code == 2 and res.erreurs.strip(), (
-        f"Un inventaire absent : code 2 et un message sur la sortie d'erreur.\n  {res.resume()}"
+    assert chemin(r.get("lanceur")) == "bin/certcheck", (
+        f"`lanceur` vaut {r.get('lanceur')!r}. CONTRAT.md dit quel fichier cron et les "
+        "pipelines appellent : c'est un petit script shell exécutable."
     )
 
 
-def test_la_sortie_json_est_exploitable(outil: Path, tmp_path: Path) -> None:
-    hotes, jour, seuil, graine = _scenario()
-    # Un certificat qui expire EXACTEMENT au seuil : le seuil est inclusif.
-    limite = "proxy-01"
-    jour = EXPIRATIONS[limite] - timedelta(days=seuil)
-    if limite not in hotes:
-        hotes.append(limite)
-    inventaire = ecrire_inventaire(tmp_path, hotes)
-    res = lancer(outil, "--inventory", str(inventaire), "--days", str(seuil), "--format", "json",
-                 cwd=tmp_path, env={"CERTCHECK_NOW": jour.isoformat()})
-    donnees = lire_json_sortie(res)
-    lus = {c.get("host"): c for c in donnees["certificates"] if isinstance(c, dict)}
-    for hote, (jours, statut) in attendus(hotes, jour, seuil).items():
-        assert hote in lus, f"{hote} manque dans `certificates` (graine {graine}).\n  {res.resume()}"
-        assert lus[hote].get("days_left") == jours and lus[hote].get("status") == statut, (
-            f"{hote} : days_left={lus[hote].get('days_left')} status={lus[hote].get('status')}, "
-            f"attendu {jours} et {statut} (aujourd'hui {jour}, seuil {seuil}, graine {graine}). "
-            "Le seuil est inclusif : un certificat qui expire dans exactement N jours "
-            "avec --days N est en warning."
-        )
-        assert lus[hote].get("not_after") == EXPIRATIONS[hote].isoformat(), (
-            f"{hote} : not_after doit valoir la date d'expiration en AAAA-MM-JJ."
-        )
-    texte = lancer(outil, "--inventory", str(inventaire), "--days", str(seuil),
-                   cwd=tmp_path, env={"CERTCHECK_NOW": jour.isoformat()})
-    for hote, (_, statut) in attendus(hotes, jour, seuil).items():
-        assert any(hote in ligne and statut in ligne for ligne in texte.sortie.splitlines()), (
-            f"En --format text, aucune ligne ne porte à la fois {hote} et {statut}.\n  {texte.resume()}"
+def test_les_codes_de_sortie_observes() -> None:
+    r = reponses()
+    for cle, attendu in codes_livres().items():
+        assert r.get(cle) == attendu, (
+            f"`{cle}` vaut {r.get(cle)!r}. Lancez la commande indiquée dans reponses.yaml "
+            "sur le projet reçu, puis `echo $?` aussitôt. CONTRAT.md dit ce que chaque "
+            "code signifie."
         )
 
 

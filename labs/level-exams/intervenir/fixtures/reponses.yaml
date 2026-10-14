@@ -1,0 +1,26 @@
+# Vos réponses. Remplacez chaque valeur ; les clés ne changent pas.
+#
+# Commencez par cloner le dépôt de l'outil :
+#   git clone depot.bundle certcheck
+# Répondez AVANT de modifier le code : ces questions portent sur le dépôt reçu.
+
+# 1. L'outil.
+#    a) Son rôle, choisi dans cette liste :
+#         verifier-expiration       signaler les certificats qui vont expirer
+#         renouveler-certificats    demander de nouveaux certificats
+#         deployer-certificats      copier les certificats sur les hôtes
+#         sauvegarder-certificats   archiver les certificats du parc
+role: ""
+#    b) La fonction lancée par la commande `certcheck`, sous la forme module:fonction.
+commande_declaree: ""
+#    c) L'hôte de inventaire.txt que l'outil reçu classe à tort en `ok` le
+#       31 octobre 2026 (CERTCHECK_NOW=2026-10-31 bin/certcheck).
+hote_mal_classe: ""
+
+# 2. La CI et l'historique.
+#    a) Le nom de l'étape en échec dans ci/run-12.log, tel qu'écrit dans ci.yml.
+etape_en_echec: ""
+#    b) La commande à lancer sur votre poste pour rejouer cet échec.
+commande_locale: ""
+#    c) L'empreinte (7 caractères au moins) du commit qui a introduit le défaut.
+commit_fautif: ""

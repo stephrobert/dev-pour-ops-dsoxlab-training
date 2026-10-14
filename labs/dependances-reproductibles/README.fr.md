@@ -13,7 +13,7 @@ version de Python, et le prouvez dans un environnement neuf.
 | Durée | environ 25 minutes |
 | Réseau | **requis** : les paquets se téléchargent depuis PyPI |
 | Leçon jumelée | [Dépendances Python : déclarer, épingler, installer ailleurs](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
-| Suite | `livrer-un-outil` |
+| Suite | `tester-une-automatisation` |
 
 ```bash
 dsoxlab run   dependances-reproductibles

@@ -1,17 +1,20 @@
 repo:
   title: "Développer pour les Ops : les labs vérifiables"
   description: |
-    Développer comme un développeur, en Python. Un seul fil rouge,
-    certcheck : vous lisez un paquet Python hérité, structurez un projet
-    Python qui respecte un contrat, le testez, le déboguez, le faites
-    relire, le rendez reproductible et le livrez. Chaque lab est noté sur ce
-    qu'un appelant observe : sorties, codes de sortie, requêtes reçues par
-    une forge factice, fichiers du dépôt.
+    Une initiation au développement pour les Ops, en Python. Un seul fil
+    rouge, certcheck : vous lisez et modifiez un petit script hérité, vous
+    repérez dans le projet Python qu'il est devenu, installez ses
+    dépendances, lancez et corrigez ses tests, le déboguez et le faites
+    relire. Chaque lab est noté sur ce qu'un appelant observe : sorties,
+    codes de sortie, fichiers du dépôt.
 
 sections:
   - id: fil-rouge
-    title: "Le fil rouge : du code hérité à l'outil livré"
-    description: "Lire le code d'un paquet Python hérité, structurer un projet Python à contrat, le tester, le déboguer, relire un changement, verrouiller ses dépendances et livrer une version."
+    title: "Le fil rouge : lire, modifier, tester et faire relire un petit outil"
+    description: "Lire et modifier un petit script Python hérité, se repérer dans le projet Python qu'il est devenu, installer ses dépendances, se servir de ses tests, le déboguer et relire un changement."
+  - id: approfondir
+    title: "Aller plus loin"
+    description: "Facultatif : appeler une API, livrer une version installable et versionnée, et le défi de reprendre un outil entier."
   - id: level-exams
     title: "Épreuve de niveau"
-    description: "Reprendre un outil d'exploitation hérité : le remplacer par un projet Python qui respecte son contrat, attraper le bogue semé par des tests pytest, livrer une version étiquetée et installable, et relire la pull request d'un collègue. Noté en boîte noire, sans indice."
+    description: "Intervenir sur un petit outil d'exploitation : le lire, lire son journal de CI et son historique, faire une correction limitée, et rendre verts tests, contrôles de qualité et étapes de CI. Noté en boîte noire, sans indice."

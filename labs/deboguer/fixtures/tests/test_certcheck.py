@@ -37,3 +37,11 @@ def test_un_certificat_absent_est_en_erreur(tmp_path):
     resultats = certificats.analyser([("absent", tmp_path / "absent.pem")], 30, AUJOURD_HUI)
     assert resultats[0]["status"] == "error"
     assert certificats.code_de_sortie(resultats) == 2
+
+
+# Étape 2 du scénario : le test qui reproduit le ticket est prêt ci-dessous.
+# Décommentez-le (retirez « # » au début des deux lignes) : il doit échouer
+# AVANT la correction, c'est ce qui prouve qu'il attrape le bogue.
+#
+# def test_un_jour_a_un_chiffre_se_lit():
+#     assert certificats.date_expiration(CERTS / "vpn-01.pem") == date(2031, 3, 5)

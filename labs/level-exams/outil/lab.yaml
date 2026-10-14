@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
 id: level-exams-outil
-title: "Exam: take over an operations tool"
+title: "Challenge: take over an operations tool"
 description: |
   You inherit certcheck.sh, a Bash script that counts a missing certificate
   as "0 days" and always exits 0, its written contract, and a colleague's
@@ -10,7 +10,7 @@ description: |
   suite that catches the inherited bug, an installable package, a version
   recorded in the CHANGELOG and tagged in Git, and the review. Graded on the
   contract with hidden tests, without hints.
-section: level-exams
+section: approfondir
 level: o1
 difficulty: intermediate
 lab_type: capstone

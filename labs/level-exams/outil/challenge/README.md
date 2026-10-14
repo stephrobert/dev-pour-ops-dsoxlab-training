@@ -1,4 +1,4 @@
-# Exam: take over an operations tool
+# Challenge: take over an operations tool
 
 5 tasks, 100 points, 60 minutes. Passing score: 70 points.
 

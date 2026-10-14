@@ -1,0 +1,7 @@
+fichier_declaration: "pyproject.toml"
+commande_declaree: "certcheck.cli:main"
+module_decision: "src/certcheck/certificats.py"
+lanceur: "bin/certcheck"
+code_inventaire_fourni: 1
+code_usage_incorrect: 2
+code_inventaire_absent: 2

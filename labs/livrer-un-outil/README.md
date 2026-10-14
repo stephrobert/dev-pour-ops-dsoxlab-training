@@ -12,7 +12,7 @@ Nothing is published: the release stays in the repository.
 | Duration | about 25 minutes |
 | Network | **required**: the fresh installation downloads dependencies from PyPI |
 | Paired lesson | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
-| Previous | `dependances-reproductibles` |
+| Previous | `dependances-reproductibles` (optional lab, outside the core) |
 
 ```bash
 dsoxlab run   livrer-un-outil

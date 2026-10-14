@@ -8,7 +8,7 @@ description: |
   Git tag v1.0.0, then proof that a fresh environment installs the tool,
   from the working directory and from a clone of the tag. Needs network
   access to PyPI.
-section: fil-rouge
+section: approfondir
 level: o1
 difficulty: beginner
 lab_type: lab
