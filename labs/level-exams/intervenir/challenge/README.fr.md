@@ -11,11 +11,11 @@ sur `certcheck/`.
 
 `role`, `commande_declaree` et `hote_mal_classe` décrivent l'outil reçu.
 
-### Tâche 2 : la CI et l'historique sont lus (20 pts)
+### Tâche 2 : la CI est lue et le défaut localisé (20 pts)
 
 `etape_en_echec` nomme l'étape rouge de `ci/run-12.log` comme `ci.yml` la
-nomme, `commande_locale` la rejoue sur votre poste, et `commit_fautif` désigne
-le commit qui a introduit le défaut.
+nomme, `commande_locale` la rejoue sur votre poste, et `fichier_du_defaut`
+désigne le fichier où se trouve le défaut du ticket.
 
 ### Tâche 3 : le défaut est corrigé (20 pts)
 

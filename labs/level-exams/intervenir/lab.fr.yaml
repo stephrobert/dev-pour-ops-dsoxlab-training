@@ -3,7 +3,7 @@ title: "Épreuve : intervenir sur un petit outil d'exploitation"
 description: |
   Un petit outil Python d'exploitation, une modification récente qui a
   introduit un défaut, et un run de CI rouge. Clonez le dépôt, lisez le code
-  et dites ce qu'il fait, lisez le journal de CI et l'historique pour trouver
-  l'étape en échec et le commit fautif, faites une correction limitée, puis
-  rendez verts les tests, les contrôles de qualité et les étapes de la CI.
-  Noté en boîte noire, sans indice.
+  et dites ce qu'il fait, lisez le journal de CI pour trouver l'étape en échec,
+  trouvez le fichier du défaut, faites une correction limitée, puis rendez
+  verts les tests, les contrôles de qualité et les étapes de la CI. Noté en
+  boîte noire, sans indice.

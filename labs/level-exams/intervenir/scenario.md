@@ -15,8 +15,8 @@ The tool's repository comes as a bundle, `depot.bundle`: clone it with
 
 1. **Understand** the tool and write in `reponses.yaml` its role, the command
    it declares and the host it misclassifies on the ticket's date.
-2. **Read** the CI log and the history: the failing step, the command that
-   replays it on your workstation, the commit that introduced the defect.
+2. **Read** the CI log and the code: the failing step, the command that
+   replays it on your workstation, the file holding the defect.
 3. **Fix**, keeping the change limited to the defect.
 4. **Check**: `uv run pytest -v` green, `uv run ruff check .` and
    `uv run ruff format --check .` green, and every CI step passing again.

@@ -2,7 +2,7 @@
 
 End-of-level exam for level o1 of **Development for Ops**: a measurement, not
 a lesson. A small Python tool, a recent change that introduced a defect, a red
-CI run. You read the code, the history and the CI log, make a limited fix and
+CI run. You read the code and the CI log, make a limited fix and
 get tests, quality and CI back to green.
 
 | | |

@@ -137,7 +137,9 @@ def main() -> int:
         tete = commit(depot, "README : où lire le résultat de la CI", "karim", "2026-10-08T10:30:00+02:00")
 
         BUNDLE.parent.mkdir(parents=True, exist_ok=True)
-        git("bundle", "create", "-q", str(BUNDLE), "main", cwd=depot)
+        # HEAD en plus de main : sans lui, un `git clone` sur un poste sans
+        # init.defaultBranch laisse un répertoire vide (remote HEAD absent).
+        git("bundle", "create", "-q", str(BUNDLE), "HEAD", "main", cwd=depot)
 
         lignes, echec = jouer_ci(depot)
         noms = [n for n, _ in etapes(depot)]

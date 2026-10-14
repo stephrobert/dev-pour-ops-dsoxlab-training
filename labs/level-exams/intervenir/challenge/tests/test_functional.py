@@ -13,8 +13,7 @@ développeur autonome.
 
 - Les réponses attendues se recalculent depuis le bundle livré : la commande
   se relit dans son `pyproject.toml`, l'hôte mal classé en lançant l'outil
-  livré à la date du ticket, l'étape en échec en relisant `ci/run-12.log`, le
-  commit fautif par `git log -S`.
+  livré à la date du ticket, l'étape en échec en relisant `ci/run-12.log`.
 - La correction se juge en boîte noire, par `bin/certcheck`, sur des hôtes,
   des seuils et des dates tirés au hasard.
 - Les étapes de CI rejouées sont celles du `ci.yml` LIVRÉ, pas d'une copie que
@@ -124,7 +123,7 @@ def test_l_outil_est_compris() -> None:
     )
 
 
-def test_la_ci_et_l_historique_sont_lus() -> None:
+def test_la_ci_est_lue_et_le_defaut_localise() -> None:
     r = reponses()
     journal = (LIVRE / "ci" / "run-12.log").read_text(encoding="utf-8")
     echec = re.search(r"== Étape « (.+?) » : échec", journal)
@@ -139,13 +138,11 @@ def test_la_ci_et_l_historique_sont_lus() -> None:
         f"`commande_locale` vaut {commande!r}. La première commande de l'étape en échec, "
         "lancée dans le dépôt, rejoue le même échec sur votre poste."
     )
-    res = git("log", "--format=%H", "-S", "import sys", "--", "src/certcheck/certificats.py", cwd=depot_livre())
-    fautif = res.stdout.split()[0]
-    donne = nettoyer(r.get("commit_fautif")).lower()
-    assert len(donne) >= 7 and fautif.startswith(donne), (
-        f"`commit_fautif` vaut {donne!r}. `git log --oneline` liste les commits, et "
-        "`git show <empreinte>` montre ce que chacun a changé : cherchez celui qui touche "
-        "à la décision, dans src/certcheck/certificats.py."
+    donne = nettoyer(r.get("fichier_du_defaut")).removeprefix("./").removeprefix("certcheck/")
+    assert donne == "src/certcheck/certificats.py", (
+        f"`fichier_du_defaut` vaut {r.get('fichier_du_defaut')!r}. Lancez `uv run pytest -v` "
+        "dans certcheck/ : le test rouge appelle une fonction ; cherchez dans src/certcheck/ le "
+        "fichier qui la définit (grep -rn \"def statut\" src)."
     )
 
 

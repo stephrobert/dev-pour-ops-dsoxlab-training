@@ -11,11 +11,11 @@ are about the repository **as received**; tasks 3 to 5 are about
 
 `role`, `commande_declaree` and `hote_mal_classe` describe the received tool.
 
-### Task 2: the CI and the history are read (20 pts)
+### Task 2: the CI is read and the defect located (20 pts)
 
 `etape_en_echec` names the red step of `ci/run-12.log` as `ci.yml` names it,
-`commande_locale` replays it on your workstation, and `commit_fautif` points
-to the commit that introduced the defect.
+`commande_locale` replays it on your workstation, and `fichier_du_defaut`
+names the file holding the ticket's defect.
 
 ### Task 3: the defect is fixed (20 pts)
 

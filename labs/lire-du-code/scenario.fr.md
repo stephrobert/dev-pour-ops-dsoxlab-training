@@ -7,7 +7,7 @@ certificats TLS du parc. Julien l'a écrit il y a deux ans, puis il a changé
 d'équipe. Le mois dernier, le certificat d'un hôte a expiré alors que le
 rapport de la veille le disait `ok`. On vous confie le script.
 
-Le répertoire de travail contient le script (`certcheck.py`, une soixantaine de
+Le répertoire de travail contient le script (`certcheck.py`, environ quatre-vingts
 lignes), l'inventaire qu'il lit (`inventaire.txt`) et les certificats collectés
 sur les hôtes (`certs/`).
 

@@ -4,9 +4,9 @@ title: "Exam: step in on a small operations tool"
 description: |
   A small Python operations tool, a recent change that introduced a defect,
   and a red CI run. Clone the repository, read the code and say what it does,
-  read the CI log and the history to find the failing step and the faulty
-  commit, make a limited fix, then get the tests, the quality checks and the
-  CI steps back to green. Graded as a black box, without hints.
+  read the CI log to find the failing step, find the file holding the defect,
+  make a limited fix, then get the tests, the quality checks and the CI steps
+  back to green. Graded as a black box, without hints.
 section: level-exams
 level: o1
 difficulty: beginner

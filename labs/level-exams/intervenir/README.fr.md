@@ -2,7 +2,7 @@
 
 Épreuve de fin du niveau o1 de **Développer pour les Ops** : une mesure, pas
 un cours. Un petit outil Python, une modification récente qui a introduit un
-défaut, un run de CI rouge. Vous lisez le code, l'historique et le journal de
+défaut, un run de CI rouge. Vous lisez le code et le journal de
 CI, faites une correction limitée et rendez tests, qualité et CI verts.
 
 | | |

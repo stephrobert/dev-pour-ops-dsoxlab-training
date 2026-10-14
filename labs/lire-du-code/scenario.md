@@ -7,7 +7,7 @@ certificates. Julien wrote it two years ago, then moved to another team. Last
 month, a host's certificate expired although the previous night's report said
 `ok`. The script is now yours.
 
-The working directory holds the script (`certcheck.py`, about sixty lines),
+The working directory holds the script (`certcheck.py`, about eighty lines),
 the inventory it reads (`inventaire.txt`) and the certificates collected on
 the hosts (`certs/`).
 

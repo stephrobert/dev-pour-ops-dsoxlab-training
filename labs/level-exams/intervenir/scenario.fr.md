@@ -15,8 +15,8 @@ Le dépôt de l'outil est livré en bundle, `depot.bundle` : clonez-le avec
 
 1. **Comprendre** l'outil et noter dans `reponses.yaml` son rôle, la commande
    qu'il déclare et l'hôte qu'il classe mal à la date du ticket.
-2. **Lire** le journal de CI et l'historique : l'étape en échec, la commande
-   qui la rejoue sur votre poste, le commit qui a introduit le défaut.
+2. **Lire** le journal de CI et le code : l'étape en échec, la commande
+   qui la rejoue sur votre poste, le fichier où se trouve le défaut.
 3. **Corriger**, en limitant le changement au défaut.
 4. **Vérifier** : `uv run pytest -v` vert, `uv run ruff check .` et
    `uv run ruff format --check .` verts, et chaque étape de la CI qui repasse.

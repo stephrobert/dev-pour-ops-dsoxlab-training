@@ -17,10 +17,10 @@ commande_declaree: ""
 #       31 octobre 2026 (CERTCHECK_NOW=2026-10-31 bin/certcheck).
 hote_mal_classe: ""
 
-# 2. La CI et l'historique.
+# 2. La CI et le défaut.
 #    a) Le nom de l'étape en échec dans ci/run-12.log, tel qu'écrit dans ci.yml.
 etape_en_echec: ""
 #    b) La commande à lancer sur votre poste pour rejouer cet échec.
 commande_locale: ""
-#    c) L'empreinte (7 caractères au moins) du commit qui a introduit le défaut.
-commit_fautif: ""
+#    c) Le fichier (chemin depuis certcheck/) où se trouve le défaut du ticket.
+fichier_du_defaut: ""
