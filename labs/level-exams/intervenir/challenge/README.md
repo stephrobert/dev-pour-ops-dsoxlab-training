@@ -24,7 +24,7 @@ exit codes) on random hosts, thresholds and dates.
 
 ### Task 4: the tests are green, and complete (20 pts)
 
-`uv run pytest` is green, and the five tests received are still there.
+`uv run pytest` is green, the five tests received are still there, and those tests, replayed as received against your code, pass: changing a test fixes nothing.
 
 ### Task 5: quality and CI pass (20 pts)
 

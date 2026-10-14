@@ -24,7 +24,7 @@ codes de sortie) sur des hôtes, des seuils et des dates tirés au hasard.
 
 ### Tâche 4 : les tests sont verts, et complets (20 pts)
 
-`uv run pytest` est vert, et les cinq tests reçus sont toujours là.
+`uv run pytest` est vert, les cinq tests reçus sont toujours là, et ces tests, rejoués tels que reçus contre votre code, passent : modifier un test ne corrige rien.
 
 ### Tâche 5 : la qualité et la CI passent (20 pts)
 

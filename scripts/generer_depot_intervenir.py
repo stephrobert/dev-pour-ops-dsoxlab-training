@@ -3,8 +3,8 @@
 
 Le projet juste vit dans `donnees/intervenir/`. Ce script en tire un dépôt Git
 de cinq commits, à dates et identités fixes, dont le quatrième introduit le
-défaut de l'épreuve (seuil devenu exclusif) et un import inutile que le linter
-refuse. Il écrit :
+défaut de l'épreuve (seuil devenu exclusif) dans certificats.py, et un import
+inutile que le linter refuse, dans cli.py. Il écrit :
 
 - `fixtures/depot.bundle` : l'historique que l'apprenant clone ;
 - `fixtures/ci/run-12.log` : le journal du run de CI sur le dernier commit,
@@ -45,8 +45,8 @@ AUTEURS = {
 
 JUSTE = "    if jours <= seuil:\n"
 FAUX = "    if jours < seuil:\n"
-IMPORTS_JUSTES = "import os\nimport subprocess\n"
-IMPORTS_FAUX = "import os\nimport subprocess\nimport sys\n"
+IMPORTS_JUSTES = "import os\nimport sys\n"
+IMPORTS_FAUX = "import os\nimport sys\nimport tempfile\n"
 
 
 def git(*args: str, cwd: Path, auteur: str | None = None, date: str | None = None) -> str:
@@ -128,7 +128,7 @@ def main() -> int:
         commit(depot, "README : l'outil tourne chaque nuit", "karim", "2026-09-17T11:05:00+02:00")
 
         remplacer(depot / "src" / "certcheck" / "certificats.py", JUSTE, FAUX)
-        remplacer(depot / "src" / "certcheck" / "certificats.py", IMPORTS_JUSTES, IMPORTS_FAUX)
+        remplacer(depot / "src" / "certcheck" / "cli.py", IMPORTS_JUSTES, IMPORTS_FAUX)
         fautif = commit(depot, "Décision : simplifier le calcul du statut", "ines", "2026-10-06T18:22:00+02:00")
 
         remplacer(depot / "README.md", "chaque push sur `main` et à chaque demande de fusion.",
@@ -153,7 +153,7 @@ def main() -> int:
 
         # La solution : le dernier arbre, défaut corrigé (le test qui le prouve existe déjà).
         remplacer(depot / "src" / "certcheck" / "certificats.py", FAUX, JUSTE)
-        remplacer(depot / "src" / "certcheck" / "certificats.py", IMPORTS_FAUX, IMPORTS_JUSTES)
+        remplacer(depot / "src" / "certcheck" / "cli.py", IMPORTS_FAUX, IMPORTS_JUSTES)
         if SOLUTION.exists():
             shutil.rmtree(SOLUTION)
         shutil.copytree(depot, SOLUTION, ignore=shutil.ignore_patterns(".git", *EXCLUS))
@@ -165,7 +165,7 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="relire-") as tmp:
         clone = Path(tmp) / "c"
         git("clone", "-q", str(BUNDLE), str(clone), cwd=Path(tmp))
-        trouve = git("log", "--format=%H", "-S", "import sys", "--", "src/certcheck/certificats.py", cwd=clone).split()
+        trouve = git("log", "--format=%H", "-S", "jours < seuil", "--", "src/certcheck/certificats.py", cwd=clone).split()
         if trouve != [fautif]:
             sys.exit(f"le bundle ne désigne pas le commit fautif {fautif} : {trouve}")
     print(f"bundle : {BUNDLE.relative_to(RACINE)} (commit fautif {fautif[:7]}, tête {tete[:7]})")

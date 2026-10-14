@@ -26,6 +26,7 @@ import ast
 import json
 import random
 import re
+import shutil
 import tempfile
 import tomllib
 from datetime import date, timedelta
@@ -106,20 +107,17 @@ def etapes_livrees() -> list[dict]:
 def test_l_outil_est_compris() -> None:
     r = reponses()
     assert nettoyer(r.get("role")).lower() == "verifier-expiration", (
-        f"`role` vaut {r.get('role')!r} : relisez README.md et CONTRAT.md du dépôt."
+        "`role` ne correspond pas au rôle de l'outil."
     )
     declaree = tomllib.loads((depot_livre() / "pyproject.toml").read_text(encoding="utf-8"))["project"]["scripts"]
     assert nettoyer(r.get("commande_declaree")) == declaree["certcheck"], (
-        f"`commande_declaree` vaut {r.get('commande_declaree')!r} : c'est la valeur de "
-        "`certcheck = ...` dans [project.scripts] de pyproject.toml."
+        "`commande_declaree` ne correspond pas à la commande déclarée par le projet."
     )
     seuil = 30
     mal_classes = sorted(h for h, s in statuts_livres().items()
                          if s == "ok" and (EXPIRATIONS[h] - JOUR_DU_TICKET).days <= seuil)
     assert nettoyer(r.get("hote_mal_classe")) in mal_classes, (
-        f"`hote_mal_classe` vaut {r.get('hote_mal_classe')!r}. Lancez l'outil reçu à la date "
-        "du ticket et comparez chaque ligne au contrat : un hôte à 30 jours ou moins doit "
-        "être en warning."
+        "`hote_mal_classe` ne désigne pas l'hôte mal classé à la date du ticket."
     )
 
 
@@ -130,19 +128,15 @@ def test_la_ci_est_lue_et_le_defaut_localise() -> None:
     assert echec, "journal livré illisible"
     noms = {e["name"] for e in etapes_livrees()}
     assert nettoyer(r.get("etape_en_echec")) == echec.group(1) and echec.group(1) in noms, (
-        f"`etape_en_echec` vaut {r.get('etape_en_echec')!r}. Dans ci/run-12.log, cherchez la "
-        "ligne « échec » : elle nomme l'étape comme ci.yml la nomme (name:)."
+        "`etape_en_echec` ne nomme pas l'étape en échec telle que ci.yml la nomme."
     )
     commande = nettoyer(r.get("commande_locale"))
     assert "ruff check" in commande, (
-        f"`commande_locale` vaut {commande!r}. La première commande de l'étape en échec, "
-        "lancée dans le dépôt, rejoue le même échec sur votre poste."
+        "`commande_locale` ne rejoue pas l'échec de cette étape."
     )
     donne = nettoyer(r.get("fichier_du_defaut")).removeprefix("./").removeprefix("certcheck/")
     assert donne == "src/certcheck/certificats.py", (
-        f"`fichier_du_defaut` vaut {r.get('fichier_du_defaut')!r}. Lancez `uv run pytest -v` "
-        "dans certcheck/ : le test rouge appelle une fonction ; cherchez dans src/certcheck/ le "
-        "fichier qui la définit (grep -rn \"def statut\" src)."
+        "`fichier_du_defaut` ne désigne pas le fichier du défaut du ticket."
     )
 
 
@@ -195,6 +189,19 @@ def test_les_tests_sont_verts_et_complets() -> None:
                        timeout=300)
     assert res.returncode == 0, (
         "`uv run pytest` n'est pas vert sur votre version :\n" + (res.stdout + res.stderr).strip()[-1500:]
+    )
+    # Les tests TELS QUE REÇUS, rejoués contre votre code : modifier un test pour le
+    # faire passer ne corrige rien, et ne fait pas passer ce contrôle.
+    with copie_temporaire(dossier) as copie:
+        recus = copie / "tests"
+        if recus.exists():
+            shutil.rmtree(recus)
+        shutil.copytree(depot_livre() / "tests", recus)
+        res = executer([uv, "run", "--quiet", "--directory", str(copie), "pytest", "-q", "-p", "no:cacheprovider"],
+                       timeout=300)
+    assert res.returncode == 0, (
+        "Les tests reçus, rejoués tels quels contre votre code, ne passent pas : le défaut est "
+        "toujours là.\n" + (res.stdout + res.stderr).strip()[-1500:]
     )
 
 
