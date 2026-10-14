@@ -18,7 +18,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 15,
   "ecarts": [],
@@ -66,7 +66,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 7,
   "ecarts": [],
@@ -114,7 +114,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 4,
   "ecarts": [],
@@ -153,7 +153,7 @@
   "avant": {
    "echecs": [
     "test_l_outil_est_compris",
-    "test_la_ci_et_l_historique_sont_lus",
+    "test_la_ci_est_lue_et_le_defaut_localise",
     "test_la_qualite_et_la_ci_passent",
     "test_le_defaut_est_corrige",
     "test_les_tests_sont_verts_et_complets"
@@ -162,9 +162,9 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
-  "duree_s": 3,
+  "duree_s": 4,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
@@ -179,7 +179,7 @@
   "rejeu": {
    "echecs": [
     "test_l_outil_est_compris",
-    "test_la_ci_et_l_historique_sont_lus",
+    "test_la_ci_est_lue_et_le_defaut_localise",
     "test_la_qualite_et_la_ci_passent",
     "test_le_defaut_est_corrige",
     "test_les_tests_sont_verts_et_complets"
@@ -210,7 +210,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 8,
   "ecarts": [],
@@ -258,7 +258,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 3,
   "ecarts": [],
@@ -306,7 +306,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 4,
   "ecarts": [],
@@ -354,7 +354,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 2,
   "ecarts": [],
@@ -402,7 +402,7 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
   "duree_s": 4,
   "ecarts": [],
@@ -450,9 +450,9 @@
    "score": 0,
    "total": 5
   },
-  "commit": "0485356",
+  "commit": "80e2efb",
   "date": "2026-10-14",
-  "duree_s": 7,
+  "duree_s": 6,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 25 conteneur(s) Docker présents",
