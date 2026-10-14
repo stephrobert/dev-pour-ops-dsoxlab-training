@@ -17,24 +17,25 @@ mise install                   # uv et Python épinglés
 dsoxlab validate-structure     # vérifier le contrat
 ```
 
-Ni VM ni `dsoxlab provision` : tous les labs sont en `runtime: shell`, et
-l'outil de l'apprenant tourne sur son poste, dans son propre projet uv. Seul
-le dernier lab, `automatisation-dans-la-ci`, demande Docker : act y joue le
-workflow dans l'image du runner épinglée par digest dans `.actrc`.
+Ni VM, ni `dsoxlab provision`, ni Docker : les dix labs sont en
+`runtime: shell`, aucun ne déclare `runtime.services`, et l'outil de
+l'apprenant tourne sur son poste, dans son propre projet uv.
 
 ## Le fil rouge
 
-Les labs de la section `automatisation` construisent **un seul outil**,
-`security_check.py`, version après version. Le point de départ d'un lab est
-la solution de référence du précédent : une correction d'une solution se
-reporte dans les `fixtures/` du lab suivant. L'ordre de `meta.yml` est celui
-dans lequel les labs se jouent, et il ne se réordonne pas.
+Les six labs de la section `fil-rouge` construisent **un seul outil**,
+`certcheck`, version après version. Le point de départ d'un lab est la
+solution de référence du précédent : une correction d'une solution se reporte
+dans les `fixtures/` du lab suivant. L'ordre de `meta.yml` est celui dans
+lequel les labs se jouent, et il ne se réordonne pas.
+
+Les sections `approfondir` et `level-exams` se jouent après, et chacun de
+leurs labs est autonome.
 
 C'est aussi pourquoi les solutions **ne sont pas chiffrées**, contrairement
 aux catalogues Linux, Terraform et Ansible : chaque solution est livrée en
-clair comme point de départ du lab suivant, et la référence du dernier lab est
-la solution du quatrième. Le chiffrement ne cacherait rien et ajouterait une
-clé à ne pas perdre.
+clair comme point de départ du lab suivant. Le chiffrement ne cacherait rien
+et ajouterait une clé à ne pas perdre.
 
 ## La règle d'or : un lab s'éprouve dans les deux sens
 

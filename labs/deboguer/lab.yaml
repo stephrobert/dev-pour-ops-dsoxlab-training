@@ -19,7 +19,7 @@ skills:
   - pytest
 distros:
   - any
-doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/
+doc_url: https://dev.stephane-robert.info/docs/developper/pratiques/deboguer/
 runtime:
   type: shell
   workdir: challenge/work

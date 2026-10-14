@@ -25,7 +25,15 @@ from pathlib import Path
 
 import pytest
 
-from conftest import copie_temporaire, executer, exiger_outil, exiger_workdir, git, lire_yaml, workdir_lab
+from conftest import (
+    copie_temporaire,
+    executer,
+    exiger_outil,
+    exiger_workdir,
+    git,
+    lire_yaml,
+    workdir_lab,
+)
 
 WORKDIR = workdir_lab(__file__)
 LAB_ID = "relire-une-automatisation"

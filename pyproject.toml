@@ -21,6 +21,28 @@ target-version = "py312"
 exclude = [
     "labs/*/fixtures",
     "labs/*/challenge/work",
+    # Les mutants sont du code DÉLIBÉRÉMENT faux : ils servent à vérifier que
+    # les tests de l'apprenant attrapent une régression. Les linter revient à
+    # linter une fixture, pour la même raison.
+    "labs/*/challenge/tests/mutants",
+    # Une `solution/` n'est PAS un projet complet : elle se pose par-dessus les
+    # fixtures, et c'est le répertoire de travail ainsi formé qui se lint. Vue
+    # depuis la racine, il lui manque les modules que les fixtures apportent —
+    # `certcheck.erreurs` par exemple — et ruff range alors les imports
+    # autrement que dans le workdir. Mesuré sur `relire-une-automatisation`,
+    # dont un test exige précisément que `ruff check` passe sur le code de
+    # base : appliquer le tri de la racine faisait échouer le test du lab.
+    #
+    # Les solutions restent lintées, mais là où elles ont un sens : par le test
+    # du lab, dans le workdir, avec la configuration du lab.
+    #
+    # ATTENTION : cette ligne ne vaut que pour la DÉCOUVERTE (`ruff check .`).
+    # Un fichier passé en ARGUMENT — ce que fait pre-commit — fait résoudre à
+    # ruff la configuration la plus proche, et six solutions portent leur
+    # propre `pyproject.toml`. L'exclusion qui tient dans ce cas est celle du
+    # hook `ruff` dans `.pre-commit-config.yaml` ; les deux sont nécessaires.
+    "labs/*/solution",
+    "labs/*/*/solution",
 ]
 
 [tool.ruff.lint]

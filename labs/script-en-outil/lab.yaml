@@ -20,7 +20,7 @@ skills:
   - configuration
 distros:
   - any
-doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/
+doc_url: https://dev.stephane-robert.info/docs/developper/pratiques/script-en-outil/
 runtime:
   type: shell
   workdir: challenge/work

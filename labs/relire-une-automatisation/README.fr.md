@@ -12,7 +12,7 @@ les défauts mécaniques à une machine : le linter ruff.
 |---|---|
 | Cible | votre poste : uv (`mise install`), Git et un éditeur, aucune VM |
 | Durée | environ 25 minutes |
-| Leçon jumelée | [Relire une pull request : checklist, commentaire, verdict](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
+| Leçon jumelée | [Relire une pull request : checklist, commentaire, verdict](https://dev.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
 
 ```bash
 dsoxlab run   relire-une-automatisation

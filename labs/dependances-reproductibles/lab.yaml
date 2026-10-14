@@ -21,7 +21,7 @@ skills:
   - python
 distros:
   - any
-doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/
+doc_url: https://dev.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/
 runtime:
   type: shell
   workdir: challenge/work

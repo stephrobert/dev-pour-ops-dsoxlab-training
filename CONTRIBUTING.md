@@ -17,23 +17,24 @@ mise install                   # the pinned uv and Python
 dsoxlab validate-structure     # check the contract
 ```
 
-No VM, no `dsoxlab provision`: every lab is `runtime: shell`, and the
-learner's tool runs on their own machine, in its own uv project. Only the
-last lab, `automatisation-dans-la-ci`, needs Docker: act plays its workflow
-in the runner image pinned by digest in `.actrc`.
+No VM, no `dsoxlab provision`, no Docker: all ten labs are
+`runtime: shell`, none declares `runtime.services`, and the learner's tool
+runs on their own machine, in its own uv project.
 
 ## The running thread
 
-The labs of the `automatisation` section build **one tool**,
-`security_check.py`, version after version. The starting point of a lab is
-the reference solution of the previous one: a fix to a solution must be
-carried over to the next lab's `fixtures/`. The order of `meta.yml` is the
-order in which the labs are played, and it is not reordered.
+The six labs of the `fil-rouge` section build **one tool**, `certcheck`,
+version after version. The starting point of a lab is the reference solution
+of the previous one: a fix to a solution must be carried over to the next
+lab's `fixtures/`. The order of `meta.yml` is the order in which the labs are
+played, and it is not reordered.
+
+The `approfondir` and `level-exams` sections come afterwards, and each of
+their labs stands on its own.
 
 This is also why the solutions are **not encrypted**, unlike the Linux,
 Terraform and Ansible catalogs: each solution is shipped in clear as the next
-lab's starting point, and the reference of the last lab is the solution of
-the fourth. Encryption would hide nothing and add a key to lose.
+lab's starting point. Encryption would hide nothing and add a key to lose.
 
 ## The golden rule: a lab is proven in both directions
 

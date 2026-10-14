@@ -20,7 +20,7 @@ Le validateur exige 0 puis 100, pas « moins » puis « plus » : un lab à cinq
 tests dont deux passent avant le travail mesure 40 points de rien.
 
     uv run scripts/valider-labs.py                              # tous les labs
-    uv run scripts/valider-labs.py --lab fondations-premier-workflow
+    uv run scripts/valider-labs.py --lab lire-du-code
     uv run scripts/valider-labs.py --sans-rejeu                 # saute l'étape 5
 
 Le résultat de chaque lab est écrit dans validation-labs.json, à la racine :
@@ -37,6 +37,7 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import functools
 import json
 import os
 import re
@@ -169,19 +170,61 @@ def version_attendue(nom: str) -> str:
     return str(tomllib.loads((RACINE / "mise.toml").read_text(encoding="utf-8"))["tools"][nom])
 
 
+@functools.cache
+def motifs_de_conteneurs() -> tuple[str, ...]:
+    """Les noms de conteneurs que dsoxlab peut créer POUR CE CATALOGUE.
+
+    Deux familles, et aucune autre :
+
+      - `dsoxlab-<repo_id>-<service>`, le nom que dsoxlab donne aux conteneurs
+        de `runtime.services` ;
+      - les fragments déclarés en `spawns`, c'est-à-dire les conteneurs qu'un
+        service engendre lui-même quand on lui confie le socket Docker. Ils ne
+        portent pas le préfixe, donc les omettre ferait un trou silencieux, et
+        les coder en dur ferait une liste à maintenir à la main.
+
+    Les lire du catalogue est ce qui garde le contrôle juste sans effort : un
+    lab qui déclarera demain un service sera surveillé le jour même.
+    """
+    motifs = {"dsoxlab-"}
+    for fichier in sorted(LABS.rglob("lab.yaml")):
+        try:
+            definition = yaml.safe_load(fichier.read_text(encoding="utf-8")) or {}
+        except yaml.YAMLError:
+            # Un lab.yaml illisible est le sujet d'un autre contrôle
+            # (`dsoxlab validate-structure`) ; ici il ne doit pas faire
+            # échouer la photographie.
+            continue
+        for service in (definition.get("runtime") or {}).get("services") or []:
+            motifs.update(str(s) for s in (service.get("spawns") or []))
+    return tuple(sorted(motifs))
+
+
 def photographier(lab: Path, journal) -> dict:
     """Ce qu'un lab peut laisser : son répertoire de travail, et des conteneurs.
 
-    Seul `automatisation-dans-la-ci` lance Docker (act), mais la photographie
-    vaut pour tous : un lab qui laisserait un conteneur le dirait. Sans Docker
-    sur le poste, la liste reste vide et la comparaison n'apprend rien, ce qui
-    est exact pour les labs qui n'en ont pas besoin.
+    La liste des conteneurs est RESTREINTE à ce que dsoxlab peut créer pour ce
+    catalogue (voir `motifs_de_conteneurs`). Un `docker ps -a` sans filtre voit
+    tout le poste : un chantier qui tourne à côté entre alors dans la
+    photographie, et le lab passe au rouge pour un conteneur qu'il n'a jamais
+    touché. Mesuré : deux labs rouges pendant qu'un autre catalogue jouait ses
+    propres conteneurs.
+
+    Sans Docker sur le poste, la liste reste vide et la comparaison n'apprend
+    rien, ce qui est exact pour les labs qui n'en ont pas besoin — c'est le cas
+    des dix labs de ce catalogue, tous `shell` et sans `runtime.services`.
     """
     present = workdir(lab).exists()
     journal.write(f"répertoire de travail présent : {present}\n")
     conteneurs: list[str] = []
     if shutil.which("docker"):
-        res = commande(["docker", "ps", "-a", "--format", "{{.ID}} {{.Names}} {{.Image}}"], journal, 60)
+        # Un --filter par motif : `docker ps` les combine en OU sur `name`,
+        # et le motif est une SOUS-CHAÎNE, pas un glob.
+        filtres = [arg for motif in motifs_de_conteneurs() for arg in ("--filter", f"name={motif}")]
+        res = commande(
+            ["docker", "ps", "-a", "--format", "{{.ID}} {{.Names}} {{.Image}}", *filtres],
+            journal, 60,
+        )
         if res.returncode == 0:
             conteneurs = sorted(ligne for ligne in res.stdout.splitlines() if ligne.strip())
     return {"workdir_present": present, "conteneurs": conteneurs}
@@ -226,7 +269,8 @@ def valider(lab: Path, rejeu: bool) -> dict:
             avant_photo = photographier(lab, journal)
             if avant_photo["workdir_present"]:
                 raise Echec("le répertoire de travail existe déjà : lancez `dsoxlab clean` avant de valider")
-            dire(f"état photographié, répertoire de travail absent, {len(avant_photo['conteneurs'])} conteneur(s) Docker présents")
+            dire(f"état photographié, répertoire de travail absent, "
+                 f"{len(avant_photo['conteneurs'])} conteneur(s) dsoxlab présents")
 
             res = dsoxlab(["run", ident], journal, 300)
             if res.returncode != 0:

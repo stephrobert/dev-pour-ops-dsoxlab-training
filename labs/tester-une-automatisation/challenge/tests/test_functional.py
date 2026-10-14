@@ -28,8 +28,6 @@ from datetime import timedelta
 from functools import cache
 from pathlib import Path
 
-import pytest
-
 from conftest import (
     EXPIRATIONS,
     REFERENCE_PAQUET,

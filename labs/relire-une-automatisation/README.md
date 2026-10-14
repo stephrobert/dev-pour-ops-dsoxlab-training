@@ -12,7 +12,7 @@ to a machine: the ruff linter.
 |---|---|
 | Target | your machine: uv (`mise install`), Git and an editor, no VM |
 | Duration | about 25 minutes |
-| Paired lesson | [Relire une pull request : checklist, commentaire, verdict](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) (in French) |
+| Paired lesson | [Relire une pull request : checklist, commentaire, verdict](https://dev.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) (in French) |
 
 ```bash
 dsoxlab run   relire-une-automatisation

@@ -12,7 +12,7 @@ dans le dépôt.
 | Cible | votre poste : uv, Python (`mise install`) et Git |
 | Durée | environ 25 minutes |
 | Réseau | **requis** : l'installation neuve télécharge les dépendances depuis PyPI |
-| Leçon jumelée | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
+| Leçon jumelée | [Livrer un outil Python : version, étiquette, installation](https://dev.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 | Précédent | `dependances-reproductibles` (lab facultatif, hors du cœur) |
 
 ```bash

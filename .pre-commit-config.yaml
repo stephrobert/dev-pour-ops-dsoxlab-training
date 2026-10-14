@@ -53,6 +53,29 @@ repos:
         language: system
         types_or: [python, pyi]
         require_serial: true
+        # Les solutions sont hors du lint du catalogue, et l'exclusion doit
+        # être ICI et non dans `pyproject.toml` : `[tool.ruff] exclude` ne
+        # vaut que pour la découverte, alors que pre-commit passe chaque
+        # fichier en argument. Ruff résout alors la configuration la plus
+        # PROCHE du fichier, et une solution porte son propre
+        # `pyproject.toml` — elle est un projet Python livrable. Mesuré :
+        # `--show-settings` sur un fichier de solution rend
+        # `project_root = .../solution`. `--force-exclude` n'y change rien :
+        # il force le respect d'`exclude`, pas le choix du fichier de config.
+        #
+        # Conséquence vécue : `--fix` a retrié les imports de
+        # `relire-une-automatisation/solution/src/certcheck/cli.py`, dont un
+        # test exige que `ruff check` passe sur le code de base. Le lab,
+        # validé la veille, est devenu rouge.
+        #
+        # Une solution n'est pas un projet complet : `certcheck.erreurs` lui
+        # vient des `fixtures/`, et c'est le répertoire de travail formé des
+        # deux que le lab lint, avec la configuration du lab.
+        #
+        # L'exclusion reste sur ce seul hook : la mettre dans le `exclude:`
+        # global soustrairait aussi ces vingt fichiers — ceux que le dépôt
+        # publie EN CLAIR — à `detect-private-key` et `check-yaml`.
+        exclude: '^labs/.*/solution/'
 
       # --no-update : ne jamais aller chercher un binaire neuf au moment du
       # hook, c'est un durcissement de la chaîne d'approvisionnement.

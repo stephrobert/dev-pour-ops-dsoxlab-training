@@ -14,8 +14,8 @@ def lire_inventaire(chemin: Path) -> list[tuple[str, Path]]:
     except OSError as exc:
         raise ErreurUsage(f"inventaire illisible : {chemin} ({exc.strerror})") from exc
     entrees = []
-    for numero, ligne in enumerate(texte.splitlines(), 1):
-        ligne = ligne.strip()
+    for numero, brute in enumerate(texte.splitlines(), 1):
+        ligne = brute.strip()
         if not ligne or ligne.startswith("#"):
             continue
         champs = ligne.split()

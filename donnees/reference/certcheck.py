@@ -56,8 +56,8 @@ def lire_inventaire(chemin: Path) -> list[tuple[str, Path]]:
     except OSError as exc:
         raise ErreurUsage(f"inventaire illisible : {chemin} ({exc.strerror})") from exc
     entrees = []
-    for numero, ligne in enumerate(texte.splitlines(), 1):
-        ligne = ligne.strip()
+    for numero, brute in enumerate(texte.splitlines(), 1):
+        ligne = brute.strip()
         if not ligne or ligne.startswith("#"):
             continue
         champs = ligne.split()
@@ -77,7 +77,7 @@ def date_expiration(certificat: Path) -> date:
     if res.returncode != 0:
         raise ValueError(f"certificat illisible : {certificat}")
     brut = res.stdout.strip().partition("=")[2]  # « Mar  5 12:00:00 2031 GMT »
-    return datetime.strptime(brut, "%b %d %H:%M:%S %Y %Z").date()
+    return datetime.strptime(brut, "%b %d %H:%M:%S %Y %Z").date()  # noqa: DTZ007  (le .date() jette le fuseau ; openssl rend « GMT »)
 
 
 def aujourd_hui() -> date:
@@ -154,7 +154,7 @@ def requete(methode: str, url: str, jeton: str, corps: dict | None = None) -> tu
     if donnees is not None:
         entetes["Content-Type"] = "application/json"
     for essai in range(1, ESSAIS + 1):
-        demande = urllib.request.Request(url, data=donnees, headers=entetes, method=methode)
+        demande = urllib.request.Request(url, data=donnees, headers=entetes, method=methode)  # noqa: S310  (schéma validé par l'appelant)
         try:
             with urllib.request.urlopen(demande, timeout=DELAI_RESEAU) as reponse:  # noqa: S310
                 return json.loads(reponse.read() or b"null"), dict(reponse.headers)

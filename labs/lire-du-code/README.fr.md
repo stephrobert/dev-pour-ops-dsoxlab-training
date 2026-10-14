@@ -12,7 +12,7 @@ une condition.
 |---|---|
 | Cible | votre poste : Python 3 et openssl, aucune VM |
 | Durée | environ 25 minutes |
-| Leçon jumelée | [Lire et modifier le code Python qu'on n'a pas écrit](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
+| Leçon jumelée | [Lire et modifier le code Python qu'on n'a pas écrit](https://dev.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
 | Suite | `script-en-outil` montre le même outil devenu un projet Python |
 
 ```bash

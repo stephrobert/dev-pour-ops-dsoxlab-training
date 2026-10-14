@@ -22,7 +22,7 @@ def date_expiration(certificat: Path) -> date:
     if res.returncode != 0:
         raise ValueError(f"certificat illisible : {certificat}")
     brut = res.stdout.strip().partition("=")[2]  # « Mar  5 12:00:00 2031 GMT »
-    return datetime.strptime(brut, "%b %d %H:%M:%S %Y %Z").date()
+    return datetime.strptime(brut, "%b %d %H:%M:%S %Y %Z").date()  # noqa: DTZ007  (le .date() jette le fuseau ; openssl rend « GMT »)
 
 
 def aujourd_hui() -> date:

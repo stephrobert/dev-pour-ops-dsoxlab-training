@@ -12,7 +12,7 @@ prove it in a fresh environment.
 | Target | your machine: uv and Python (`mise install` at the catalogue root) |
 | Duration | about 25 minutes |
 | Network | **required**: packages are downloaded from PyPI |
-| Paired lesson | [Dépendances Python : déclarer, épingler, installer ailleurs](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) (in French) |
+| Paired lesson | [Dépendances Python : déclarer, épingler, installer ailleurs](https://dev.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) (in French) |
 | Next | `tester-une-automatisation` |
 
 ```bash

@@ -26,7 +26,15 @@ from pathlib import Path
 
 import pytest
 
-from conftest import EXPIRATIONS, ecrire_inventaire, executer, exiger_workdir, lire_yaml, tirage, workdir_lab
+from conftest import (
+    EXPIRATIONS,
+    ecrire_inventaire,
+    executer,
+    exiger_workdir,
+    lire_yaml,
+    tirage,
+    workdir_lab,
+)
 
 WORKDIR = workdir_lab(__file__)
 LAB_ID = "lire-du-code"

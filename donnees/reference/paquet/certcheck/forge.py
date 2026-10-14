@@ -28,7 +28,7 @@ def requete(methode: str, url: str, jeton: str, corps: dict | None = None) -> tu
     if donnees is not None:
         entetes["Content-Type"] = "application/json"
     for essai in range(1, ESSAIS + 1):
-        demande = urllib.request.Request(url, data=donnees, headers=entetes, method=methode)
+        demande = urllib.request.Request(url, data=donnees, headers=entetes, method=methode)  # noqa: S310  (schéma validé par l'appelant)
         try:
             with urllib.request.urlopen(demande, timeout=DELAI_RESEAU) as reponse:  # noqa: S310
                 return json.loads(reponse.read() or b"null"), dict(reponse.headers)
