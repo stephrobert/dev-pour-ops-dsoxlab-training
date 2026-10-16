@@ -32,6 +32,7 @@ from conftest import (
     executer,
     exiger_workdir,
     lire_yaml,
+    message,
     tirage,
     workdir_lab,
 )
@@ -51,7 +52,10 @@ def reponses() -> dict:
 def python() -> str:
     chemin = shutil.which("python3")
     if not chemin:
-        pytest.fail("python3 est introuvable sur le PATH.", pytrace=False)
+        pytest.fail(message(
+            en="python3 cannot be found on the PATH.",
+            fr="python3 est introuvable sur le PATH.",
+        ), pytrace=False)
     return chemin
 
 
@@ -84,62 +88,83 @@ def nettoyer(valeur: object) -> str:
 def test_le_role_du_script() -> None:
     r = reponses()
     role = nettoyer(r.get("role")).lower()
-    assert role in ROLES, f"`role` vaut {role!r} : choisissez une valeur de la liste de reponses.yaml."
-    assert role == "verifier-expiration", (
-        f"`role` vaut {role!r}. Relisez la docstring en tête de certcheck.py et ce que "
-        "main() affiche : le script ne crée, ne copie ni n'archive aucun certificat."
+    assert role in ROLES, message(
+        en=f"`role` is {role!r}: choose a value from the list in reponses.yaml.",
+        fr=f"`role` vaut {role!r} : choisissez une valeur de la liste de reponses.yaml.",
+    )
+    assert role == "verifier-expiration", message(
+        en=f"`role` is {role!r}. Read again the docstring at the top of certcheck.py and what "
+        "main() prints: the script creates, copies and archives no certificate.",
+        fr=f"`role` vaut {role!r}. Relisez la docstring en tête de certcheck.py et ce que "
+        "main() affiche : le script ne crée, ne copie ni n'archive aucun certificat.",
     )
     externe = nettoyer(r.get("programme_externe")).lower()
-    assert externe == "openssl", (
-        f"`programme_externe` vaut {externe!r}. Cherchez l'appel à subprocess.run : le "
-        "premier élément de la liste est le programme lancé."
+    assert externe == "openssl", message(
+        en=f"`programme_externe` is {externe!r}. Look for the call to subprocess.run: the "
+        "first element of the list is the program being run.",
+        fr=f"`programme_externe` vaut {externe!r}. Cherchez l'appel à subprocess.run : le "
+        "premier élément de la liste est le programme lancé.",
     )
 
 
 def test_les_entrees_du_script() -> None:
     r = reponses()
     option = nettoyer(r.get("option_seuil"))
-    assert option == "--days", (
-        f"`option_seuil` vaut {option!r}. Les options sont déclarées par "
-        "parser.add_argument dans main() ; `python3 certcheck.py --help` les liste."
+    assert option == "--days", message(
+        en=f"`option_seuil` is {option!r}. The options are declared by "
+        "parser.add_argument in main(); `python3 certcheck.py --help` lists them.",
+        fr=f"`option_seuil` vaut {option!r}. Les options sont déclarées par "
+        "parser.add_argument dans main() ; `python3 certcheck.py --help` les liste.",
     )
     variable = nettoyer(r.get("variable_date"))
-    assert variable == "CERTCHECK_NOW", (
-        f"`variable_date` vaut {variable!r}. Lisez la fonction aujourd_hui() : elle lit "
-        "une variable par os.environ.get."
+    assert variable == "CERTCHECK_NOW", message(
+        en=f"`variable_date` is {variable!r}. Read the aujourd_hui() function: it reads "
+        "a variable through os.environ.get.",
+        fr=f"`variable_date` vaut {variable!r}. Lisez la fonction aujourd_hui() : elle lit "
+        "une variable par os.environ.get.",
     )
     arbre = ast.parse(ORIGINAL.read_text(encoding="utf-8"))
     fonctions = {n.name for n in ast.walk(arbre) if isinstance(n, ast.FunctionDef)}
     fonction = nettoyer(r.get("fonction_verdict")).removesuffix("()")
-    assert fonction in fonctions, (
-        f"`fonction_verdict` vaut {fonction!r}, qui n'est pas une fonction du script "
-        f"(elles sont : {', '.join(sorted(fonctions))})."
+    assert fonction in fonctions, message(
+        en=f"`fonction_verdict` is {fonction!r}, which is not a function of the script "
+        f"(they are: {', '.join(sorted(fonctions))}).",
+        fr=f"`fonction_verdict` vaut {fonction!r}, qui n'est pas une fonction du script "
+        f"(elles sont : {', '.join(sorted(fonctions))}).",
     )
-    assert fonction == "statut", (
-        f"`fonction_verdict` vaut {fonction!r}. Suivez main() : la valeur affichée en "
-        "deuxième colonne vient d'un appel de fonction, c'est elle qui décide."
+    assert fonction == "statut", message(
+        en=f"`fonction_verdict` is {fonction!r}. Follow main(): the value printed in the "
+        "second column comes from a function call, and that is what decides.",
+        fr=f"`fonction_verdict` vaut {fonction!r}. Suivez main() : la valeur affichée en "
+        "deuxième colonne vient d'un appel de fonction, c'est elle qui décide.",
     )
 
 
 def test_ce_que_montre_l_execution() -> None:
     r = reponses()
     code, verdicts = lecture_originale()
-    assert r.get("code_de_sortie") == code, (
-        f"`code_de_sortie` vaut {r.get('code_de_sortie')!r}. Lancez le script reçu, puis "
-        "`echo \"code : $?\"` aussitôt : $? est le code de la dernière commande."
+    assert r.get("code_de_sortie") == code, message(
+        en=f"`code_de_sortie` is {r.get('code_de_sortie')!r}. Run the script as given, then "
+        "`echo \"code: $?\"` immediately: $? is the code of the last command.",
+        fr=f"`code_de_sortie` vaut {r.get('code_de_sortie')!r}. Lancez le script reçu, puis "
+        "`echo \"code : $?\"` aussitôt : $? est le code de la dernière commande.",
     )
     alertes = {h for h, v in verdicts.items() if v == "warning"}
     donnees = r.get("hotes_en_alerte") or []
     donnees = {nettoyer(h) for h in donnees} if isinstance(donnees, list) else set()
-    assert donnees == alertes, (
-        f"`hotes_en_alerte` vaut {sorted(donnees)} : relisez la deuxième colonne de la "
-        "sortie et listez tous les hôtes marqués warning, et seulement eux."
+    assert donnees == alertes, message(
+        en=f"`hotes_en_alerte` is {sorted(donnees)}: read the second column of the "
+        "output again and list every host marked warning, and only those.",
+        fr=f"`hotes_en_alerte` vaut {sorted(donnees)} : relisez la deuxième colonne de la "
+        "sortie et listez tous les hôtes marqués warning, et seulement eux.",
     )
     jour = date.fromisoformat(JOUR_DE_LECTURE)
     au_seuil = sorted(h for h in verdicts if (EXPIRATIONS[h] - jour).days == 30)
-    assert nettoyer(r.get("hote_au_seuil")) in au_seuil, (
-        f"`hote_au_seuil` vaut {r.get('hote_au_seuil')!r}. La troisième colonne donne le "
-        "nombre de jours restants : cherchez la ligne à 30 jours, et regardez son verdict."
+    assert nettoyer(r.get("hote_au_seuil")) in au_seuil, message(
+        en=f"`hote_au_seuil` is {r.get('hote_au_seuil')!r}. The third column gives the "
+        "number of days left: look for the line at 30 days, and look at its verdict.",
+        fr=f"`hote_au_seuil` vaut {r.get('hote_au_seuil')!r}. La troisième colonne donne le "
+        "nombre de jours restants : cherchez la ligne à 30 jours, et regardez son verdict.",
     )
 
 
@@ -161,18 +186,28 @@ def test_le_seuil_est_inclusif() -> None:
             ecrire_inventaire(dossier, [hote])
             pile = (EXPIRATIONS[hote] - ecart).isoformat()
             code, verdicts, brut = jouer(script, dossier, "--days", str(seuil), jour=pile)
-            assert verdicts.get(hote) == "warning", (
-                f"Le certificat de {hote} expire dans exactement {seuil} jours, avec un seuil "
-                f"de {seuil} : il doit passer en warning (le seuil est inclusif). Graine {graine}.\n{brut}"
+            assert verdicts.get(hote) == "warning", message(
+                en=f"The certificate of {hote} expires in exactly {seuil} days, with a threshold "
+                f"of {seuil}: it must move to warning (the threshold is inclusive). Seed {graine}.\n{brut}",
+                fr=f"Le certificat de {hote} expire dans exactement {seuil} jours, avec un seuil "
+                f"de {seuil} : il doit passer en warning (le seuil est inclusif). Graine {graine}.\n{brut}",
             )
-            assert code == 1, f"Un certificat en warning doit donner le code 1. Graine {graine}.\n{brut}"
+            assert code == 1, message(
+                en=f"A certificate in warning must give code 1. Seed {graine}.\n{brut}",
+                fr=f"Un certificat en warning doit donner le code 1. Graine {graine}.\n{brut}",
+            )
             veille = (EXPIRATIONS[hote] - ecart - timedelta(days=1)).isoformat()
             code, verdicts, brut = jouer(script, dossier, "--days", str(seuil), jour=veille)
-            assert verdicts.get(hote) == "ok", (
-                f"À {seuil + 1} jours de l'expiration, avec un seuil de {seuil}, {hote} doit "
-                f"rester ok : seul le cas d'égalité change. Graine {graine}.\n{brut}"
+            assert verdicts.get(hote) == "ok", message(
+                en=f"At {seuil + 1} days from expiry, with a threshold of {seuil}, {hote} must "
+                f"stay ok: only the equality case changes. Seed {graine}.\n{brut}",
+                fr=f"À {seuil + 1} jours de l'expiration, avec un seuil de {seuil}, {hote} doit "
+                f"rester ok : seul le cas d'égalité change. Graine {graine}.\n{brut}",
             )
-            assert code == 0, f"Un parc entièrement ok doit sortir en 0. Graine {graine}.\n{brut}"
+            assert code == 0, message(
+                en=f"A fleet entirely ok must exit 0. Seed {graine}.\n{brut}",
+                fr=f"Un parc entièrement ok doit sortir en 0. Graine {graine}.\n{brut}",
+            )
 
 
 def test_un_certificat_expire_est_signale() -> None:
@@ -186,9 +221,15 @@ def test_un_certificat_expire_est_signale() -> None:
         dossier = Path(tmp)
         ecrire_inventaire(dossier, [hote])
         code, verdicts, brut = jouer(script, dossier, jour=apres)
-    assert verdicts.get(hote) == "expired", (
-        f"Au {apres}, le certificat de {hote} a déjà expiré : le verdict doit être "
+    assert verdicts.get(hote) == "expired", message(
+        en=f"On {apres}, the certificate of {hote} has already expired: the verdict must be "
+        f"`expired`, not {verdicts.get(hote)!r}. Add that case in the function that "
+        f"decides, before the others. Seed {graine}.\n{brut}",
+        fr=f"Au {apres}, le certificat de {hote} a déjà expiré : le verdict doit être "
         f"`expired`, pas {verdicts.get(hote)!r}. Ajoutez ce cas dans la fonction qui "
-        f"décide, avant les autres. Graine {graine}.\n{brut}"
+        f"décide, avant les autres. Graine {graine}.\n{brut}",
     )
-    assert code == 1, f"Un certificat expiré demande une action : code 1. Graine {graine}.\n{brut}"
+    assert code == 1, message(
+        en=f"An expired certificate calls for action: code 1. Seed {graine}.\n{brut}",
+        fr=f"Un certificat expiré demande une action : code 1. Graine {graine}.\n{brut}",
+    )

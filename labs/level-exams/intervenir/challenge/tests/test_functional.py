@@ -47,6 +47,7 @@ from conftest import (
     git,
     lancer,
     lire_yaml,
+    message,
     tirage,
     workdir_lab,
 )
@@ -73,7 +74,10 @@ def projet() -> Path:
     exiger_workdir(WORKDIR, LAB_ID)
     chemin = WORKDIR / "certcheck"
     if not (chemin / "pyproject.toml").is_file():
-        pytest.fail("Le dépôt n'est pas cloné : `git clone depot.bundle certcheck`, puis travaillez dans certcheck/.",
+        pytest.fail(message(
+            en="The repository is not cloned: `git clone depot.bundle certcheck`, then work in certcheck/.",
+            fr="Le dépôt n'est pas cloné : `git clone depot.bundle certcheck`, puis travaillez dans certcheck/.",
+        ),
                     pytrace=False)
     return chemin
 
@@ -87,7 +91,12 @@ def depot_livre() -> Path:
     """Le dépôt livré, cloné une fois pour toute la session de contrôle."""
     dossier = Path(tempfile.mkdtemp(prefix="intervenir-livre-"))
     res = git("clone", "-q", str(LIVRE / "depot.bundle"), str(dossier / "certcheck"), cwd=dossier)
-    assert res.returncode == 0, res.stderr
+    assert res.returncode == 0, message(
+        en=f"Cannot clone the shipped repository: {res.stderr.strip()[:300]}. "
+        "This step belongs to the harness, not to the exam.",
+        fr=f"Impossible de cloner le dépôt livré : {res.stderr.strip()[:300]}. "
+        "Cette étape appartient au harnais, pas à l'épreuve.",
+    )
     return dossier / "certcheck"
 
 
@@ -106,18 +115,21 @@ def etapes_livrees() -> list[dict]:
 
 def test_l_outil_est_compris() -> None:
     r = reponses()
-    assert nettoyer(r.get("role")).lower() == "verifier-expiration", (
-        "`role` ne correspond pas au rôle de l'outil."
+    assert nettoyer(r.get("role")).lower() == "verifier-expiration", message(
+        en="`role` does not match the tool's role.",
+        fr="`role` ne correspond pas au rôle de l'outil.",
     )
     declaree = tomllib.loads((depot_livre() / "pyproject.toml").read_text(encoding="utf-8"))["project"]["scripts"]
-    assert nettoyer(r.get("commande_declaree")) == declaree["certcheck"], (
-        "`commande_declaree` ne correspond pas à la commande déclarée par le projet."
+    assert nettoyer(r.get("commande_declaree")) == declaree["certcheck"], message(
+        en="`commande_declaree` does not match the command the project declares.",
+        fr="`commande_declaree` ne correspond pas à la commande déclarée par le projet.",
     )
     seuil = 30
     mal_classes = sorted(h for h, s in statuts_livres().items()
                          if s == "ok" and (EXPIRATIONS[h] - JOUR_DU_TICKET).days <= seuil)
-    assert nettoyer(r.get("hote_mal_classe")) in mal_classes, (
-        "`hote_mal_classe` ne désigne pas l'hôte mal classé à la date du ticket."
+    assert nettoyer(r.get("hote_mal_classe")) in mal_classes, message(
+        en="`hote_mal_classe` does not name the host misclassified at the ticket's date.",
+        fr="`hote_mal_classe` ne désigne pas l'hôte mal classé à la date du ticket.",
     )
 
 
@@ -125,18 +137,24 @@ def test_la_ci_est_lue_et_le_defaut_localise() -> None:
     r = reponses()
     journal = (LIVRE / "ci" / "run-12.log").read_text(encoding="utf-8")
     echec = re.search(r"== Étape « (.+?) » : échec", journal)
-    assert echec, "journal livré illisible"
+    assert echec, message(
+        en="the log as shipped is unreadable",
+        fr="journal livré illisible",
+    )
     noms = {e["name"] for e in etapes_livrees()}
-    assert nettoyer(r.get("etape_en_echec")) == echec.group(1) and echec.group(1) in noms, (
-        "`etape_en_echec` ne nomme pas l'étape en échec telle que ci.yml la nomme."
+    assert nettoyer(r.get("etape_en_echec")) == echec.group(1) and echec.group(1) in noms, message(
+        en="`etape_en_echec` does not name the failing step as ci.yml names it.",
+        fr="`etape_en_echec` ne nomme pas l'étape en échec telle que ci.yml la nomme.",
     )
     commande = nettoyer(r.get("commande_locale"))
-    assert "ruff check" in commande, (
-        "`commande_locale` ne rejoue pas l'échec de cette étape."
+    assert "ruff check" in commande, message(
+        en="`commande_locale` does not replay that step's failure.",
+        fr="`commande_locale` ne rejoue pas l'échec de cette étape.",
     )
     donne = nettoyer(r.get("fichier_du_defaut")).removeprefix("./").removeprefix("certcheck/")
-    assert donne == "src/certcheck/certificats.py", (
-        "`fichier_du_defaut` ne désigne pas le fichier du défaut du ticket."
+    assert donne == "src/certcheck/certificats.py", message(
+        en="`fichier_du_defaut` does not name the file of the ticket's defect.",
+        fr="`fichier_du_defaut` ne désigne pas le fichier du défaut du ticket.",
     )
 
 
@@ -156,17 +174,25 @@ def test_le_defaut_est_corrige() -> None:
         try:
             lus = {c["host"]: c["status"] for c in json.loads(res.sortie)["certificates"]}
         except (ValueError, KeyError, TypeError):
-            pytest.fail(f"La sortie --format json n'est plus exploitable. Graine {graine}.\n  {res.resume()}",
+            pytest.fail(message(
+                en=f"The --format json output is no longer usable. Seed {graine}.\n  {res.resume()}",
+                fr=f"La sortie --format json n'est plus exploitable. Graine {graine}.\n  {res.resume()}",
+            ),
                         pytrace=False)
         for hote in hotes:
             jours = (EXPIRATIONS[hote] - jour).days
             attendu = "expired" if jours < 0 else "warning" if jours <= seuil else "ok"
-            assert lus.get(hote) == attendu, (
-                f"{hote} expire dans {jours} jours, seuil {seuil} : {attendu} attendu, {lus.get(hote)!r} "
-                f"obtenu (le seuil est inclusif). Graine {graine}.\n  {res.resume()}"
+            assert lus.get(hote) == attendu, message(
+                en=f"{hote} expires in {jours} days, threshold {seuil}: {attendu} expected, {lus.get(hote)!r} "
+                f"obtained (the threshold is inclusive). Seed {graine}.\n  {res.resume()}",
+                fr=f"{hote} expire dans {jours} jours, seuil {seuil} : {attendu} attendu, {lus.get(hote)!r} "
+                f"obtenu (le seuil est inclusif). Graine {graine}.\n  {res.resume()}",
             )
         attendu_code = 1 if any(v != "ok" for v in lus.values()) else 0
-        assert res.code == attendu_code, f"Code {res.code}, attendu {attendu_code}. Graine {graine}.\n  {res.resume()}"
+        assert res.code == attendu_code, message(
+            en=f"Code {res.code}, expected {attendu_code}. Seed {graine}.\n  {res.resume()}",
+            fr=f"Code {res.code}, attendu {attendu_code}. Graine {graine}.\n  {res.resume()}",
+        )
 
 
 def test_les_tests_sont_verts_et_complets() -> None:
@@ -179,16 +205,19 @@ def test_les_tests_sont_verts_et_complets() -> None:
         except SyntaxError:
             continue
     manquants = TESTS_RECUS - noms
-    assert not manquants, (
-        f"Les tests reçus {sorted(manquants)} ont disparu : un test rouge signale un défaut, "
-        "on corrige le code, on ne supprime pas le témoin."
+    assert not manquants, message(
+        en=f"The shipped tests {sorted(manquants)} have disappeared: a red test signals a defect, "
+        "one fixes the code, one does not delete the witness.",
+        fr=f"Les tests reçus {sorted(manquants)} ont disparu : un test rouge signale un défaut, "
+        "on corrige le code, on ne supprime pas le témoin.",
     )
     uv = exiger_outil("uv")
     with copie_temporaire(dossier) as copie:
         res = executer([uv, "run", "--quiet", "--directory", str(copie), "pytest", "-q", "-p", "no:cacheprovider"],
                        timeout=300)
-    assert res.returncode == 0, (
-        "`uv run pytest` n'est pas vert sur votre version :\n" + (res.stdout + res.stderr).strip()[-1500:]
+    assert res.returncode == 0, message(
+        en="`uv run pytest` is not green on your version:\n" + (res.stdout + res.stderr).strip()[-1500:],
+        fr="`uv run pytest` n'est pas vert sur votre version :\n" + (res.stdout + res.stderr).strip()[-1500:],
     )
     # Les tests TELS QUE REÇUS, rejoués contre votre code : modifier un test pour le
     # faire passer ne corrige rien, et ne fait pas passer ce contrôle.
@@ -199,9 +228,11 @@ def test_les_tests_sont_verts_et_complets() -> None:
         shutil.copytree(depot_livre() / "tests", recus)
         res = executer([uv, "run", "--quiet", "--directory", str(copie), "pytest", "-q", "-p", "no:cacheprovider"],
                        timeout=300)
-    assert res.returncode == 0, (
-        "Les tests reçus, rejoués tels quels contre votre code, ne passent pas : le défaut est "
-        "toujours là.\n" + (res.stdout + res.stderr).strip()[-1500:]
+    assert res.returncode == 0, message(
+        en="The shipped tests, replayed as they are against your code, do not pass: the defect is "
+        "still there.\n" + (res.stdout + res.stderr).strip()[-1500:],
+        fr="Les tests reçus, rejoués tels quels contre votre code, ne passent pas : le défaut est "
+        "toujours là.\n" + (res.stdout + res.stderr).strip()[-1500:],
     )
 
 
@@ -213,7 +244,9 @@ def test_la_qualite_et_la_ci_passent() -> None:
             if not commande:
                 continue
             res = executer(["bash", "-e", "-c", commande], cwd=copie, timeout=600)
-            assert res.returncode == 0, (
-                f"L'étape de CI « {etape['name']} » échoue sur votre version, rejouée dans une "
-                f"copie propre :\n$ {commande.strip()}\n" + (res.stdout + res.stderr).strip()[-1500:]
+            assert res.returncode == 0, message(
+                en=f"The CI step \"{etape['name']}\" fails on your version, replayed in a "
+                f"clean copy:\n$ {commande.strip()}\n" + (res.stdout + res.stderr).strip()[-1500:],
+                fr=f"L'étape de CI « {etape['name']} » échoue sur votre version, rejouée dans une "
+                f"copie propre :\n$ {commande.strip()}\n" + (res.stdout + res.stderr).strip()[-1500:],
             )

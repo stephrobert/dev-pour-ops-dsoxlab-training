@@ -32,6 +32,7 @@ from conftest import (
     exiger_workdir,
     git,
     lire_yaml,
+    message,
     workdir_lab,
 )
 
@@ -69,8 +70,12 @@ def _lignes(texte: str, motif: str, fichier: str) -> list[int]:
     trouvees = [n for n, ligne in enumerate(texte.splitlines(), 1) if motif in ligne]
     if not trouvees:
         pytest.fail(
-            f"Marqueur « {motif} » introuvable dans {fichier} après application du "
+            message(
+            en=f"Marker \"{motif}\" cannot be found in {fichier} after applying the "
+            "diff: the lab's starting point is damaged. Run `dsoxlab run` again.",
+            fr=f"Marqueur « {motif} » introuvable dans {fichier} après application du "
             "diff : le point de départ du lab est abîmé. Relancez `dsoxlab run`.",
+        ),
             pytrace=False,
         )
     return trouvees
@@ -86,7 +91,10 @@ def zones() -> dict[str, list[Zone]]:
     """Catégorie -> zones acceptées, calculées sur le diff réellement appliqué."""
     with copie_temporaire(FIXTURES) as copie:
         res = git("apply", "pr/0042.diff", cwd=copie)
-        assert res.returncode == 0, f"pr/0042.diff ne s'applique pas : {res.stderr.strip()}"
+        assert res.returncode == 0, message(
+            en=f"pr/0042.diff does not apply: {res.stderr.strip()}",
+            fr=f"pr/0042.diff ne s'applique pas : {res.stderr.strip()}",
+        )
         fichiers = {
             nom: (copie / nom).read_text(encoding="utf-8")
             for nom in (CLI, MAINTENANCE, TEST_AJOUTE)
@@ -141,13 +149,20 @@ def revue() -> dict:
 def commentaires(revue: dict) -> list[Commentaire]:
     brut = revue.get("commentaires")
     if not isinstance(brut, list):
-        pytest.fail("`commentaires` doit être une liste (voir l'exemple dans revue.yaml).", pytrace=False)
+        pytest.fail(message(
+            en="`commentaires` must be a list (see the example in revue.yaml).",
+            fr="`commentaires` doit être une liste (voir l'exemple dans revue.yaml).",
+        ), pytrace=False)
     lus = []
     for element in brut:
         if not isinstance(element, dict):
             pytest.fail(
-                "Chaque élément de `commentaires` est un dictionnaire portant fichier, "
+                message(
+                en="Each element of `commentaires` is a dictionary carrying fichier, "
+                f"ligne, categorie, commentaire and proposition. Read: {element!r}",
+                fr="Chaque élément de `commentaires` est un dictionnaire portant fichier, "
                 f"ligne, categorie, commentaire et proposition. Lu : {element!r}",
+            ),
                 pytrace=False,
             )
         lus.append(Commentaire(
@@ -192,46 +207,67 @@ def test_au_moins_trois_defauts_sont_trouves(
         commentaires: list[Commentaire], zones: dict[str, list[Zone]]) -> None:
     trouves = [c for c in CATEGORIES if _trouve(commentaires, zones[c])]
     manques = [CONSEILS[c] for c in sorted(CATEGORIES) if c not in trouves]
-    assert len(trouves) >= DEFAUTS_A_TROUVER, (
-        f"{len(trouves)} défaut(s) sur 4 désignés par un commentaire (bon fichier, bonne "
+    assert len(trouves) >= DEFAUTS_A_TROUVER, message(
+        en=f"{len(trouves)} defect(s) out of 4 named by a comment (right file, right "
+        f"category, line read AFTER the diff is applied, within two lines): "
+        f"{DEFAUTS_A_TROUVER} are needed. Leads:\n  - " + "\n  - ".join(manques),
+        fr=f"{len(trouves)} défaut(s) sur 4 désignés par un commentaire (bon fichier, bonne "
         f"catégorie, ligne lue APRÈS application du diff, à deux lignes près) : il en "
-        f"faut {DEFAUTS_A_TROUVER}. Pistes :\n  - " + "\n  - ".join(manques)
+        f"faut {DEFAUTS_A_TROUVER}. Pistes :\n  - " + "\n  - ".join(manques),
     )
 
 
 def test_chaque_commentaire_propose_une_correction(
         commentaires: list[Commentaire], zones: dict[str, list[Zone]]) -> None:
-    assert commentaires, "`commentaires` est vide : une revue sans commentaire n'aide pas l'auteur."
+    assert commentaires, message(
+        en="`commentaires` is empty: a review with no comment does not help the author.",
+        fr="`commentaires` est vide : une revue sans commentaire n'aide pas l'auteur.",
+    )
     inconnues = sorted({c.categorie for c in commentaires} - CATEGORIES)
-    assert not inconnues, (
-        f"Catégorie(s) hors de la liste : {inconnues}. Reprenez exactement une valeur "
-        "de la liste écrite dans revue.yaml."
+    assert not inconnues, message(
+        en=f"Category(ies) outside the list: {inconnues}. Take exactly one value "
+        "from the list written in revue.yaml.",
+        fr=f"Catégorie(s) hors de la liste : {inconnues}. Reprenez exactement une valeur "
+        "de la liste écrite dans revue.yaml.",
     )
     vagues = [f"{c.fichier}:{c.ligne}" for c in commentaires
               if len(c.commentaire) < LONGUEUR_MINIMALE or len(c.proposition) < LONGUEUR_MINIMALE]
-    assert not vagues, (
-        f"Commentaire(s) trop vague(s) : {vagues}. Chacun porte un `commentaire` (le "
+    assert not vagues, message(
+        en=f"Comment(s) too vague: {vagues}. Each carries a `commentaire` (the "
+        "problem, and when it happens) and a `proposition` (the fix "
+        f"requested), of at least {LONGUEUR_MINIMALE} characters each. \"To be reviewed\" does not "
+        "tell the author what to do.",
+        fr=f"Commentaire(s) trop vague(s) : {vagues}. Chacun porte un `commentaire` (le "
         "problème, et quand il se produit) et une `proposition` (la correction "
         f"demandée), d'au moins {LONGUEUR_MINIMALE} caractères chacun. « À revoir » ne "
-        "dit pas à l'auteur quoi faire."
+        "dit pas à l'auteur quoi faire.",
     )
     toutes = [z for liste in zones.values() for z in liste]
     hors_sujet = [f"{c.fichier}:{c.ligne} ({c.categorie})" for c in commentaires
                   if not any(z.categorie == c.categorie and z.contient(c.fichier, c.ligne) for z in toutes)]
-    assert len(hors_sujet) <= FAUX_POSITIFS_TOLERES, (
-        f"{len(hors_sujet)} commentaire(s) ne désignent aucun défaut du diff : {hors_sujet}. "
+    assert len(hors_sujet) <= FAUX_POSITIFS_TOLERES, message(
+        en=f"{len(hors_sujet)} comment(s) name no defect of the diff: {hors_sujet}. "
+        "Check the file's path (src/certcheck/…) and the line number, read "
+        "in the file AFTER `git apply`, not in the diff.",
+        fr=f"{len(hors_sujet)} commentaire(s) ne désignent aucun défaut du diff : {hors_sujet}. "
         "Vérifiez le chemin du fichier (src/certcheck/...) et le numéro de ligne, lu "
-        "dans le fichier APRÈS `git apply`, pas dans le diff."
+        "dans le fichier APRÈS `git apply`, pas dans le diff.",
     )
 
 
 def test_le_verdict_demande_des_changements(revue: dict) -> None:
     verdict = str(revue.get("verdict") or "").strip().lower()
-    assert verdict in VERDICTS, f"`verdict` vaut {verdict!r} : choisissez parmi {sorted(VERDICTS)}."
-    assert verdict == "demander-des-changements", (
-        "`verdict` : approuver une PR qui affiche un jeton et peut supprimer "
+    assert verdict in VERDICTS, message(
+        en=f"`verdict` is {verdict!r}: choose from {sorted(VERDICTS)}.",
+        fr=f"`verdict` vaut {verdict!r} : choisissez parmi {sorted(VERDICTS)}.",
+    )
+    assert verdict == "demander-des-changements", message(
+        en="`verdict`: approving a PR that prints a token and can delete "
+        "recursively from the root is becoming its co-author. Green tests "
+        "are not enough: ask for changes.",
+        fr="`verdict` : approuver une PR qui affiche un jeton et peut supprimer "
         "récursivement depuis la racine, c'est en devenir co-auteur. Des tests verts "
-        "ne suffisent pas : demandez des changements."
+        "ne suffisent pas : demandez des changements.",
     )
 
 
@@ -243,11 +279,17 @@ def _config_ruff() -> tuple[str, dict]:
             try:
                 return nom, tomllib.loads(chemin.read_text(encoding="utf-8"))
             except tomllib.TOMLDecodeError as exc:
-                pytest.fail(f"{nom} n'est pas un TOML valide : {exc}", pytrace=False)
+                pytest.fail(message(
+                    en=f"{nom} is not valid TOML: {exc}",
+                    fr=f"{nom} n'est pas un TOML valide : {exc}",
+                ), pytrace=False)
     try:
         projet = tomllib.loads((WORKDIR / "pyproject.toml").read_text(encoding="utf-8"))
     except (OSError, tomllib.TOMLDecodeError) as exc:
-        pytest.fail(f"pyproject.toml est illisible : {exc}", pytrace=False)
+        pytest.fail(message(
+            en=f"pyproject.toml is unreadable: {exc}",
+            fr=f"pyproject.toml est illisible : {exc}",
+        ), pytrace=False)
     outil = projet.get("tool") or {}
     if "ruff" in outil:
         return "pyproject.toml", outil["ruff"]
@@ -257,12 +299,17 @@ def _config_ruff() -> tuple[str, dict]:
 def test_une_configuration_ruff_est_versionnee() -> None:
     exiger_workdir(WORKDIR, LAB_ID)
     fichier, _ = _config_ruff()
-    assert fichier, (
-        "Aucune configuration ruff dans le projet : ni section `[tool.ruff]` dans "
+    assert fichier, message(
+        en="No ruff configuration in the project: neither a `[tool.ruff]` section in "
+        "pyproject.toml, nor a ruff.toml file. The linter's configuration is versioned "
+        "with the code: everyone, and the CI, then runs exactly the same rules. "
+        "One section is enough to start, for instance `[tool.ruff]` then "
+        "`line-length = 100`.",
+        fr="Aucune configuration ruff dans le projet : ni section `[tool.ruff]` dans "
         "pyproject.toml, ni fichier ruff.toml. La configuration du linter se versionne "
         "avec le code : chacun, et la CI, lance alors exactement les mêmes règles. "
         "Une section suffit pour commencer, par exemple `[tool.ruff]` puis "
-        "`line-length = 100`."
+        "`line-length = 100`.",
     )
 
 
@@ -270,26 +317,39 @@ def test_ruff_check_et_format_passent_sur_le_code_de_base() -> None:
     exiger_workdir(WORKDIR, LAB_ID)
     uv = exiger_outil("uv")
     fichier, _ = _config_ruff()
-    assert fichier, "Écrivez d'abord la configuration ruff (tâche précédente)."
+    assert fichier, message(
+        en="Write the ruff configuration first (the previous task).",
+        fr="Écrivez d'abord la configuration ruff (tâche précédente).",
+    )
     with copie_temporaire(WORKDIR) as copie:
         res = executer([uv, "run", "--quiet", "--directory", str(copie), "ruff", "check", "."], timeout=300)
         import_inutile = executer([uv, "run", "--quiet", "--directory", str(copie), "ruff", "check",
                                    "--isolated", "--select", "F401", "src"], timeout=300)
         formatage = executer([uv, "run", "--quiet", "--directory", str(copie), "ruff", "format",
                               "--check", "."], timeout=300)
-    assert res.returncode == 0, (
-        "`uv run ruff check .` signale encore des défauts dans le code de base. Lisez "
+    assert res.returncode == 0, message(
+        en="`uv run ruff check .` still reports findings in the base code. Read "
+        "each line: the rule's code, the file, the line. `ruff check --fix` "
+        "fixes those marked [*].\n" + (res.stdout + res.stderr).strip()[-1500:],
+        fr="`uv run ruff check .` signale encore des défauts dans le code de base. Lisez "
         "chaque ligne : le code de la règle, le fichier, la ligne. `ruff check --fix` "
-        "corrige ceux marqués [*].\n" + (res.stdout + res.stderr).strip()[-1500:]
+        "corrige ceux marqués [*].\n" + (res.stdout + res.stderr).strip()[-1500:],
     )
-    assert import_inutile.returncode == 0, (
-        "Un import inutilisé (F401) reste dans src/ : la configuration ne doit pas "
+    assert import_inutile.returncode == 0, message(
+        en="An unused import (F401) remains in src/: the configuration must not "
+        "silence a rule to make ruff pass, the finding is fixed in the "
+        "code.\n" + (import_inutile.stdout + import_inutile.stderr).strip()[-800:],
+        fr="Un import inutilisé (F401) reste dans src/ : la configuration ne doit pas "
         "faire taire une règle pour faire passer ruff, le défaut se corrige dans le "
-        "code.\n" + (import_inutile.stdout + import_inutile.stderr).strip()[-800:]
+        "code.\n" + (import_inutile.stdout + import_inutile.stderr).strip()[-800:],
     )
-    assert formatage.returncode == 0, (
-        "`uv run ruff format --check .` signale des fichiers à reformater. Le formatage "
+    assert formatage.returncode == 0, message(
+        en="`uv run ruff format --check .` reports files to reformat. Formatting "
+        "is not discussed in review: `uv run ruff format .` applies it, with the "
+        "line length from your configuration, then run the check again.\n"
+        + (formatage.stdout + formatage.stderr).strip()[-1200:],
+        fr="`uv run ruff format --check .` signale des fichiers à reformater. Le formatage "
         "ne se discute pas en revue : `uv run ruff format .` l'applique, avec la "
         "longueur de ligne de votre configuration, puis relancez le contrôle.\n"
-        + (formatage.stdout + formatage.stderr).strip()[-1200:]
+        + (formatage.stdout + formatage.stderr).strip()[-1200:],
     )
