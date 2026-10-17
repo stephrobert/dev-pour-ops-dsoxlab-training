@@ -13,7 +13,7 @@ written on standard error.
 |---|---|
 | Target | your workstation: uv and Python (`mise install`), openssl, no VM |
 | Duration | about 20 minutes |
-| Paired lesson | [Structure a Python project as a command-line tool](https://dev.stephane-robert.info/docs/developper/pratiques/script-en-outil/) (in French) |
+| Paired lesson | [Structure a Python project as a command-line tool](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) (in French) |
 | Previous | `lire-du-code` |
 | Next | `dependances-reproductibles` |
 

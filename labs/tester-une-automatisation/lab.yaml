@@ -17,7 +17,7 @@ skills:
   - testing
 distros:
   - any
-doc_url: https://dev.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/
 runtime:
   type: shell
   workdir: challenge/work

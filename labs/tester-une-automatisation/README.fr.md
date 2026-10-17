@@ -10,7 +10,7 @@ en copiant un modèle.
 |---|---|
 | Cible | votre poste : Python et uv (`mise install`), openssl |
 | Durée | environ 20 minutes |
-| Leçon jumelée | [Premiers tests Python avec pytest : le geste de base](https://dev.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
+| Leçon jumelée | [Premiers tests Python avec pytest : le geste de base](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
 | Précédent | `dependances-reproductibles` |
 | Suite | `deboguer` |
 

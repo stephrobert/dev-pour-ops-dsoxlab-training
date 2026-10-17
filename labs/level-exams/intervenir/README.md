@@ -9,7 +9,7 @@ get tests, quality and CI back to green.
 |---|---|
 | Target | your workstation: uv and Python (`mise install`), openssl and Git, no VM |
 | Duration | about 45 minutes, pass mark 70 points, no hints |
-| Exam page | [Exam: step in on a small operations tool](https://dev.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) (in French) |
+| Exam page | [Exam: step in on a small operations tool](https://blog.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) (in French) |
 
 ```bash
 dsoxlab run   level-exams-intervenir

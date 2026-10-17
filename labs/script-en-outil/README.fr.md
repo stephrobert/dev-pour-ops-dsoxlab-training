@@ -13,7 +13,7 @@ d'erreur.
 |---|---|
 | Cible | votre poste : uv et Python (`mise install`), openssl, aucune VM |
 | Durée | environ 20 minutes |
-| Leçon jumelée | [Structurer un projet Python en outil en ligne de commande](https://dev.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
+| Leçon jumelée | [Structurer un projet Python en outil en ligne de commande](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
 | Précédent | `lire-du-code` |
 | Suite | `dependances-reproductibles` |
 
