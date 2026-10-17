@@ -43,6 +43,7 @@ from conftest import (
     jouer_suite_paquet,
     lancer,
     lire_json_sortie,
+    message,
     tirage,
     workdir_lab,
 )
@@ -78,27 +79,40 @@ def _vpn_01_est_lu(outil: Path, dossier: Path) -> None:
                  cwd=dossier, env={"CERTCHECK_NOW": "2026-10-13"})
     if res.code != 0:
         pytest.fail(
-            "Le bogue du ticket n'est pas encore corrigé : vpn-01, valide jusqu'au "
+            message(
+            en="The ticket's bug is not fixed yet: vpn-01, valid until "
+            "2031-03-05, does not come out as ok (code 0). This check judges a fixed "
+            f"version; fix it first, and it will follow.\n  {res.resume()}",
+            fr="Le bogue du ticket n'est pas encore corrigé : vpn-01, valide jusqu'au "
             "2031-03-05, ne sort pas en ok (code 0). Ce contrôle juge une version "
             f"corrigée ; corrigez d'abord, il suivra.\n  {res.resume()}",
+        ),
             pytrace=False,
         )
 
 
 def test_un_test_reproduit_le_bogue() -> None:
     ref = jouer(str(WORKDIR), str(REFERENCE))
-    assert ref.code == 0, (
-        "Votre suite échoue sur l'outil de RÉFÉRENCE, qui respecte le contrat : un "
+    assert ref.code == 0, message(
+        en="Your suite fails on the REFERENCE tool, which respects the contract: a "
+        "test expects something other than the correct behaviour, or depends on the day it "
+        "runs. A reproduction must fail on the bug, and on it alone.\n"
+        + ref.resume(),
+        fr="Votre suite échoue sur l'outil de RÉFÉRENCE, qui respecte le contrat : un "
         "test attend autre chose que le comportement juste, ou dépend du jour où il "
         "tourne. Une reproduction doit échouer sur le bogue, et seulement sur lui.\n"
-        + ref.resume()
+        + ref.resume(),
     )
     bogue = jouer(str(WORKDIR), str(BOGUE))
-    assert bogue.code != 0 and bogue.echoues > 0, (
-        "Votre suite passe sur la version d'ORIGINE, celle du ticket : aucun test ne "
+    assert bogue.code != 0 and bogue.echoues > 0, message(
+        en="Your suite passes on the ORIGINAL version, the ticket's: no test "
+        "reproduces the bug. Write the failing test first, for instance on the "
+        "expiry date of certs/vpn-01.pem (2031-03-05), then fix it.\n"
+        + bogue.resume(),
+        fr="Votre suite passe sur la version d'ORIGINE, celle du ticket : aucun test ne "
         "reproduit le bogue. Écrivez d'abord le test qui échoue, par exemple sur la "
         "date d'expiration de certs/vpn-01.pem (2031-03-05), puis corrigez.\n"
-        + bogue.resume()
+        + bogue.resume(),
     )
 
 
@@ -119,19 +133,26 @@ def test_le_bogue_est_corrige(outil: Path, tmp_path: Path) -> None:
         prevus = attendus(hotes, jour, seuil)
         for hote, (jours, statut) in prevus.items():
             obtenu = lus.get(hote, {})
-            assert obtenu.get("status") == statut and obtenu.get("days_left") == jours, (
-                f"{hote} (expire le {EXPIRATIONS[hote]}) : status={obtenu.get('status')} "
+            assert obtenu.get("status") == statut and obtenu.get("days_left") == jours, message(
+                en=f"{hote} (expires on {EXPIRATIONS[hote]}): status={obtenu.get('status')} "
+                f"days_left={obtenu.get('days_left')}, expected {statut} and {jours} "
+                f"(today {jour}, threshold {seuil}, seed {graine}). Compare what "
+                "openssl reads for that host with what certcheck makes of it.\n  " + res.resume(),
+                fr=f"{hote} (expire le {EXPIRATIONS[hote]}) : status={obtenu.get('status')} "
                 f"days_left={obtenu.get('days_left')}, attendu {statut} et {jours} "
                 f"(aujourd'hui {jour}, seuil {seuil}, graine {graine}). Comparez ce "
-                "qu'openssl lit pour cet hôte avec ce que certcheck en fait.\n  " + res.resume()
+                "qu'openssl lit pour cet hôte avec ce que certcheck en fait.\n  " + res.resume(),
             )
-            assert obtenu.get("not_after") == EXPIRATIONS[hote].isoformat(), (
-                f"{hote} : not_after doit valoir {EXPIRATIONS[hote].isoformat()}."
+            assert obtenu.get("not_after") == EXPIRATIONS[hote].isoformat(), message(
+                en=f"{hote}: not_after must be {EXPIRATIONS[hote].isoformat()}.",
+                fr=f"{hote} : not_after doit valoir {EXPIRATIONS[hote].isoformat()}.",
             )
         attendu = code_attendu([s for _, s in prevus.values()])
-        assert res.code == attendu, (
-            f"Code {res.code}, attendu {attendu} (graine {graine}) : les statuts sont "
-            f"justes, le code de sortie doit les suivre.\n  {res.resume()}"
+        assert res.code == attendu, message(
+            en=f"Code {res.code}, expected {attendu} (seed {graine}): the statuses are "
+            f"right, the exit code must follow them.\n  {res.resume()}",
+            fr=f"Code {res.code}, attendu {attendu} (graine {graine}) : les statuts sont "
+            f"justes, le code de sortie doit les suivre.\n  {res.resume()}",
         )
 
 
@@ -139,24 +160,33 @@ def test_la_suite_passe_sur_la_version_corrigee(outil: Path, tmp_path: Path) -> 
     _vpn_01_est_lu(outil, tmp_path)
     depart = jouer(str(FIXTURES), None)
     passage = jouer(str(WORKDIR), None)
-    assert passage.code == 0, (
-        "Votre suite échoue sur VOTRE version corrigée : soit la correction est "
-        "incomplète, soit un test attend l'ancien comportement.\n" + passage.resume()
+    assert passage.code == 0, message(
+        en="Your suite fails on YOUR fixed version: either the fix is "
+        "incomplete, or a test expects the old behaviour.\n" + passage.resume(),
+        fr="Votre suite échoue sur VOTRE version corrigée : soit la correction est "
+        "incomplète, soit un test attend l'ancien comportement.\n" + passage.resume(),
     )
-    assert passage.reussis > depart.reussis, (
-        f"{passage.reussis} test(s) vert(s), autant que la suite livrée ({depart.reussis}) : "
+    assert passage.reussis > depart.reussis, message(
+        en=f"{passage.reussis} passing test(s), as many as the suite as shipped ({depart.reussis}): "
+        "the test reproducing the bug must stay in the suite, otherwise the bug "
+        "can come back without anyone seeing it.\n" + passage.resume(),
+        fr=f"{passage.reussis} test(s) vert(s), autant que la suite livrée ({depart.reussis}) : "
         "le test qui reproduit le bogue doit rester dans la suite, sinon le bogue "
-        "peut revenir sans que personne le voie.\n" + passage.resume()
+        "peut revenir sans que personne le voie.\n" + passage.resume(),
     )
 
 
 def test_aucune_regression(outil: Path, tmp_path: Path) -> None:
     _vpn_01_est_lu(outil, tmp_path / "symptome")
     aide = lancer(outil, "--help", cwd=tmp_path)
-    assert aide.code == 0 and "--days" in aide.sortie, f"--help doit toujours sortir en 0.\n  {aide.resume()}"
+    assert aide.code == 0 and "--days" in aide.sortie, message(
+        en=f"--help must still exit 0.\n  {aide.resume()}",
+        fr=f"--help doit toujours sortir en 0.\n  {aide.resume()}",
+    )
     res = lancer(outil, "--days", "abc", cwd=tmp_path)
-    assert res.code == 2 and not res.sortie.strip(), (
-        f"`--days abc` reste un usage incorrect : code 2, rien sur la sortie standard.\n  {res.resume()}"
+    assert res.code == 2 and not res.sortie.strip(), message(
+        en=f"`--days abc` remains an incorrect usage: code 2, nothing on standard output.\n  {res.resume()}",
+        fr=f"`--days abc` reste un usage incorrect : code 2, rien sur la sortie standard.\n  {res.resume()}",
     )
     # Le seuil reste inclusif, sur un certificat à un chiffre : proxy-01 expire le 2027-02-03.
     dossier = tmp_path / "frontiere"
@@ -165,9 +195,11 @@ def test_aucune_regression(outil: Path, tmp_path: Path) -> None:
     res = lancer(outil, "--inventory", str(inventaire), "--days", "30", "--format", "json",
                  cwd=dossier, env={"CERTCHECK_NOW": jour.isoformat()})
     statuts = {c.get("host"): c.get("status") for c in lire_json_sortie(res)["certificates"]}
-    assert statuts == {"proxy-01": "warning", "web-01": "ok"} and res.code == 1, (
-        "proxy-01 expire dans exactement 30 jours avec --days 30 : warning, code 1 "
-        f"(seuil inclusif, inventaire séparé par des tabulations).\n  {res.resume()}"
+    assert statuts == {"proxy-01": "warning", "web-01": "ok"} and res.code == 1, message(
+        en="proxy-01 expires in exactly 30 days with --days 30: warning, code 1 "
+        f"(inclusive threshold, tab-separated inventory).\n  {res.resume()}",
+        fr="proxy-01 expire dans exactement 30 jours avec --days 30 : warning, code 1 "
+        f"(seuil inclusif, inventaire séparé par des tabulations).\n  {res.resume()}",
     )
     # Un certificat VRAIMENT illisible reste une erreur, et laisse désormais une trace.
     dossier = tmp_path / "illisible"
@@ -178,25 +210,36 @@ def test_aucune_regression(outil: Path, tmp_path: Path) -> None:
     res = lancer(outil, "--inventory", str(inventaire), "--format", "json",
                  cwd=dossier, env={"CERTCHECK_NOW": "2026-10-13"})
     statuts = {c.get("host"): c.get("status") for c in lire_json_sortie(res)["certificates"]}
-    assert statuts.get("casse-01") == "error" and res.code == 2, (
-        "Un certificat tronqué doit rester en error, code 2. Corriger le découpage ne "
+    assert statuts.get("casse-01") == "error" and res.code == 2, message(
+        en="A truncated certificate must stay in error, code 2. Fixing the parsing must "
+        "not make the tool complacent: widening the `except` further, or "
+        f"removing it, changes that verdict.\n  {res.resume()}",
+        fr="Un certificat tronqué doit rester en error, code 2. Corriger le découpage ne "
         "doit pas rendre l'outil complaisant : élargir encore le `except`, ou le "
-        f"supprimer, change ce verdict.\n  {res.resume()}"
+        f"supprimer, change ce verdict.\n  {res.resume()}",
     )
-    assert "casse-01" in res.erreurs, (
-        "Un certificat illisible ne laisse aucune trace sur la sortie d'erreur : c'est "
+    assert "casse-01" in res.erreurs, message(
+        en="An unreadable certificate leaves no trace on standard error: that is "
+        "exactly what made the ticket hard. The contract wants error messages "
+        "on standard error; log the host and the cause in the "
+        f"`except`, and catch only the expected exceptions.\n  {res.resume()}",
+        fr="Un certificat illisible ne laisse aucune trace sur la sortie d'erreur : c'est "
         "exactement ce qui a rendu le ticket difficile. Le contrat veut les messages "
         "d'erreur sur la sortie d'erreur ; journalisez l'hôte et la cause dans le "
-        f"`except`, et attrapez seulement les exceptions attendues.\n  {res.resume()}"
+        f"`except`, et attrapez seulement les exceptions attendues.\n  {res.resume()}",
     )
     # Un certificat absent et un inventaire absent : toujours 2.
     dossier = tmp_path / "troue"
     inventaire = ecrire_inventaire(dossier, ["web-02"], absents=["web-03"])
     res = lancer(outil, "--inventory", str(inventaire), cwd=dossier, env={"CERTCHECK_NOW": "2026-10-13"})
-    assert res.code == 2, f"Un certificat absent rend toujours 2.\n  {res.resume()}"
+    assert res.code == 2, message(
+        en=f"A missing certificate still returns 2.\n  {res.resume()}",
+        fr=f"Un certificat absent rend toujours 2.\n  {res.resume()}",
+    )
     res = lancer(outil, "--inventory", str(tmp_path / "absent.txt"), cwd=tmp_path)
-    assert res.code == 2 and res.erreurs.strip(), (
-        f"Un inventaire absent rend toujours 2, avec un message.\n  {res.resume()}"
+    assert res.code == 2 and res.erreurs.strip(), message(
+        en=f"A missing inventory still returns 2, with a message.\n  {res.resume()}",
+        fr=f"Un inventaire absent rend toujours 2, avec un message.\n  {res.resume()}",
     )
 
 
@@ -223,24 +266,34 @@ CAUSE = re.compile(r"espace|split|\S {2,}\d", re.IGNORECASE)
 def test_le_journal_de_debogage_dit_ce_qui_s_est_passe() -> None:
     exiger_workdir(WORKDIR, LAB_ID)
     journal = WORKDIR / "DEBUG.md"
-    assert journal.is_file(), (
-        "DEBUG.md est absent du répertoire de travail. Un débogage se raconte en "
+    assert journal.is_file(), message(
+        en="DEBUG.md is missing from the working directory. A debugging session is told in "
+        "a few lines: what you saw, the cause, the fix. The "
+        "next person who meets a similar symptom will gain an hour.",
+        fr="DEBUG.md est absent du répertoire de travail. Un débogage se raconte en "
         "quelques lignes : ce que vous avez vu, la cause, la correction. Le "
-        "prochain qui tombe sur un symptôme voisin gagnera une heure."
+        "prochain qui tombe sur un symptôme voisin gagnera une heure.",
     )
     sections = _rubriques(journal.read_text(encoding="utf-8"))
     manquantes = [titre for cle, titre in RUBRIQUES.items() if cle not in sections]
-    assert not manquantes, (
-        f"DEBUG.md n'a pas de rubrique `## {manquantes[0]}`. Il en faut trois : "
-        "## Ce que j'ai vu, ## La cause, ## La correction."
+    assert not manquantes, message(
+        en=f"DEBUG.md has no `## {manquantes[0]}` section. Three are needed: "
+        "## Ce que j'ai vu, ## La cause, ## La correction.",
+        fr=f"DEBUG.md n'a pas de rubrique `## {manquantes[0]}`. Il en faut trois : "
+        "## Ce que j'ai vu, ## La cause, ## La correction.",
     )
     vides = [RUBRIQUES[cle] for cle in RUBRIQUES if len(re.sub(r"\s", "", sections[cle])) < 20]
-    assert not vides, (
-        f"La rubrique `## {vides[0]}` de DEBUG.md est vide ou presque : une phrase "
-        "au moins, qui dit ce que vous avez fait ou constaté."
+    assert not vides, message(
+        en=f"The `## {vides[0]}` section of DEBUG.md is empty or nearly so: at least one "
+        "sentence, saying what you did or observed.",
+        fr=f"La rubrique `## {vides[0]}` de DEBUG.md est vide ou presque : une phrase "
+        "au moins, qui dit ce que vous avez fait ou constaté.",
     )
-    assert CAUSE.search(sections["cause"]), (
-        "La rubrique « La cause » ne dit pas ce qui casse la lecture de la date. "
+    assert CAUSE.search(sections["cause"]), message(
+        en="The \"La cause\" section does not say what breaks the reading of the date. "
+        "Compare what openssl writes for vpn-01 and for web-01: what "
+        "difference in characters, and what does `split(\" \")` make of it?",
+        fr="La rubrique « La cause » ne dit pas ce qui casse la lecture de la date. "
         "Comparez ce qu'openssl écrit pour vpn-01 et pour web-01 : quelle "
-        "différence de caractères, et que fait `split(\" \")` de cette différence ?"
+        "différence de caractères, et que fait `split(\" \")` de cette différence ?",
     )

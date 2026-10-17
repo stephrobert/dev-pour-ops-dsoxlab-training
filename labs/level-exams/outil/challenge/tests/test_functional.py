@@ -46,6 +46,7 @@ from conftest import (
     lancer,
     lire_json_sortie,
     lire_yaml,
+    message,
     rendre_executable,
     tirage,
     workdir_lab,
@@ -72,7 +73,10 @@ def _pyproject(texte: str, ou: str) -> dict:
     try:
         return tomllib.loads(texte)
     except tomllib.TOMLDecodeError as exc:
-        pytest.fail(f"pyproject.toml {ou} n'est pas un TOML valide : {exc}", pytrace=False)
+        pytest.fail(message(
+            en=f"pyproject.toml {ou} is not valid TOML: {exc}",
+            fr=f"pyproject.toml {ou} n'est pas un TOML valide : {exc}",
+        ), pytrace=False)
 
 
 # --- Tâche 1 : le contrat -------------------------------------------------------
@@ -104,19 +108,24 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
     # L'interface.
     aide = lancer(outil, "--help", cwd=tmp_path)
     absentes = [o for o in OPTIONS if o not in aide.sortie]
-    assert aide.code == 0 and not absentes, (
-        f"--help doit sortir en 0 et citer chaque option du contrat sur la sortie "
-        f"standard ; manquent : {absentes}.\n  {aide.resume()}"
+    assert aide.code == 0 and not absentes, message(
+        en=f"--help must exit 0 and name every option of the contract on standard "
+        f"output; missing: {absentes}.\n  {aide.resume()}",
+        fr=f"--help doit sortir en 0 et citer chaque option du contrat sur la sortie "
+        f"standard ; manquent : {absentes}.\n  {aide.resume()}",
     )
     version = lancer(outil, "--version", cwd=tmp_path)
-    assert version.code == 0 and re.fullmatch(r"certcheck \d+\.\d+\.\d+", version.sortie.strip()), (
-        f"--version doit afficher exactement « certcheck X.Y.Z » et sortir en 0.\n  {version.resume()}"
+    assert version.code == 0 and re.fullmatch(r"certcheck \d+\.\d+\.\d+", version.sortie.strip()), message(
+        en=f"--version must print exactly \"certcheck X.Y.Z\" and exit 0.\n  {version.resume()}",
+        fr=f"--version doit afficher exactement « certcheck X.Y.Z » et sortir en 0.\n  {version.resume()}",
     )
     for args in (["--option-inconnue"], ["--days", "abc"], ["--format", "xml"]):
         res = lancer(outil, *args, cwd=tmp_path)
-        assert res.code == 2 and not res.sortie.strip() and res.erreurs.strip(), (
-            f"`certcheck {' '.join(args)}` est un usage incorrect : code 2, un message sur "
-            f"la sortie d'erreur, rien sur la sortie standard.\n  {res.resume()}"
+        assert res.code == 2 and not res.sortie.strip() and res.erreurs.strip(), message(
+            en=f"`certcheck {' '.join(args)}` is an incorrect usage: code 2, a message on "
+            f"standard error, nothing on standard output.\n  {res.resume()}",
+            fr=f"`certcheck {' '.join(args)}` est un usage incorrect : code 2, un message sur "
+            f"la sortie d'erreur, rien sur la sortie standard.\n  {res.resume()}",
         )
 
     # Trois parcs tirés au hasard.
@@ -135,21 +144,31 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
         for hote, (jours, statut) in attendu.items():
             lu = lus.get(hote, {})
             assert (lu.get("days_left"), lu.get("status"), lu.get("not_after")) == (
-                jours, statut, EXPIRATIONS[hote].isoformat()), (
-                f"{hote} : lu days_left={lu.get('days_left')} status={lu.get('status')} "
+                jours, statut, EXPIRATIONS[hote].isoformat()), message(
+                en=f"{hote}: read days_left={lu.get('days_left')} status={lu.get('status')} "
+                f"not_after={lu.get('not_after')}, expected {jours}, {statut}, "
+                f"{EXPIRATIONS[hote].isoformat()} ({contexte}). Check the inclusive threshold, "
+                "the separators (spaces AND tabs) and the single-digit days, "
+                "which openssl writes with two spaces.",
+                fr=f"{hote} : lu days_left={lu.get('days_left')} status={lu.get('status')} "
                 f"not_after={lu.get('not_after')}, attendu {jours}, {statut}, "
                 f"{EXPIRATIONS[hote].isoformat()} ({contexte}). Vérifiez le seuil inclusif, "
                 "les séparateurs (espaces ET tabulations) et les jours à un chiffre, "
-                "qu'openssl écrit avec deux espaces."
+                "qu'openssl écrit avec deux espaces.",
             )
         code = code_attendu([s for _, s in attendu.values()])
-        assert res.code == code, f"Code {res.code}, attendu {code} ({contexte}).\n  {res.resume()}"
+        assert res.code == code, message(
+            en=f"Code {res.code}, expected {code} ({contexte}).\n  {res.resume()}",
+            fr=f"Code {res.code}, attendu {code} ({contexte}).\n  {res.resume()}",
+        )
         texte = lancer(outil, "--inventory", str(inventaire), "--days", str(seuil),
                        cwd=tmp_path, env={"CERTCHECK_NOW": jour.isoformat()})
         for hote, (_, statut) in attendu.items():
-            assert any(hote in ligne and statut in ligne for ligne in texte.sortie.splitlines()), (
-                f"En --format text, aucune ligne ne porte {hote} et {statut} ({contexte}).\n"
-                f"  {texte.resume()}"
+            assert any(hote in ligne and statut in ligne for ligne in texte.sortie.splitlines()), message(
+                en=f"In --format text, no line carries {hote} and {statut} ({contexte}).\n"
+                f"  {texte.resume()}",
+                fr=f"En --format text, aucune ligne ne porte {hote} et {statut} ({contexte}).\n"
+                f"  {texte.resume()}",
             )
 
     # Le seuil par l'environnement, et l'option qui l'emporte.
@@ -161,18 +180,22 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
     res = lancer(outil, "--inventory", str(inventaire), "--format", "json", cwd=ailleurs,
                  env={**env, "CERTCHECK_DAYS": "10"})
     statuts = {c.get("host"): c.get("status") for c in lire_json_sortie(res)["certificates"]}
-    assert res.code == 0 and statuts == {"api-01": "ok", "web-01": "ok"}, (
-        "CERTCHECK_DAYS=10 laisse api-01, à 20 jours, en ok (lancé depuis un autre dossier : "
-        f"les chemins des certificats sont relatifs à l'inventaire).\n  {res.resume()}"
+    assert res.code == 0 and statuts == {"api-01": "ok", "web-01": "ok"}, message(
+        en="CERTCHECK_DAYS=10 leaves api-01, at 20 days, in ok (run from another folder: "
+        f"the certificates' paths are relative to the inventory).\n  {res.resume()}",
+        fr="CERTCHECK_DAYS=10 laisse api-01, à 20 jours, en ok (lancé depuis un autre dossier : "
+        f"les chemins des certificats sont relatifs à l'inventaire).\n  {res.resume()}",
     )
     res = lancer(outil, "--inventory", str(inventaire), "--days", "30", cwd=ailleurs,
                  env={**env, "CERTCHECK_DAYS": "10"})
-    assert res.code == 1, (
-        f"--days 30 l'emporte sur CERTCHECK_DAYS=10 : api-01 passe en warning, code 1.\n  {res.resume()}"
+    assert res.code == 1, message(
+        en=f"--days 30 wins over CERTCHECK_DAYS=10: api-01 moves to warning, code 1.\n  {res.resume()}",
+        fr=f"--days 30 l'emporte sur CERTCHECK_DAYS=10 : api-01 passe en warning, code 1.\n  {res.resume()}",
     )
     res = lancer(outil, "--inventory", str(inventaire), cwd=ailleurs, env={**env, "CERTCHECK_DAYS": "dix"})
-    assert res.code == 2 and res.erreurs.strip(), (
-        f"CERTCHECK_DAYS=dix est une configuration invalide : code 2 et un message.\n  {res.resume()}"
+    assert res.code == 2 and res.erreurs.strip(), message(
+        en=f"CERTCHECK_DAYS=dix is an invalid configuration: code 2 and a message.\n  {res.resume()}",
+        fr=f"CERTCHECK_DAYS=dix est une configuration invalide : code 2 et un message.\n  {res.resume()}",
     )
 
     # Le certificat absent : jamais « 0 jour » comme le script hérité.
@@ -183,11 +206,15 @@ def test_le_contrat_tient_sur_des_tirages_au_hasard(outil: Path, tmp_path: Path)
                  env={"CERTCHECK_NOW": "2026-06-01"})
     lus = {c.get("host"): c for c in lire_json_sortie(res)["certificates"] if isinstance(c, dict)}
     absent = lus.get("web-03", {})
-    assert res.code == 2 and absent.get("status") == "error" and absent.get("days_left") is None, (
-        "Le certificat de web-03 n'existe pas : l'hôte figure en status error, days_left "
+    assert res.code == 2 and absent.get("status") == "error" and absent.get("days_left") is None, message(
+        en="The certificate of web-03 does not exist: the host appears with status error, days_left "
+        "null, and the code is 2, whatever the alerts of the other hosts. The "
+        "inherited script counted it \"0 days\" and exited 0: that is the swallowed error to "
+        f"fix (seed {graine}).\n  {res.resume()}",
+        fr="Le certificat de web-03 n'existe pas : l'hôte figure en status error, days_left "
         "null, et le code vaut 2, quelles que soient les alertes des autres hôtes. Le "
         "script hérité le comptait « 0 jour » et sortait en 0 : c'est l'erreur avalée à "
-        f"corriger (graine {graine}).\n  {res.resume()}"
+        f"corriger (graine {graine}).\n  {res.resume()}",
     )
 
 
@@ -210,7 +237,10 @@ def _variante_boguee(dossier: Path) -> Path:
         ('log.error("%s : %s", hote, exc)', 'log.debug("%s : %s", hote, exc)'),
     )
     for avant, apres in bogues:
-        assert texte.count(avant) == 1, f"Référence modifiée : « {avant} » introuvable, variante impossible."
+        assert texte.count(avant) == 1, message(
+            en=f"Reference modified: \"{avant}\" cannot be found, the variant is impossible.",
+            fr=f"Référence modifiée : « {avant} » introuvable, variante impossible.",
+        )
         texte = texte.replace(avant, apres)
     variante = dossier / "certcheck_bogue.py"
     variante.write_text(texte, encoding="utf-8")
@@ -227,9 +257,14 @@ def test_vos_tests_attrapent_le_defaut_herite(tmp_path: Path) -> None:
     uv = exiger_outil("uv")
     if not any((WORKDIR / "tests").glob("test_*.py")):
         pytest.fail(
-            "Aucun fichier tests/test_*.py : vos tests pytest vivent dans le dossier tests/ "
+            message(
+            en="No tests/test_*.py file: your pytest tests live in the project's tests/ "
+            "folder. They run the executable named by the CERTCHECK_BIN variable "
+            "(bin/certcheck by default), never an imported function.",
+            fr="Aucun fichier tests/test_*.py : vos tests pytest vivent dans le dossier tests/ "
             "du projet. Ils lancent l'exécutable désigné par la variable CERTCHECK_BIN "
             "(bin/certcheck par défaut), jamais une fonction importée.",
+        ),
             pytrace=False,
         )
     reference = _lanceur(tmp_path, "reference", REFERENCE)
@@ -243,23 +278,33 @@ def test_vos_tests_attrapent_le_defaut_herite(tmp_path: Path) -> None:
             return f"code {res.returncode}\n{(res.stdout + res.stderr).strip()[-1500:]}"
 
         sien = jouer(copie / "bin" / "certcheck")
-        assert sien.returncode == 0 and _reussis(sien.stdout) >= TESTS_MINIMUM, (
-            f"`uv run pytest tests` doit passer contre VOTRE outil (CERTCHECK_BIN=bin/certcheck), "
-            f"avec au moins {TESTS_MINIMUM} tests réussis ({_reussis(sien.stdout)} lus).\n" + resume(sien)
+        assert sien.returncode == 0 and _reussis(sien.stdout) >= TESTS_MINIMUM, message(
+            en=f"`uv run pytest tests` must pass against YOUR tool (CERTCHECK_BIN=bin/certcheck), "
+            f"with at least {TESTS_MINIMUM} tests passing ({_reussis(sien.stdout)} read).\n" + resume(sien),
+            fr=f"`uv run pytest tests` doit passer contre VOTRE outil (CERTCHECK_BIN=bin/certcheck), "
+            f"avec au moins {TESTS_MINIMUM} tests réussis ({_reussis(sien.stdout)} lus).\n" + resume(sien),
         )
         ref = jouer(reference)
-        assert ref.returncode == 0, (
-            "Vos tests échouent contre l'outil de RÉFÉRENCE, qui respecte CONTRAT.md : un test "
+        assert ref.returncode == 0, message(
+            en="Your tests fail against the REFERENCE tool, which respects CONTRAT.md: a test "
+            "expects something other than the contract (an exact version, a precise text "
+            "format, the real current date instead of CERTCHECK_NOW), or the suite ignores "
+            "CERTCHECK_BIN.\n" + resume(ref),
+            fr="Vos tests échouent contre l'outil de RÉFÉRENCE, qui respecte CONTRAT.md : un test "
             "attend autre chose que le contrat (une version exacte, un format de texte "
             "précis, la date du jour réelle au lieu de CERTCHECK_NOW), ou la suite ignore "
-            "CERTCHECK_BIN.\n" + resume(ref)
+            "CERTCHECK_BIN.\n" + resume(ref),
         )
         bug = jouer(boguee)
-    assert bug.returncode != 0, (
-        "Vos tests passent contre une variante qui reproduit le défaut du script hérité : un "
+    assert bug.returncode != 0, message(
+        en="Your tests pass against a variant reproducing the inherited script's defect: a "
+        "missing certificate is counted there as \"warning, 0 days\", code 1, instead of error and "
+        "code 2. The defect that motivated the rewrite is covered by no test, or the "
+        "suite still tests bin/certcheck instead of CERTCHECK_BIN.\n" + resume(bug),
+        fr="Vos tests passent contre une variante qui reproduit le défaut du script hérité : un "
         "certificat absent y est compté « warning, 0 jour », code 1, au lieu de error et "
         "code 2. Le défaut qui a motivé la reprise n'est couvert par aucun test, ou la "
-        "suite teste toujours bin/certcheck au lieu de CERTCHECK_BIN.\n" + resume(bug)
+        "suite teste toujours bin/certcheck au lieu de CERTCHECK_BIN.\n" + resume(bug),
     )
 
 
@@ -285,43 +330,64 @@ def test_le_projet_s_installe_dans_un_environnement_neuf(tmp_path: Path) -> None
     exiger_workdir(WORKDIR, LAB_ID)
     uv = exiger_outil("uv")
     if not (WORKDIR / "pyproject.toml").is_file():
-        pytest.fail("pyproject.toml est absent : le projet Python n'existe pas encore.", pytrace=False)
+        pytest.fail(message(
+            en="pyproject.toml is missing: the Python project does not exist yet.",
+            fr="pyproject.toml est absent : le projet Python n'existe pas encore.",
+        ), pytrace=False)
     projet = _pyproject((WORKDIR / "pyproject.toml").read_text(encoding="utf-8"), "du répertoire de travail")
     version = str((projet.get("project") or {}).get("version", ""))
     scripts = (projet.get("project") or {}).get("scripts") or {}
-    assert "certcheck" in scripts, (
-        "pyproject.toml ne déclare pas la commande `certcheck` dans [project.scripts] "
+    assert "certcheck" in scripts, message(
+        en="pyproject.toml does not declare the `certcheck` command in [project.scripts] "
+        "(in the form `certcheck = \"certcheck.cli:main\"`): once installed, the package "
+        "would create no command.",
+        fr="pyproject.toml ne déclare pas la commande `certcheck` dans [project.scripts] "
         "(forme `certcheck = \"certcheck.cli:main\"`) : une fois installé, le paquet ne "
-        "créerait aucune commande."
+        "créerait aucune commande.",
     )
-    assert any(WORKDIR.glob("src/*/__init__.py")), (
-        "Aucun paquet sous src/ (src/<paquet>/__init__.py) : le code de l'outil vit dans un "
-        "paquet, en src layout."
+    assert any(WORKDIR.glob("src/*/__init__.py")), message(
+        en="No package under src/ (src/<package>/__init__.py): the tool's code lives in a "
+        "package, in src layout.",
+        fr="Aucun paquet sous src/ (src/<paquet>/__init__.py) : le code de l'outil vit dans un "
+        "paquet, en src layout.",
     )
-    assert _dependances_epinglees(projet), (
-        "Les dépendances de développement (pytest au moins) ne sont pas épinglées : un "
+    assert _dependances_epinglees(projet), message(
+        en="The development dependencies (pytest at least) are not pinned: a "
+        "uv.lock, a requirements-dev.txt whose every line carries ==, or a "
+        "[dependency-groups] group whose every entry carries ==. Without that, the same suite does not run "
+        "with the same versions in six months.",
+        fr="Les dépendances de développement (pytest au moins) ne sont pas épinglées : un "
         "uv.lock, un requirements-dev.txt dont chaque ligne porte ==, ou un groupe "
         "[dependency-groups] dont chaque entrée porte ==. Sans cela, la même suite ne tourne "
-        "pas avec les mêmes versions dans six mois."
+        "pas avec les mêmes versions dans six mois.",
     )
     env = tmp_path / "env"
     python = env / "bin" / "python"
     creation = executer([uv, "venv", "--quiet", str(env)], cwd=tmp_path)
-    assert creation.returncode == 0, f"`uv venv` échoue : {creation.stderr.strip()}"
+    assert creation.returncode == 0, message(
+        en=f"`uv venv` fails: {creation.stderr.strip()}",
+        fr=f"`uv venv` échoue : {creation.stderr.strip()}",
+    )
     with copie_temporaire(WORKDIR) as copie:
         installation = executer([uv, "pip", "install", "--quiet", "--python", str(python), str(copie)],
                                 cwd=tmp_path, timeout=600)
-    assert installation.returncode == 0, (
-        "Le projet ne s'installe pas dans un environnement neuf (`pip install .`, ici "
+    assert installation.returncode == 0, message(
+        en="The project does not install into a fresh environment (`pip install .`, here "
+        "`uv pip install`): an incomplete pyproject.toml, a missing [build-system], or a file "
+        f"named but not found.\n{(installation.stdout + installation.stderr).strip()[-1200:]}",
+        fr="Le projet ne s'installe pas dans un environnement neuf (`pip install .`, ici "
         "`uv pip install`) : pyproject.toml incomplet, [build-system] absent, ou fichier "
-        f"cité introuvable.\n{(installation.stdout + installation.stderr).strip()[-1200:]}"
+        f"cité introuvable.\n{(installation.stdout + installation.stderr).strip()[-1200:]}",
     )
     certcheck = env / "bin" / "certcheck"
     res = lancer(certcheck, "--version", cwd=tmp_path)
-    assert res.code == 0 and res.sortie.strip() == f"certcheck {version}", (
-        f"Installé, `certcheck --version` doit afficher « certcheck {version} », la version "
+    assert res.code == 0 and res.sortie.strip() == f"certcheck {version}", message(
+        en=f"Once installed, `certcheck --version` must print \"certcheck {version}\", the version "
+        "from pyproject.toml: the version announced and the version installed say the same "
+        f"thing.\n  {res.resume()}",
+        fr=f"Installé, `certcheck --version` doit afficher « certcheck {version} », la version "
         "de pyproject.toml : la version annoncée et la version installée disent la même "
-        f"chose.\n  {res.resume()}"
+        f"chose.\n  {res.resume()}",
     )
     rnd = tirage()
     hotes = rnd.sample(sorted(EXPIRATIONS), 4)
@@ -332,9 +398,11 @@ def test_le_projet_s_installe_dans_un_environnement_neuf(tmp_path: Path) -> None
     lus = {c.get("host"): (c.get("days_left"), c.get("status"))
            for c in lire_json_sortie(res)["certificates"] if isinstance(c, dict)}
     attendu = attendus(hotes, jour, seuil)
-    assert lus == attendu and res.code == code_attendu([s for _, s in attendu.values()]), (
-        f"Contrôle de fumée de l'outil installé (aujourd'hui {jour}, seuil {seuil}) : lu {lus}, "
-        f"attendu {attendu}.\n  {res.resume()}"
+    assert lus == attendu and res.code == code_attendu([s for _, s in attendu.values()]), message(
+        en=f"Smoke check of the installed tool (today {jour}, threshold {seuil}): read {lus}, "
+        f"expected {attendu}.\n  {res.resume()}",
+        fr=f"Contrôle de fumée de l'outil installé (aujourd'hui {jour}, seuil {seuil}) : lu {lus}, "
+        f"attendu {attendu}.\n  {res.resume()}",
     )
 
 
@@ -345,15 +413,21 @@ def test_la_version_est_notee_et_etiquetee() -> None:
     exiger_workdir(WORKDIR, LAB_ID)
     if not (WORKDIR / ".git").exists():
         pytest.fail(
-            "Le répertoire de travail n'est pas un dépôt Git : `git init`, des commits, puis "
+            message(
+            en="The working directory is not a Git repository: `git init`, some commits, then "
+            "a tag `git tag -a vX.Y.Z -m …`.",
+            fr="Le répertoire de travail n'est pas un dépôt Git : `git init`, des commits, puis "
             "une étiquette `git tag -a vX.Y.Z -m ...`.",
+        ),
             pytrace=False,
         )
     noms = git("tag", "--list", cwd=WORKDIR).stdout.split()
     versions = [n for n in noms if SEMVER.match(n)]
-    assert versions, (
-        f"Aucune étiquette de la forme vX.Y.Z (lues : {noms or 'aucune'}). Une version livrée "
-        "se repère par son étiquette : `git tag -a v1.0.0 -m \"certcheck 1.0.0\"`."
+    assert versions, message(
+        en=f"No tag of the form vX.Y.Z (read: {noms or 'none'}). A shipped version "
+        "is identified by its tag: `git tag -a v1.0.0 -m \"certcheck 1.0.0\"`.",
+        fr=f"Aucune étiquette de la forme vX.Y.Z (lues : {noms or 'aucune'}). Une version livrée "
+        "se repère par son étiquette : `git tag -a v1.0.0 -m \"certcheck 1.0.0\"`.",
     )
     etiquette = max(versions, key=lambda n: tuple(int(x) for x in SEMVER.match(n).groups()))
     version = etiquette[1:]
@@ -363,16 +437,21 @@ def test_la_version_est_notee_et_etiquetee() -> None:
         return res.stdout if res.returncode == 0 else ""
 
     changelog = lire("CHANGELOG.md")
-    assert re.search(rf"^## \[{re.escape(version)}\]", changelog, re.MULTILINE), (
-        f"Le CHANGELOG.md du commit étiqueté {etiquette} doit porter une section "
-        f"`## [{version}]` : c'est ce que lit celui qui se demande ce qui a changé."
+    assert re.search(rf"^## \[{re.escape(version)}\]", changelog, re.MULTILINE), message(
+        en=f"The CHANGELOG.md of the commit tagged {etiquette} must carry a "
+        f"`## [{version}]` section: that is what whoever wonders what changed reads.",
+        fr=f"Le CHANGELOG.md du commit étiqueté {etiquette} doit porter une section "
+        f"`## [{version}]` : c'est ce que lit celui qui se demande ce qui a changé.",
     )
     pyproject = lire("pyproject.toml")
     lue = str((_pyproject(pyproject, f"de {etiquette}").get("project") or {}).get("version", "")) if pyproject else ""
-    assert lue == version, (
-        f"Au commit étiqueté {etiquette}, pyproject.toml porte la version {lue!r}. L'étiquette "
+    assert lue == version, message(
+        en=f"At the commit tagged {etiquette}, pyproject.toml carries version {lue!r}. The tag "
+        "names the commit that CONTAINS the shipped version: set the version, commit, "
+        "then tag.",
+        fr=f"Au commit étiqueté {etiquette}, pyproject.toml porte la version {lue!r}. L'étiquette "
         "désigne le commit qui CONTIENT la version livrée : passez la version, committez, "
-        "puis étiquetez."
+        "puis étiquetez.",
     )
 
 
@@ -407,8 +486,12 @@ def _zone(categorie: str, fichier: str, texte: str, *motifs: str, marge: int = 2
     for motif in motifs:
         trouvees = [n for n, ligne in enumerate(texte.splitlines(), 1) if motif in ligne]
         if not trouvees:
-            pytest.fail(f"Marqueur « {motif} » introuvable dans {fichier} après le diff : "
-                        "le point de départ est abîmé.", pytrace=False)
+            pytest.fail(message(
+                en=f"Marker \"{motif}\" cannot be found in {fichier} after the diff: "
+                        "the starting point is damaged.",
+                fr=f"Marqueur « {motif} » introuvable dans {fichier} après le diff : "
+                        "le point de départ est abîmé.",
+            ), pytrace=False)
         lignes += trouvees
     return Zone(categorie, fichier, min(lignes) - marge, max(lignes) + marge)
 
@@ -418,7 +501,10 @@ def defauts() -> dict[str, list[Zone]]:
     """Catégorie -> zones acceptées, calculées sur le diff réellement appliqué."""
     with copie_temporaire(FIXTURES / "pr") as copie:
         res = git("apply", "../0057.diff", cwd=copie / "main")
-        assert res.returncode == 0, f"pr/0057.diff ne s'applique pas : {res.stderr.strip()}"
+        assert res.returncode == 0, message(
+            en=f"pr/0057.diff does not apply: {res.stderr.strip()}",
+            fr=f"pr/0057.diff ne s'applique pas : {res.stderr.strip()}",
+        )
         code = (copie / "main" / "certcheck.py").read_text(encoding="utf-8")
         tests = (copie / "main" / "tests" / "test_certcheck.py").read_text(encoding="utf-8")
     return {
@@ -462,15 +548,19 @@ def test_la_revue_de_la_pr_57_trouve_les_defauts(defauts: dict[str, list[Zone]])
     exiger_workdir(WORKDIR, LAB_ID)
     revue = lire_yaml(WORKDIR / "revue.yaml")
     brut = revue.get("commentaires")
-    assert isinstance(brut, list) and brut, (
-        "`commentaires` est vide ou n'est pas une liste : une revue sans commentaire n'aide "
-        "pas l'auteur."
+    assert isinstance(brut, list) and brut, message(
+        en="`commentaires` is empty or is not a list: a review with no comment does not help "
+        "the author.",
+        fr="`commentaires` est vide ou n'est pas une liste : une revue sans commentaire n'aide "
+        "pas l'auteur.",
     )
     commentaires = []
     for element in brut:
-        assert isinstance(element, dict), (
-            f"Chaque commentaire est un dictionnaire (fichier, ligne, categorie, commentaire, "
-            f"proposition). Lu : {element!r}"
+        assert isinstance(element, dict), message(
+            en=f"Each comment is a dictionary (fichier, ligne, categorie, commentaire, "
+            f"proposition). Read: {element!r}",
+            fr=f"Chaque commentaire est un dictionnaire (fichier, ligne, categorie, commentaire, "
+            f"proposition). Lu : {element!r}",
         )
         commentaires.append((
             _chemin(element.get("fichier")), _ligne(element.get("ligne")),
@@ -478,35 +568,50 @@ def test_la_revue_de_la_pr_57_trouve_les_defauts(defauts: dict[str, list[Zone]])
             str(element.get("commentaire") or "").strip(), str(element.get("proposition") or "").strip(),
         ))
     inconnues = sorted({c[2] for c in commentaires} - CATEGORIES)
-    assert not inconnues, f"Catégorie(s) hors de la liste fermée de revue.yaml : {inconnues}."
+    assert not inconnues, message(
+        en=f"Category(ies) outside the closed list of revue.yaml: {inconnues}.",
+        fr=f"Catégorie(s) hors de la liste fermée de revue.yaml : {inconnues}.",
+    )
     vagues = [f"{f}:{n}" for f, n, _, texte, proposition in commentaires
               if len(texte) < LONGUEUR_MINIMALE or len(proposition) < LONGUEUR_MINIMALE]
-    assert not vagues, (
-        f"Commentaire(s) trop vague(s) : {vagues}. Un `commentaire` et une `proposition` "
-        f"d'au moins {LONGUEUR_MINIMALE} caractères chacun : le problème, puis la correction."
+    assert not vagues, message(
+        en=f"Comment(s) too vague: {vagues}. A `commentaire` and a `proposition` "
+        f"of at least {LONGUEUR_MINIMALE} characters each: the problem, then the fix.",
+        fr=f"Commentaire(s) trop vague(s) : {vagues}. Un `commentaire` et une `proposition` "
+        f"d'au moins {LONGUEUR_MINIMALE} caractères chacun : le problème, puis la correction.",
     )
 
     def designe(zones: list[Zone]) -> bool:
         return any(z.categorie == c and z.contient(f, n) for f, n, c, _, _ in commentaires for z in zones)
 
     trouves = sorted(cat for cat, zones in defauts.items() if designe(zones))
-    assert len(trouves) >= DEFAUTS_A_TROUVER, (
-        f"{len(trouves)} défaut(s) sur 4 désignés ({trouves}) ; il en faut au moins "
+    assert len(trouves) >= DEFAUTS_A_TROUVER, message(
+        en=f"{len(trouves)} defect(s) out of 4 named ({trouves}); at least "
+        f"{DEFAUTS_A_TROUVER} are needed. A defect is found when a comment carries the right file "
+        "(the path from pr/main), the right category, and a line within two lines, "
+        "counted in the file AFTER the diff is applied. Confront every claim "
+        "of pr/DESCRIPTION.md with the code.",
+        fr=f"{len(trouves)} défaut(s) sur 4 désignés ({trouves}) ; il en faut au moins "
         f"{DEFAUTS_A_TROUVER}. Un défaut est trouvé quand un commentaire porte le bon fichier "
         "(chemin depuis pr/main), la bonne catégorie, et une ligne à deux lignes près, "
         "comptée dans le fichier APRÈS application du diff. Confrontez chaque affirmation "
-        "de pr/DESCRIPTION.md au code."
+        "de pr/DESCRIPTION.md au code.",
     )
     toutes = [z for zones in defauts.values() for z in zones]
     hors_sujet = [f"{f}:{n} ({c})" for f, n, c, _, _ in commentaires
                   if not any(z.categorie == c and z.contient(f, n) for z in toutes)]
-    assert len(hors_sujet) <= FAUX_POSITIFS_TOLERES, (
-        f"{len(hors_sujet)} commentaire(s) ne désignent aucun défaut réel : {hors_sujet}. "
-        f"Au-delà de {FAUX_POSITIFS_TOLERES}, la revue noie l'essentiel."
+    assert len(hors_sujet) <= FAUX_POSITIFS_TOLERES, message(
+        en=f"{len(hors_sujet)} comment(s) name no real defect: {hors_sujet}. "
+        f"Beyond {FAUX_POSITIFS_TOLERES}, the review drowns what matters.",
+        fr=f"{len(hors_sujet)} commentaire(s) ne désignent aucun défaut réel : {hors_sujet}. "
+        f"Au-delà de {FAUX_POSITIFS_TOLERES}, la revue noie l'essentiel.",
     )
     verdict = str(revue.get("verdict") or "").strip().lower()
-    assert verdict == "demander-des-changements", (
-        f"`verdict` vaut {verdict!r}. Une PR qui exécute un chemin d'inventaire dans un shell, "
+    assert verdict == "demander-des-changements", message(
+        en=f"`verdict` is {verdict!r}. A PR that runs an inventory path through a shell, "
+        "turns off TLS verification and logs the token is not merged: "
+        "`demander-des-changements`.",
+        fr=f"`verdict` vaut {verdict!r}. Une PR qui exécute un chemin d'inventaire dans un shell, "
         "coupe la vérification TLS et journalise le jeton ne se fusionne pas : "
-        "`demander-des-changements`."
+        "`demander-des-changements`.",
     )

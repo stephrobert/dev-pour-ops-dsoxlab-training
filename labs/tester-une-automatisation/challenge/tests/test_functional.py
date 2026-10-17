@@ -41,6 +41,7 @@ from conftest import (
     jouer_suite_paquet,
     lancer,
     lire_yaml,
+    message,
     tirage,
     workdir_lab,
 )
@@ -75,9 +76,15 @@ def echec_livre() -> tuple[str, str, str]:
                        timeout=300)
     sortie = res.stdout + res.stderr
     noms = re.findall(r"FAILED \S+::(\w+)", sortie)
-    assert len(noms) == 1, f"La suite livrée devait avoir un seul test rouge :\n{sortie[-1500:]}"
+    assert len(noms) == 1, message(
+        en=f"The suite as shipped was supposed to have a single red test:\n{sortie[-1500:]}",
+        fr=f"La suite livrée devait avoir un seul test rouge :\n{sortie[-1500:]}",
+    )
     valeurs = re.search(r"assert '(\w+)' == '(\w+)'", sortie)
-    assert valeurs, f"Assertion introuvable dans la sortie de la suite livrée :\n{sortie[-1500:]}"
+    assert valeurs, message(
+        en=f"Assertion not found in the output of the suite as shipped:\n{sortie[-1500:]}",
+        fr=f"Assertion introuvable dans la sortie de la suite livrée :\n{sortie[-1500:]}",
+    )
     obtenue, attendue = valeurs.group(1), valeurs.group(2)
     return noms[0], attendue, obtenue
 
@@ -103,19 +110,24 @@ def test_le_test_en_echec_est_nomme() -> None:
     r = reponses()
     nom, _, _ = echec_livre()
     donne = nettoyer(r.get("test_en_echec")).split("::")[-1].removesuffix("()")
-    assert donne == nom, (
-        f"`test_en_echec` vaut {r.get('test_en_echec')!r}. Lancez `uv run pytest -v` sur le "
-        "projet reçu : la ligne FAILED nomme le test rouge, après les deux-points doubles."
+    assert donne == nom, message(
+        en=f"`test_en_echec` is {r.get('test_en_echec')!r}. Run `uv run pytest -v` on the "
+        "project as shipped: the FAILED line names the red test, after the double colon.",
+        fr=f"`test_en_echec` vaut {r.get('test_en_echec')!r}. Lancez `uv run pytest -v` sur le "
+        "projet reçu : la ligne FAILED nomme le test rouge, après les deux-points doubles.",
     )
 
 
 def test_l_assertion_est_lue() -> None:
     r = reponses()
     _, attendue, obtenue = echec_livre()
-    assert nettoyer(r.get("valeur_attendue")) == attendue and nettoyer(r.get("valeur_obtenue")) == obtenue, (
-        f"`valeur_attendue` vaut {r.get('valeur_attendue')!r} et `valeur_obtenue` "
+    assert nettoyer(r.get("valeur_attendue")) == attendue and nettoyer(r.get("valeur_obtenue")) == obtenue, message(
+        en=f"`valeur_attendue` is {r.get('valeur_attendue')!r} and `valeur_obtenue` "
+        f"{r.get('valeur_obtenue')!r}. In pytest's `E   assert X == Y` line, X is "
+        "what the code returned, Y what the test expected.",
+        fr=f"`valeur_attendue` vaut {r.get('valeur_attendue')!r} et `valeur_obtenue` "
         f"{r.get('valeur_obtenue')!r}. Dans la ligne `E   assert X == Y` de pytest, X est "
-        "ce que le code a rendu, Y ce que le test attendait."
+        "ce que le code a rendu, Y ce que le test attendait.",
     )
 
 
@@ -133,39 +145,53 @@ def test_le_defaut_est_corrige() -> None:
             res = lancer(outil, "--inventory", str(inventaire), "--days", str(seuil), cwd=Path(tmp),
                          env={"CERTCHECK_NOW": jour})
         ligne = next((x for x in res.sortie.splitlines() if x.startswith(hote)), "")
-        assert "warning" in ligne and res.code == 1, (
-            f"{hote} expire dans exactement {seuil} jours, avec --days {seuil} : warning et "
+        assert "warning" in ligne and res.code == 1, message(
+            en=f"{hote} expires in exactly {seuil} days, with --days {seuil}: warning and "
+            f"code 1 expected (the threshold is inclusive). Fix the CODE, the decision in "
+            f"src/certcheck/certificats.py, not the test. Seed {graine}.\n  {res.resume()}",
+            fr=f"{hote} expire dans exactement {seuil} jours, avec --days {seuil} : warning et "
             f"code 1 attendus (le seuil est inclusif). Corrigez le CODE, la décision de "
-            f"src/certcheck/certificats.py, pas le test. Graine {graine}.\n  {res.resume()}"
+            f"src/certcheck/certificats.py, pas le test. Graine {graine}.\n  {res.resume()}",
         )
 
 
 def test_la_suite_est_verte_et_complete() -> None:
     passage = jouer(None)
     manquants = TESTS_RECUS - noms_des_tests()
-    assert not manquants, (
-        f"Les tests reçus {sorted(manquants)} ont disparu. Un test rouge signale un défaut : "
-        "on corrige le code, on ne supprime pas le témoin."
+    assert not manquants, message(
+        en=f"The shipped tests {sorted(manquants)} have disappeared. A red test signals a defect: "
+        "one fixes the code, one does not delete the witness.",
+        fr=f"Les tests reçus {sorted(manquants)} ont disparu. Un test rouge signale un défaut : "
+        "on corrige le code, on ne supprime pas le témoin.",
     )
-    assert passage.code == 0 and passage.echoues == 0, (
-        "`uv run pytest` doit être vert sur votre version du projet. Lisez la ligne E "
-        "du test rouge, corrigez le code, relancez.\n" + passage.resume()
+    assert passage.code == 0 and passage.echoues == 0, message(
+        en="`uv run pytest` must be green on your version of the project. Read the E line "
+        "of the red test, fix the code, run it again.\n" + passage.resume(),
+        fr="`uv run pytest` doit être vert sur votre version du projet. Lisez la ligne E "
+        "du test rouge, corrigez le code, relancez.\n" + passage.resume(),
     )
 
 
 def test_un_test_ajoute_attrape_un_nouveau_defaut() -> None:
     reference = jouer(str(REFERENCE_PAQUET / "certificats.py"))
-    assert reference.code == 0, (
-        "Votre suite échoue sur l'outil de RÉFÉRENCE, qui respecte CONTRAT.md : un test "
-        "attend autre chose que le contrat.\n" + reference.resume()
+    assert reference.code == 0, message(
+        en="Your suite fails on the REFERENCE tool, which respects CONTRAT.md: a test "
+        "expects something other than the contract.\n" + reference.resume(),
+        fr="Votre suite échoue sur l'outil de RÉFÉRENCE, qui respecte CONTRAT.md : un test "
+        "attend autre chose que le contrat.\n" + reference.resume(),
     )
-    assert reference.reussis >= len(TESTS_RECUS) + 1, (
-        f"{reference.reussis} test(s) vert(s) : ajoutez au moins un test aux quatre reçus. "
-        "Copiez le deuxième test et changez ce qu'il vérifie (étape 4 du scénario).\n" + reference.resume()
+    assert reference.reussis >= len(TESTS_RECUS) + 1, message(
+        en=f"{reference.reussis} passing test(s): add at least one test to the four shipped. "
+        "Copy the second test and change what it checks (step 4 of the scenario).\n" + reference.resume(),
+        fr=f"{reference.reussis} test(s) vert(s) : ajoutez au moins un test aux quatre reçus. "
+        "Copiez le deuxième test et changez ce qu'il vérifie (étape 4 du scénario).\n" + reference.resume(),
     )
     mutant = jouer(str(MUTANTS / "code_zero_sur_alerte.py"))
-    assert mutant.code != 0 and mutant.echoues > 0, (
-        "Votre suite reste verte sur un outil où un parc dont la seule alerte est un "
+    assert mutant.code != 0 and mutant.echoues > 0, message(
+        en="Your suite stays green on a tool where a fleet whose only alert is a "
+        "warning exits 0, as if all were well. Add a test checking that "
+        "`certificats.code_de_sortie([{\"status\": \"warning\"}])` is 1.\n" + mutant.resume(),
+        fr="Votre suite reste verte sur un outil où un parc dont la seule alerte est un "
         "warning sort en 0, comme si tout allait bien. Ajoutez un test qui vérifie que "
-        "`certificats.code_de_sortie([{\"status\": \"warning\"}])` vaut 1.\n" + mutant.resume()
+        "`certificats.code_de_sortie([{\"status\": \"warning\"}])` vaut 1.\n" + mutant.resume(),
     )

@@ -54,6 +54,7 @@ from conftest import (
     executer,
     exiger_outil,
     exiger_workdir,
+    message,
     tirage,
     workdir_lab,
 )
@@ -83,7 +84,10 @@ def _pyproject() -> dict:
     try:
         return tomllib.loads((WORKDIR / "pyproject.toml").read_text(encoding="utf-8"))
     except (OSError, tomllib.TOMLDecodeError) as exc:
-        pytest.fail(f"pyproject.toml est illisible : {exc}", pytrace=False)
+        pytest.fail(message(
+            en=f"pyproject.toml is unreadable: {exc}",
+            fr=f"pyproject.toml est illisible : {exc}",
+        ), pytrace=False)
 
 
 def _requirements() -> dict[str, str]:
@@ -141,8 +145,12 @@ def installation(tmp_path_factory: pytest.TempPathFactory) -> Callable[..., Exec
         etapes.append(f"$ uv {' '.join(args)}  (code {res.returncode})\n{(res.stdout + res.stderr).strip()[-800:]}")
         if res.returncode != 0:
             pytest.fail(
-                "L'installation dans un environnement neuf échoue, à partir des seuls "
+                message(
+                en="The installation into a fresh environment fails, from the project's "
+                "files alone:\n" + "\n".join(etapes),
+                fr="L'installation dans un environnement neuf échoue, à partir des seuls "
                 "fichiers du projet :\n" + "\n".join(etapes),
+            ),
                 pytrace=False,
             )
 
@@ -171,11 +179,15 @@ def installation(tmp_path_factory: pytest.TempPathFactory) -> Callable[..., Exec
 def test_les_dependances_sont_declarees() -> None:
     declarees = _declarees()
     manquantes = [d for d in DEPENDANCES if d not in declarees]
-    assert not manquantes, (
-        f"{manquantes} ne sont déclarées ni dans pyproject.toml ([project] dependencies), "
+    assert not manquantes, message(
+        en=f"{manquantes} are declared neither in pyproject.toml ([project] dependencies), "
+        "nor in requirements.txt. The code imports them: installed \"by hand\" on "
+        "your machine, they do not exist on a colleague's. `uv add requests cryptography` "
+        "writes them into pyproject.toml.",
+        fr=f"{manquantes} ne sont déclarées ni dans pyproject.toml ([project] dependencies), "
         "ni dans requirements.txt. Le code les importe : installées « à la main » chez "
         "vous, elles n'existent pas chez un collègue. `uv add requests cryptography` "
-        "les écrit dans pyproject.toml."
+        "les écrit dans pyproject.toml.",
     )
 
 
@@ -186,12 +198,17 @@ def test_les_versions_sont_epinglees() -> None:
         return  # uv.lock fige la version exacte de chaque paquet, transitifs compris
     non_epinglees = [d for d in DEPENDANCES
                      if not any(re.fullmatch(r"==[0-9][^,]*", s) for s in declarees.get(d, []))]
-    assert not non_epinglees, (
-        f"{non_epinglees} n'ont pas de version exacte : "
+    assert not non_epinglees, message(
+        en=f"{non_epinglees} have no exact version: "
+        f"{ {d: declarees.get(d) or '(not declared)' for d in non_epinglees} }. Without "
+        "a version, each installation takes the latest release, and two machines diverge. "
+        "Pin them (`requests==2.34.2`), or let uv write a lock: `uv lock` "
+        "produces uv.lock, which freezes every version.",
+        fr=f"{non_epinglees} n'ont pas de version exacte : "
         f"{ {d: declarees.get(d) or '(non déclarée)' for d in non_epinglees} }. Sans "
         "version, chaque installation prend la dernière parue, et deux postes divergent. "
         "Épinglez-les (`requests==2.34.2`), ou laissez uv écrire un verrou : `uv lock` "
-        "produit uv.lock, qui fige chaque version."
+        "produit uv.lock, qui fige chaque version.",
     )
 
 
@@ -199,21 +216,28 @@ def test_la_version_de_python_est_notee() -> None:
     requires = str((_pyproject().get("project") or {}).get("requires-python") or "")
     fichier = WORKDIR / ".python-version"
     fixee = fichier.read_text(encoding="utf-8").strip() if fichier.is_file() else ""
-    assert requires or re.match(r"^\d+\.\d+", fixee), (
-        "Rien ne dit avec quelle version de Python le projet tourne : ni "
+    assert requires or re.match(r"^\d+\.\d+", fixee), message(
+        en="Nothing says which version of Python the project runs on: neither "
+        "`requires-python` in pyproject.toml (for instance \">=3.12\"), nor a "
+        ".python-version file (`uv python pin 3.14`). A colleague on Python 3.9 "
+        "would discover the incompatibility at the first run.",
+        fr="Rien ne dit avec quelle version de Python le projet tourne : ni "
         "`requires-python` dans pyproject.toml (par exemple \">=3.12\"), ni fichier "
         ".python-version (`uv python pin 3.14`). Un collègue sous Python 3.9 "
-        "découvrirait l'incompatibilité au premier lancement."
+        "découvrirait l'incompatibilité au premier lancement.",
     )
 
 
 def test_le_projet_s_installe_dans_un_environnement_neuf(installation: Callable[..., Execution],
                                                           tmp_path: Path) -> None:
     res = installation("--version", cwd=tmp_path)
-    assert res.code == 0 and res.sortie.strip() == f"certcheck {VERSION}", (
-        "Installé dans un environnement neuf depuis les seuls fichiers du projet, "
+    assert res.code == 0 and res.sortie.strip() == f"certcheck {VERSION}", message(
+        en="Installed into a fresh environment from the project's files alone, "
+        "`certcheck --version` fails. A ModuleNotFoundError names the library "
+        "imported by the code but declared nowhere.\n  " + res.resume(),
+        fr="Installé dans un environnement neuf depuis les seuls fichiers du projet, "
         "`certcheck --version` échoue. Une ModuleNotFoundError nomme la bibliothèque "
-        "importée par le code mais déclarée nulle part.\n  " + res.resume()
+        "importée par le code mais déclarée nulle part.\n  " + res.resume(),
     )
 
 
@@ -233,9 +257,13 @@ def test_rien_n_est_installe_a_la_main(installation: Callable[..., Execution], t
                        cwd=tmp_path / "parc", env={"CERTCHECK_NOW": jour.isoformat(), **forge.env()})
     attendu = code_attendu([s for _, s in calcul.values()])
     tickets = [t for t in forge.tickets if t.get("title") == TITRE_TICKET]
-    assert res.code == attendu and len(tickets) == 1, (
-        "Dans l'environnement neuf, certcheck n'a pas analysé le parc puis publié son "
+    assert res.code == attendu and len(tickets) == 1, message(
+        en="In the fresh environment, certcheck did not analyse the fleet and then publish its "
+        f"ticket (code {res.code}, expected {attendu}; {len(tickets)} ticket(s), seed "
+        f"{graine}). The publication imports requests: if it is missing, then it "
+        "was only installed by hand on your machine.\n  " + res.resume(),
+        fr="Dans l'environnement neuf, certcheck n'a pas analysé le parc puis publié son "
         f"ticket (code {res.code}, attendu {attendu} ; {len(tickets)} ticket(s), graine "
         f"{graine}). La publication importe requests : si elle manque, c'est qu'elle "
-        "n'était installée qu'à la main sur votre poste.\n  " + res.resume()
+        "n'était installée qu'à la main sur votre poste.\n  " + res.resume(),
     )
