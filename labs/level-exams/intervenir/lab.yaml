@@ -22,7 +22,7 @@ skills:
   - git-history
 distros:
   - any
-doc_url: https://dev.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/
+doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/
 runtime:
   type: shell
   workdir: challenge/work

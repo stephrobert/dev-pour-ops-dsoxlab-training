@@ -11,7 +11,7 @@ what it prints and its exit code. Only then do you change a condition.
 |---|---|
 | Target | your workstation: Python 3 and openssl, no VM |
 | Duration | about 25 minutes |
-| Paired lesson | [Read and modify Python code you did not write](https://dev.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
+| Paired lesson | [Read and modify Python code you did not write](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) (in French) |
 | Next | `script-en-outil` shows the same tool turned into a Python project |
 
 ```bash

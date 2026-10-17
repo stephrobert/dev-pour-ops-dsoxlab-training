@@ -41,26 +41,26 @@ openssl et Git du système. Quelques labs téléchargent des paquets depuis PyPI
 
 | Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
 |---|---|---|---|---|---|
-| `lire-du-code` | Lire et modifier un petit script Python : le certcheck hérité | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
-| `script-en-outil` | Comprendre un outil Python, puis le modifier : certcheck et son contrat | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
-| `dependances-reproductibles` | Dépendances : certcheck s'installe aussi ailleurs | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
-| `tester-une-automatisation` | Se servir des tests : un test rouge, lu, corrigé, et un test de plus | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
-| `deboguer` | Déboguer pas à pas : le certificat que certcheck ne sait pas lire | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/deboguer/) |
-| `relire-une-automatisation` | Relire une pull request : quatre défauts dans la n°42 de certcheck | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
+| `lire-du-code` | Lire et modifier un petit script Python : le certcheck hérité | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/lire-du-code/) |
+| `script-en-outil` | Comprendre un outil Python, puis le modifier : certcheck et son contrat | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/script-en-outil/) |
+| `dependances-reproductibles` | Dépendances : certcheck s'installe aussi ailleurs | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
+| `tester-une-automatisation` | Se servir des tests : un test rouge, lu, corrigé, et un test de plus | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) |
+| `deboguer` | Déboguer pas à pas : le certificat que certcheck ne sait pas lire | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) |
+| `relire-une-automatisation` | Relire une pull request : quatre défauts dans la n°42 de certcheck | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/relire-une-automatisation/) |
 
 ### Aller plus loin
 
 | Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
 |---|---|---|---|---|---|
-| `appeler-une-api` | Appeler une API avec requests : certcheck ouvre son ticket | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/api-rest/) |
-| `livrer-un-outil` | Livrer un outil : certcheck 1.0.0, versionné et installable | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
-| `level-exams-outil` | Défi : reprendre un outil d'exploitation | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
+| `appeler-une-api` | Appeler une API avec requests : certcheck ouvre son ticket | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/api-rest/) |
+| `livrer-un-outil` | Livrer un outil : certcheck 1.0.0, versionné et installable | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
+| `level-exams-outil` | Défi : reprendre un outil d'exploitation | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 
 ### Épreuve de niveau
 
 | Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
 |---|---|---|---|---|---|
-| `level-exams-intervenir` | Épreuve : intervenir sur un petit outil d'exploitation | o1 | - | shell | [guide](https://dev.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) |
+| `level-exams-intervenir` | Épreuve : intervenir sur un petit outil d'exploitation | o1 | - | shell | [guide](https://blog.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) |
 
 _10 labs, table générée par `scripts/gen_catalog.py`._
 <!-- LABS:END -->
