@@ -3,7 +3,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -15,11 +18,14 @@
     "test_une_erreur_http_donne_le_code_3"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
   "duree_s": 16,
   "ecarts": [],
   "etapes": [
@@ -41,7 +47,10 @@
     "test_une_erreur_http_donne_le_code_3"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -51,7 +60,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -63,12 +75,15 @@
     "test_un_test_reproduit_le_bogue"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
-  "duree_s": 7,
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
+  "duree_s": 8,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
@@ -89,7 +104,10 @@
     "test_un_test_reproduit_le_bogue"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -99,7 +117,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -111,11 +132,14 @@
     "test_rien_n_est_installe_a_la_main"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
   "duree_s": 4,
   "ecarts": [],
   "etapes": [
@@ -137,7 +161,10 @@
     "test_rien_n_est_installe_a_la_main"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -147,7 +174,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -159,12 +189,15 @@
     "test_les_tests_sont_verts_et_complets"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
-  "duree_s": 4,
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
+  "duree_s": 5,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
@@ -185,7 +218,10 @@
     "test_les_tests_sont_verts_et_complets"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -195,7 +231,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -207,12 +246,15 @@
     "test_vos_tests_attrapent_le_defaut_herite"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
-  "duree_s": 8,
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
+  "duree_s": 12,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
@@ -233,7 +275,10 @@
     "test_vos_tests_attrapent_le_defaut_herite"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -243,7 +288,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -255,12 +303,15 @@
     "test_un_certificat_expire_est_signale"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
-  "duree_s": 3,
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
+  "duree_s": 4,
   "ecarts": [],
   "etapes": [
    "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
@@ -281,7 +332,10 @@
     "test_un_certificat_expire_est_signale"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -291,7 +345,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -303,11 +360,14 @@
     "test_le_changelog_porte_la_version"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
   "duree_s": 4,
   "ecarts": [],
   "etapes": [
@@ -329,7 +389,10 @@
     "test_le_changelog_porte_la_version"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -339,7 +402,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -351,11 +417,14 @@
     "test_une_configuration_ruff_est_versionnee"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
   "duree_s": 2,
   "ecarts": [],
   "etapes": [
@@ -377,7 +446,10 @@
     "test_une_configuration_ruff_est_versionnee"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -387,7 +459,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -399,11 +474,14 @@
     "test_ou_est_quoi"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
   "duree_s": 4,
   "ecarts": [],
   "etapes": [
@@ -425,7 +503,10 @@
     "test_ou_est_quoi"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
@@ -435,7 +516,10 @@
   "apres": {
    "echecs": [],
    "passed": 5,
+   "recorded": true,
    "score": 100,
+   "skipped": 0,
+   "status": "passed",
    "total": 5
   },
   "avant": {
@@ -447,11 +531,14 @@
     "test_un_test_ajoute_attrape_un_nouveau_defaut"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
-  "commit": "12de692",
-  "date": "2026-10-14",
+  "commit": "f8ecb5a",
+  "date": "2026-10-19",
   "duree_s": 6,
   "ecarts": [],
   "etapes": [
@@ -473,7 +560,10 @@
     "test_un_test_ajoute_attrape_un_nouveau_defaut"
    ],
    "passed": 0,
+   "recorded": true,
    "score": 0,
+   "skipped": 0,
+   "status": "failed",
    "total": 5
   },
   "uv": "0.12.21",
