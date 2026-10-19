@@ -12,7 +12,7 @@ duplicates.
 | Target | your machine: Python and uv (`mise install`), openssl |
 | Duration | about 30 minutes |
 | Network | needed once: uv downloads `requests` from PyPI |
-| Paired lesson | [Appeler une API REST avec Python et requests](https://blog.stephane-robert.info/docs/developper/api-rest/) (in French) |
+| Paired lesson | [Appeler une API REST avec Python et requests](https://www.stephane-robert.info/docs/developper/api-rest/) (in French) |
 | Previous | `script-en-outil` (optional lab, outside the core) |
 
 ```bash

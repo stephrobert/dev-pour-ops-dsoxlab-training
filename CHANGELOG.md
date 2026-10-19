@@ -89,7 +89,7 @@ directions.
   future service is watched without anyone having to remember.
 - The `doc_url` fields and guide links point at `dev.stephane-robert.info`,
   where this course's guides are published. Links to pages already live on
-  `blog.stephane-robert.info` are unchanged.
+  `www.stephane-robert.info` are unchanged.
 - Documentation drift inherited from `github-actions-training`, which this
   repository is derived from: an `automatisation-dans-la-ci` lab that does not
   exist, a `security_check.py` tool that is not the one the common thread

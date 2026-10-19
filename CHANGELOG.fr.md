@@ -93,7 +93,7 @@ dans les deux sens.
   soit surveillé sans qu'on y repense.
 - Les `doc_url` et les liens de guides pointent sur `dev.stephane-robert.info`,
   où les guides de cette formation sont publiés. Les liens vers des pages déjà
-  en production sur `blog.stephane-robert.info` sont inchangés.
+  en production sur `www.stephane-robert.info` sont inchangés.
 - Dérives documentaires héritées de `github-actions-training`, dont ce dépôt
   est repris : un lab `automatisation-dans-la-ci` qui n'existe pas, un outil
   `security_check.py` qui n'est pas celui du fil rouge, une section

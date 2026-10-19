@@ -30,7 +30,7 @@ repo:
   solutions: plaintext
   category: development
   title: "Development for Ops: verifiable labs"
-  blog_url: "https://blog.stephane-robert.info/docs/developper/"
+  blog_url: "https://www.stephane-robert.info/docs/developper/"
   issues_url: "https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/issues"
   description: |
     A first step into development for Ops, in Python. One common thread,

@@ -12,7 +12,7 @@ version de Python, et le prouvez dans un environnement neuf.
 | Cible | votre poste : uv et Python (`mise install` à la racine du catalogue) |
 | Durée | environ 25 minutes |
 | Réseau | **requis** : les paquets se téléchargent depuis PyPI |
-| Leçon jumelée | [Dépendances Python : déclarer, épingler, installer ailleurs](https://blog.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
+| Leçon jumelée | [Dépendances Python : déclarer, épingler, installer ailleurs](https://www.stephane-robert.info/docs/developper/pratiques/dependances-reproductibles/) |
 | Suite | `tester-une-automatisation` |
 
 ```bash
