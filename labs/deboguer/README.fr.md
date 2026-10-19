@@ -11,7 +11,7 @@ que vous avez appris.
 |---|---|
 | Cible | votre poste : Python et uv (`mise install`), openssl |
 | Durée | environ 25 minutes |
-| Leçon jumelée | [Déboguer un programme Python pas à pas, avec pdb](https://blog.stephane-robert.info/docs/developper/pratiques/deboguer/) |
+| Leçon jumelée | [Déboguer un programme Python pas à pas, avec pdb](https://www.stephane-robert.info/docs/developper/pratiques/deboguer/) |
 | Précédent | `tester-une-automatisation` |
 
 ```bash

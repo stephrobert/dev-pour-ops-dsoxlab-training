@@ -9,7 +9,7 @@ CI, faites une correction limitée et rendez tests, qualité et CI verts.
 |---|---|
 | Cible | votre poste : uv et Python (`mise install`), openssl et Git, aucune VM |
 | Durée | environ 45 minutes, seuil 70 points, sans indice |
-| Page de l'épreuve | [Épreuve : intervenir sur un petit outil d'exploitation](https://blog.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) |
+| Page de l'épreuve | [Épreuve : intervenir sur un petit outil d'exploitation](https://www.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) |
 
 ```bash
 dsoxlab run   level-exams-intervenir

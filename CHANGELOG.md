@@ -10,6 +10,22 @@ package and no wheel. A `vX.Y.Z` tag does publish a GitHub release, though — a
 archive of the catalog, its SHA-256 digest, SLSA level 3 provenance and a
 cosign signature (see `RELEASING.md`). The unit that matters is still the lab.
 
+## [0.2.1] - 2026-10-19
+
+### Changed
+
+- **Every `doc_url` now points at `www.stephane-robert.info`.** The site moved
+  from `blog.` to `www.`, and the old host redirects with a 301 to the same
+  path. Nothing was broken: `validate-structure --check-urls` follows
+  redirections, and this catalogue was green before a single line changed. The
+  migration is housekeeping, not repair: a `doc_url` should point at the page
+  rather than depend on a redirection that will be removed one day.
+
+  The paths are identical between the two hosts, so only the host changed. The
+  359 `doc_url` the catalogues declare were looked up in the site's own
+  repository, offline: all of them exist there, including twenty-three pages
+  the old host answered with a 404.
+
 ## [0.2.0] - 2026-10-17
 
 ### Changed
@@ -89,7 +105,7 @@ directions.
   future service is watched without anyone having to remember.
 - The `doc_url` fields and guide links point at `dev.stephane-robert.info`,
   where this course's guides are published. Links to pages already live on
-  `blog.stephane-robert.info` are unchanged.
+  `www.stephane-robert.info` are unchanged.
 - Documentation drift inherited from `github-actions-training`, which this
   repository is derived from: an `automatisation-dans-la-ci` lab that does not
   exist, a `security_check.py` tool that is not the one the common thread

@@ -12,7 +12,7 @@ endroit, borner l'attente, traiter les erreurs, ne pas créer de doublon.
 | Cible | votre poste : Python et uv (`mise install`), openssl |
 | Durée | environ 30 minutes |
 | Réseau | requis une fois : uv télécharge `requests` depuis PyPI |
-| Leçon jumelée | [Appeler une API REST avec Python et requests](https://blog.stephane-robert.info/docs/developper/api-rest/) |
+| Leçon jumelée | [Appeler une API REST avec Python et requests](https://www.stephane-robert.info/docs/developper/api-rest/) |
 | Précédent | `script-en-outil` (lab facultatif, hors du cœur) |
 
 ```bash

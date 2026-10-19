@@ -11,7 +11,7 @@ Nothing is published: the release stays in the repository.
 | Target | your machine: uv, Python (`mise install`) and Git |
 | Duration | about 25 minutes |
 | Network | **required**: the fresh installation downloads dependencies from PyPI |
-| Paired lesson | [Livrer un outil Python : version, étiquette, installation](https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
+| Paired lesson | [Livrer un outil Python : version, étiquette, installation](https://www.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) (in French) |
 | Previous | `dependances-reproductibles` (optional lab, outside the core) |
 
 ```bash

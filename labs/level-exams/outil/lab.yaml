@@ -26,7 +26,7 @@ skills:
   - code-review
 distros:
   - any
-doc_url: https://blog.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/
+doc_url: https://www.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/
 runtime:
   type: shell
   workdir: challenge/work

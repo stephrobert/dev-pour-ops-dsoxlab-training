@@ -10,7 +10,7 @@ copying a model.
 |---|---|
 | Target | your workstation: Python and uv (`mise install`), openssl |
 | Duration | about 20 minutes |
-| Paired lesson | [First Python tests with pytest](https://blog.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) (in French) |
+| Paired lesson | [First Python tests with pytest](https://www.stephane-robert.info/docs/developper/pratiques/tester-une-automatisation/) (in French) |
 | Previous | `dependances-reproductibles` |
 | Next | `deboguer` |
 
