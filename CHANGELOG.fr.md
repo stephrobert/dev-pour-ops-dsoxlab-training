@@ -11,6 +11,23 @@ une archive du catalogue, son empreinte SHA-256, une provenance SLSA niveau 3
 et une signature cosign (voir `RELEASING.fr.md`). L'unité qui compte reste le
 lab.
 
+## [0.2.1] - 2026-10-19
+
+### Modifié
+
+- **Chaque `doc_url` pointe désormais `www.stephane-robert.info`.** Le site est
+  passé de `blog.` à `www.`, et l'ancien hôte redirige en 301 vers le même
+  chemin. Rien n'était cassé : `validate-structure --check-urls` suit les
+  redirections, et ce catalogue était vert avant qu'une ligne change. La
+  migration est une mise au propre et non une réparation : un `doc_url` doit
+  pointer la page, pas dépendre d'une redirection qu'il faudra bien retirer un
+  jour.
+
+  Les chemins sont identiques entre les deux hôtes : seul l'hôte a changé. Les
+  359 `doc_url` que les catalogues déclarent ont été cherchés dans le dépôt du
+  site, hors réseau : ils y existent tous, y compris vingt-trois pages que
+  l'ancien hôte rendait en 404.
+
 ## [0.2.0] - 2026-10-17
 
 ### Modifié
