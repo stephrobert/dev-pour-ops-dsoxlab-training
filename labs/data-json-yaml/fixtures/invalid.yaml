@@ -1,0 +1,5 @@
+services:
+  - id: broken
+    environment: production
+    replicas: 0
+    expires: "2026-02-30"

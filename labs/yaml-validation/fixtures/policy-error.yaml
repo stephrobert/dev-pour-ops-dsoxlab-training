@@ -1,0 +1,3 @@
+service: payments
+environment: production
+replicas: 1
