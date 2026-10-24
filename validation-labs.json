@@ -56,6 +56,61 @@
   "uv": "0.12.21",
   "verdict": "VALIDE"
  },
+ "data-json-yaml": {
+  "apres": {
+   "echecs": [],
+   "passed": 4,
+   "recorded": true,
+   "score": 100,
+   "skipped": 0,
+   "status": "passed",
+   "total": 4
+  },
+  "avant": {
+   "echecs": [
+    "test_go_unit_tests_pass",
+    "test_invalid_record_is_rejected_without_touching_output",
+    "test_json_and_yaml_have_the_same_canonical_output",
+    "test_unknown_format_is_rejected"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 4
+  },
+  "commit": "a9b0102",
+  "date": "2026-10-24",
+  "duree_s": 5,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
+   "avant le travail : 0/4",
+   "après la solution : 4/4",
+   "après clean et run : 0/4",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-data-json-yaml.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_go_unit_tests_pass",
+    "test_invalid_record_is_rejected_without_touching_output",
+    "test_json_and_yaml_have_the_same_canonical_output",
+    "test_unknown_format_is_rejected"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 4
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
  "deboguer": {
   "apres": {
    "echecs": [],
@@ -166,6 +221,122 @@
    "skipped": 0,
    "status": "failed",
    "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "go-cli": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "recorded": true,
+   "score": 100,
+   "skipped": 0,
+   "status": "passed",
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_go_unit_tests_pass",
+    "test_help_and_version_are_successful",
+    "test_invalid_timeout_and_unknown_command_fail_clearly",
+    "test_json_file_and_environment_precedence",
+    "test_standalone_binary_builds_and_runs"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 5
+  },
+  "commit": "a9b0102",
+  "date": "2026-10-24",
+  "duree_s": 6,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-go-cli.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_go_unit_tests_pass",
+    "test_help_and_version_are_successful",
+    "test_invalid_timeout_and_unknown_command_fail_clearly",
+    "test_json_file_and_environment_precedence",
+    "test_standalone_binary_builds_and_runs"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "json-schema": {
+  "apres": {
+   "echecs": [],
+   "passed": 6,
+   "recorded": true,
+   "score": 100,
+   "skipped": 0,
+   "status": "passed",
+   "total": 6
+  },
+  "avant": {
+   "echecs": [
+    "test_duplicate_object_keys_are_rejected",
+    "test_missing_required_property_fails_with_path",
+    "test_nonstandard_json_constant_is_rejected",
+    "test_unknown_properties_are_rejected_at_each_object_level",
+    "test_valid_document_passes",
+    "test_wrong_type_fails_with_json_path"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 6
+  },
+  "commit": "a9b0102",
+  "date": "2026-10-24",
+  "duree_s": 3,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
+   "avant le travail : 0/6",
+   "après la solution : 6/6",
+   "après clean et run : 0/6",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-json-schema.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_duplicate_object_keys_are_rejected",
+    "test_missing_required_property_fails_with_path",
+    "test_nonstandard_json_constant_is_rejected",
+    "test_unknown_properties_are_rejected_at_each_object_level",
+    "test_valid_document_passes",
+    "test_wrong_type_fails_with_json_path"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 6
   },
   "uv": "0.12.21",
   "verdict": "VALIDE"
@@ -558,6 +729,63 @@
     "test_le_defaut_est_corrige",
     "test_le_test_en_echec_est_nomme",
     "test_un_test_ajoute_attrape_un_nouveau_defaut"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 5
+  },
+  "uv": "0.12.21",
+  "verdict": "VALIDE"
+ },
+ "yaml-validation": {
+  "apres": {
+   "echecs": [],
+   "passed": 5,
+   "recorded": true,
+   "score": 100,
+   "skipped": 0,
+   "status": "passed",
+   "total": 5
+  },
+  "avant": {
+   "echecs": [
+    "test_malformed_schema_fails_with_schema_diagnostic",
+    "test_production_policy_failure_is_distinct",
+    "test_schema_error_reports_structure_and_property",
+    "test_valid_production_configuration_passes",
+    "test_yaml_syntax_error_is_classified"
+   ],
+   "passed": 0,
+   "recorded": true,
+   "score": 0,
+   "skipped": 0,
+   "status": "failed",
+   "total": 5
+  },
+  "commit": "a9b0102",
+  "date": "2026-10-24",
+  "duree_s": 3,
+  "ecarts": [],
+  "etapes": [
+   "état photographié, répertoire de travail absent, 0 conteneur(s) dsoxlab présents",
+   "avant le travail : 0/5",
+   "après la solution : 5/5",
+   "après clean et run : 0/5",
+   "poste rendu intact"
+  ],
+  "journal": ".cache/dsoxlab/dev-pour-ops-dsoxlab-training/validation-yaml-validation.log",
+  "python": "3.14.8",
+  "raisons": [],
+  "rejeu": {
+   "echecs": [
+    "test_malformed_schema_fails_with_schema_diagnostic",
+    "test_production_policy_failure_is_distinct",
+    "test_schema_error_reports_structure_and_property",
+    "test_valid_production_configuration_passes",
+    "test_yaml_syntax_error_is_classified"
    ],
    "passed": 0,
    "recorded": true,
