@@ -10,6 +10,21 @@ package and no wheel. A `vX.Y.Z` tag does publish a GitHub release, though — a
 archive of the catalog, its SHA-256 digest, SLSA level 3 provenance and a
 cosign signature (see `RELEASING.md`). The unit that matters is still the lab.
 
+## [0.3.0] - 2026-10-24
+
+### Added
+
+- Four bilingual, locally reproducible labs for the missing data and Go
+  practices: normalize JSON/YAML inventories, enforce a strict JSON Schema,
+  validate YAML syntax/schema/business rules, and build a predictable Go CLI.
+- Pairing links from the Go, JSON Schema and YAML lessons to the new labs, and
+  a refreshed site catalog with the lab attestations.
+
+### Verified
+
+- All fourteen labs pass the complete validation cycle: 0 before the work,
+  100 with the reference solution, then 0 after cleanup and replay.
+
 ## [0.2.2] - 2026-10-23
 
 ### Added
@@ -144,4 +159,6 @@ directions.
   a Docker requirement that exist nowhere here, and a `--lab` example naming an
   unknown lab.
 
+[0.3.0]: https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/releases/tag/v0.3.0
+[0.2.2]: https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/releases/tag/v0.2.2
 [0.1.0]: https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/releases/tag/v0.1.0
