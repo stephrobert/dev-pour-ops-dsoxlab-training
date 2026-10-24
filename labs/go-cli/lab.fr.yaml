@@ -1,0 +1,6 @@
+id: go-cli
+title: "Construire une CLI Go simple et prévisible"
+description: |
+  Implémentez un outil Go en ligne de commande avec sous-commandes, aide,
+  erreurs claires et configuration JSON complétée par des variables
+  d'environnement. Testez les commandes et construisez un exécutable autonome.

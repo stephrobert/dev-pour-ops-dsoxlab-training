@@ -182,6 +182,10 @@ Un 0 accuserait le lab de ce qui manque au poste.
 
 | Lab (id) | Titre | Niveau | Certif | Runtime | Guide compagnon |
 |---|---|---|---|---|---|
+| `data-json-yaml` | Normaliser des inventaires de services JSON et YAML | o2 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/programmation/golang/) |
+| `json-schema` | Imposer un contrat de déploiement avec JSON Schema | o2 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/autres-langages/json/ecrire-un-schema/) |
+| `yaml-validation` | Valider une politique de service YAML avant déploiement | o2 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/autres-langages/yaml/valider-schema/) |
+| `go-cli` | Construire une CLI Go simple et prévisible | o2 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/programmation/golang/) |
 | `appeler-une-api` | Appeler une API avec requests : certcheck ouvre son ticket | o1 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/api-rest/) |
 | `livrer-un-outil` | Livrer un outil : certcheck 1.0.0, versionné et installable | o1 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
 | `level-exams-outil` | Défi : reprendre un outil d'exploitation | o1 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/pratiques/livrer-un-outil/) |
@@ -192,7 +196,7 @@ Un 0 accuserait le lab de ce qui manque au poste.
 |---|---|---|---|---|---|
 | `level-exams-intervenir` | Épreuve : intervenir sur un petit outil d'exploitation | o1 | - | shell | [guide](https://www.stephane-robert.info/docs/developper/pratiques/epreuve-intervenir/) |
 
-_10 labs, table générée par `scripts/gen_catalog.py`._
+_14 labs, table générée par `scripts/gen_catalog.py`._
 <!-- LABS:END -->
 
 ## Contribuer

@@ -1,0 +1,32 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: go-cli
+title: "Build a small, predictable Go CLI"
+description: |
+  Implement a Go command-line tool with subcommands, help, clear errors, and
+  configuration loaded from JSON with environment-variable overrides. Test
+  the commands and build one standalone executable.
+section: approfondir
+level: o2
+difficulty: intermediate
+lab_type: lab
+estimated_time: 60m
+skills:
+  - go
+  - cli
+  - configuration
+  - testing
+distros:
+  - any
+doc_url: https://www.stephane-robert.info/docs/developper/programmation/golang/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - go.mod
+    - main.go
+    - main_test.go
+    - fleetctl.json
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

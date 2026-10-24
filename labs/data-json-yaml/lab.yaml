@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: data-json-yaml
+title: "Normalize JSON and YAML service inventories"
+description: |
+  Build a deterministic Go converter for JSON and YAML service inventories.
+  Normalize dates and keys, reject invalid records, and never leave a partial
+  output behind when an input is invalid.
+section: approfondir
+level: o2
+difficulty: intermediate
+lab_type: lab
+estimated_time: 45m
+skills:
+  - go
+  - json
+  - yaml
+  - data-transformation
+distros:
+  - any
+doc_url: https://www.stephane-robert.info/docs/developper/programmation/golang/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - go.mod
+    - go.sum
+    - main.go
+    - main_test.go
+    - inventory.yaml
+    - inventory.json
+    - invalid.yaml
+    - unsupported.toml
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

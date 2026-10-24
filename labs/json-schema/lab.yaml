@@ -1,0 +1,38 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: json-schema
+title: "Enforce a deployment contract with JSON Schema"
+description: |
+  Parse JSON strictly, then write a JSON Schema for a deployment document.
+  Require fields and exact types, constrain values, reject unknown properties,
+  and report invalid data with a useful JSON path.
+section: approfondir
+level: o2
+difficulty: intermediate
+lab_type: lab
+estimated_time: 45m
+skills:
+  - json
+  - json-schema
+  - validation
+  - python
+distros:
+  - any
+doc_url: https://www.stephane-robert.info/docs/developper/autres-langages/json/ecrire-un-schema/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - pyproject.toml
+    - uv.lock
+    - validate.py
+    - deployment.schema.json
+    - valid.json
+    - invalid-missing.json
+    - invalid-type.json
+    - invalid-extra.json
+    - invalid-nan.json
+    - invalid-duplicate-key.json
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false

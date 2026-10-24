@@ -1,0 +1,6 @@
+{
+  "services": [
+    {"id": " API ", "environment": " Production ", "replicas": 3, "expires": "2026-12-20"},
+    {"id": "web", "environment": "staging", "replicas": 2, "expires": "2026-11-30"}
+  ]
+}

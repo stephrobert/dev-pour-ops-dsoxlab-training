@@ -11,7 +11,7 @@
 # catalogue cicd-dsoxlab-training (lab ci-certcheck).
 #
 # Recentrage validé par Stéphane le 2026-10-13 : cœur de six labs courts,
-# deux labs et un défi facultatifs, épreuve « intervenir » en shell.
+# six labs et un défi facultatifs, épreuve « intervenir » en shell.
 #
 # tests/test_meta_declare_les_labs.py refuse un lab sur disque absent d'ici,
 # et un lab déclaré ici absent du disque.
@@ -58,8 +58,12 @@ sections:
   # Facultatifs : hors du cœur de l'initiation, pour aller plus loin.
   - id: approfondir
     title: "Going further"
-    description: "Optional: call an API, ship an installable versioned release, and the challenge of taking over a whole tool."
+    description: "Optional: transform and validate service data, build a Go CLI, call an API, ship a release, and take over a whole tool."
     labs:
+      - data-json-yaml
+      - json-schema
+      - yaml-validation
+      - go-cli
       - appeler-une-api
       - livrer-un-outil
       - level-exams/outil
