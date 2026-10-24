@@ -11,6 +11,22 @@ une archive du catalogue, son empreinte SHA-256, une provenance SLSA niveau 3
 et une signature cosign (voir `RELEASING.fr.md`). L'unité qui compte reste le
 lab.
 
+## [0.3.0] - 2026-10-24
+
+### Ajouté
+
+- Quatre labs bilingues et reproductibles en local pour les pratiques de
+  traitement des données et de Go : normaliser des inventaires JSON/YAML,
+  imposer un JSON Schema strict, valider la syntaxe YAML, le schéma et les
+  règles métier, puis construire une CLI Go prévisible.
+- Des liens vers ces labs depuis les leçons Go, JSON Schema et YAML, et un
+  catalogue du site actualisé avec leurs attestations.
+
+### Vérifié
+
+- Les quatorze labs passent le cycle complet de validation : 0 avant le
+  travail, 100 avec la solution de référence, puis 0 après nettoyage et rejeu.
+
 ## [0.2.2] - 2026-10-23
 
 ### Ajouté
@@ -148,4 +164,6 @@ dans les deux sens.
   `automatisation` absente de `meta.yml`, un `.actrc` et un besoin de Docker
   qui n'existent nulle part ici, et un exemple `--lab` nommant un lab inconnu.
 
+[0.3.0]: https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/releases/tag/v0.3.0
+[0.2.2]: https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/releases/tag/v0.2.2
 [0.1.0]: https://github.com/stephrobert/dev-pour-ops-dsoxlab-training/releases/tag/v0.1.0
