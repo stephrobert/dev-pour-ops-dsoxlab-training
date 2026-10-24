@@ -1,0 +1,6 @@
+id: data-json-yaml
+title: "Normaliser des inventaires de services JSON et YAML"
+description: |
+  Construisez en Go un convertisseur déterministe pour des inventaires JSON
+  et YAML. Normalisez dates et clés, rejetez les enregistrements invalides et
+  ne laissez jamais de résultat partiel si une entrée est invalide.

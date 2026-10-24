@@ -1,0 +1,4 @@
+service: payments
+environment: testing
+replicas: "three"
+owner: platform

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/schemas/service.schema.json",
+  "type": "object",
+  "required": ["service", "environment", "replicas"],
+  "additionalProperties": false,
+  "properties": {
+    "service": {"type": "string", "minLength": 1},
+    "environment": {"type": "string", "enum": ["staging", "production"]},
+    "replicas": {"type": "integer", "minimum": 1, "maximum": 20}
+  }
+}

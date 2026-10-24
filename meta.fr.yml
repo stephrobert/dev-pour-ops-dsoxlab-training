@@ -14,7 +14,7 @@ sections:
     description: "Lire et modifier un petit script Python hérité, se repérer dans le projet Python qu'il est devenu, installer ses dépendances, se servir de ses tests, le déboguer et relire un changement."
   - id: approfondir
     title: "Aller plus loin"
-    description: "Facultatif : appeler une API, livrer une version installable et versionnée, et le défi de reprendre un outil entier."
+    description: "Facultatif : transformer et valider des données de services, construire une CLI Go, appeler une API, livrer une version et reprendre un outil entier."
   - id: level-exams
     title: "Épreuve de niveau"
     description: "Intervenir sur un petit outil d'exploitation : le lire, lire son journal de CI et son historique, faire une correction limitée, et rendre verts tests, contrôles de qualité et étapes de CI. Noté en boîte noire, sans indice."

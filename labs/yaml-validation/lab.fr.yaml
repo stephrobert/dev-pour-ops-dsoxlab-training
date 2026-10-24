@@ -1,0 +1,7 @@
+id: yaml-validation
+title: "Valider une politique de service YAML avant déploiement"
+description: |
+  Construisez un validateur qui distingue erreurs de syntaxe YAML,
+  violations du schéma et erreurs de politique opérationnelle. Produisez des
+  diagnostics clairs et un code non nul pour que la CI bloque un déploiement
+  dangereux.

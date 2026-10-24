@@ -1,0 +1,7 @@
+id: json-schema
+title: "Imposer un contrat de déploiement avec JSON Schema"
+description: |
+  Analysez le JSON strictement, puis écrivez un JSON Schema pour un document de
+  déploiement. Exigez des champs et des types précis, contraignez les valeurs,
+  rejetez les propriétés inconnues et signalez les erreurs avec un chemin JSON
+  utile.

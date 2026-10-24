@@ -1,0 +1,8 @@
+{
+  "service": "payments",
+  "version": "2.4.1",
+  "environment": "production",
+  "replicas": 3,
+  "replicas": 5,
+  "strategy": {"type": "rolling"}
+}
