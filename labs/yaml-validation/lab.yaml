@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/stephrobert/dsoxlab/main/schemas/lab.schema.json
+id: yaml-validation
+title: "Validate a YAML service policy before deployment"
+description: |
+  Build a validator that separates YAML syntax errors, schema violations,
+  and operational policy errors. Return clear diagnostics and a non-zero
+  status so CI can stop an unsafe deployment.
+section: approfondir
+level: o2
+difficulty: intermediate
+lab_type: lab
+estimated_time: 45m
+skills:
+  - yaml
+  - json-schema
+  - validation
+  - python
+distros:
+  - any
+doc_url: https://www.stephane-robert.info/docs/developper/autres-langages/yaml/valider-schema/
+runtime:
+  type: shell
+  workdir: challenge/work
+  fixtures:
+    - pyproject.toml
+    - uv.lock
+    - uv.lock
+    - validate_config.py
+    - service.schema.json
+    - production.yaml
+    - syntax-error.yaml
+    - structure-error.yaml
+    - policy-error.yaml
+validation:
+  functional: true
+  security: false
+  persistence_after_reboot: false
