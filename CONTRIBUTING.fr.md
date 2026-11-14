@@ -72,7 +72,7 @@ tirés au hasard, et la graine s'affiche en cas d'échec.
 ```text
 labs/<lab>/
 ├── lab.yaml            # le contrat (id, niveau, runtime, fixtures, validation…)
-├── lab.fr.yaml         # surcharge française de title/description SEULEMENT
+├── lab.fr.yaml         # surcharge française du title, de la description et des libellés de critères SEULEMENT
 ├── README.md / README.fr.md        # la présentation
 ├── scenario.md / scenario.fr.md    # la situation, l'état visé, la preuve
 ├── fixtures/           # le point de départ, copié dans challenge/work
@@ -82,6 +82,11 @@ labs/<lab>/
     ├── hints.yaml                  # indices en base64, quatre niveaux de coût
     └── tests/test_functional.py    # la preuve
 ```
+
+Cet arbre montre les conventions de ce catalogue. Ce que chaque fichier porte
+pour le moteur, et les champs qu'accepte `lab.yaml`, sont documentés dans
+dsoxlab : [guide de l'auteur](https://github.com/stephrobert/dsoxlab/blob/main/docs/catalog-author.fr.md)
+et [contrat](https://github.com/stephrobert/dsoxlab/blob/main/docs/contract-v1.fr.md).
 
 Les indices s'écrivent en clair dans `challenge/hints.source.yaml` (non
 versionné), puis `uv run python scripts/ecrire_indices.py labs/<id>` les

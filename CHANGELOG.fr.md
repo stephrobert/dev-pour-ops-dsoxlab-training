@@ -11,6 +11,16 @@ une archive du catalogue, son empreinte SHA-256, une provenance SLSA niveau 3
 et une signature cosign (voir `RELEASING.fr.md`). L'unité qui compte reste le
 lab.
 
+## [Non publié]
+
+### Modifié
+
+- Le README renvoie à la documentation du moteur au lieu de la recopier
+  (dsoxlab#201) : les sections qui décrivaient le contrat de `dsoxlab` et la
+  vie d'un lab pointent sur la documentation de dsoxlab, qui reste juste quand
+  le moteur change. L'« Anatomie d'un lab » du CONTRIBUTING renvoie à la même
+  documentation pour le contrat de chaque fichier.
+
 ## [0.3.0] - 2026-10-24
 
 ### Ajouté

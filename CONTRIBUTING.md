@@ -70,7 +70,7 @@ and the seed is printed on failure.
 ```text
 labs/<lab>/
 ├── lab.yaml            # the contract (id, level, runtime, fixtures, validation…)
-├── lab.fr.yaml         # French override of title/description ONLY
+├── lab.fr.yaml         # French override of title, description and criteria labels ONLY
 ├── README.md / README.fr.md        # the presentation
 ├── scenario.md / scenario.fr.md    # the situation, the target state, the proof
 ├── fixtures/           # the starting material, copied into challenge/work
@@ -80,6 +80,11 @@ labs/<lab>/
     ├── hints.yaml                  # base64 hints, four cost levels
     └── tests/test_functional.py    # the proof
 ```
+
+This tree shows this catalog's conventions. What each file holds for the
+engine, and which fields `lab.yaml` accepts, is documented in dsoxlab:
+[catalog author guide](https://github.com/stephrobert/dsoxlab/blob/main/docs/catalog-author.md)
+and [contract](https://github.com/stephrobert/dsoxlab/blob/main/docs/contract-v1.md).
 
 Hints are written in clear in `challenge/hints.source.yaml` (not committed),
 then `uv run python scripts/ecrire_indices.py labs/<id>` encodes them.
