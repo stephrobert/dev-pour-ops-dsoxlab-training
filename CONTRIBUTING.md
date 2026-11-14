@@ -81,6 +81,11 @@ labs/<lab>/
     └── tests/test_functional.py    # the proof
 ```
 
+This tree shows this catalog's conventions. What each file holds for the
+engine, and which fields `lab.yaml` accepts, is documented in dsoxlab:
+[catalog author guide](https://github.com/stephrobert/dsoxlab/blob/main/docs/catalog-author.md)
+and [contract](https://github.com/stephrobert/dsoxlab/blob/main/docs/contract-v1.md).
+
 Hints are written in clear in `challenge/hints.source.yaml` (not committed),
 then `uv run python scripts/ecrire_indices.py labs/<id>` encodes them.
 

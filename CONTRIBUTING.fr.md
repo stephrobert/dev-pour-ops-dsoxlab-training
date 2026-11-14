@@ -83,6 +83,11 @@ labs/<lab>/
     └── tests/test_functional.py    # la preuve
 ```
 
+Cet arbre montre les conventions de ce catalogue. Ce que chaque fichier porte
+pour le moteur, et les champs qu'accepte `lab.yaml`, sont documentés dans
+dsoxlab : [guide de l'auteur](https://github.com/stephrobert/dsoxlab/blob/main/docs/catalog-author.fr.md)
+et [contrat](https://github.com/stephrobert/dsoxlab/blob/main/docs/contract-v1.fr.md).
+
 Les indices s'écrivent en clair dans `challenge/hints.source.yaml` (non
 versionné), puis `uv run python scripts/ecrire_indices.py labs/<id>` les
 encode.
