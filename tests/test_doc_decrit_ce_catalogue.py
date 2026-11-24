@@ -146,7 +146,7 @@ def test_aucune_section_inexistante_n_est_citee(nom: str) -> None:
     un autre dépôt.
 
     Les sections d'un fichier de configuration portent le même mot et sont
-    exclues : `scenario.fr.md` de `dependances-reproductibles` parle à juste
+    exclues : l'énoncé de `dependances-reproductibles` parle à juste
     titre de « une section `dependencies` » dans `pyproject.toml`.
     """
     document = REPO / nom
